@@ -1,26 +1,189 @@
 @import "tailwindcss";
 
+/*
+  Super minimal, soft. Plain warm-neutral paper, one sans family,
+  whitespace instead of rules, rounded surfaces, one muted accent.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --paper: #ffffff;
+  --ink: #0d0d0c;
+  --faint: #8a8a83;
+  --soft: #f3f3ef;
+  --accent: #d9645e; /* coral */
+  --sun: #e5dc5a; /* yellow */
+  --ochre: #d89b44; /* orange */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --paper: #0e0e0d;
+    --ink: #f1f1ec;
+    --faint: #8f8f88;
+    --soft: #1d1d1b;
+    --accent: #e2716b;
+    --sun: #e5dc5a;
+    --ochre: #dda44e;
   }
 }
 
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-faint: var(--faint);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-sun: var(--sun);
+  --color-ochre: var(--ochre);
+  --font-sans: var(--font-geist);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+a,
+button {
+  transition:
+    color 0.3s ease,
+    opacity 0.3s ease,
+    background-color 0.3s ease;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+/* "all →" links: the arrow drifts on hover */
+.link-nudge {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+}
+.link-nudge:hover {
+  transform: translateX(4px);
+}
+
+/* header and footer breathe in on load */
+@media (prefers-reduced-motion: no-preference) {
+  header,
+  footer {
+    animation: breathe-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  footer {
+    animation-delay: 0.15s;
+  }
+  @keyframes breathe-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  footer {
+    animation-name: breathe-in-up;
+  }
+  @keyframes breathe-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* small quiet label */
+.label {
+  font-size: 0.8125rem;
+  color: var(--faint);
+}
+
+/* long-form thought body */
+.thought-body {
+  font-size: 1.0625rem;
+}
+.thought-body p {
+  margin-block: 1.4em;
+}
+.thought-body h2,
+.thought-body h3 {
+  font-weight: 500;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+}
+.thought-body h2 {
+  font-size: 1.25rem;
+}
+.thought-body h3 {
+  font-size: 1.0625rem;
+}
+.thought-body a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.thought-body blockquote {
+  font-style: italic;
+  color: var(--faint);
+  padding-left: 1.5em;
+  margin-block: 1.75em;
+}
+.thought-body ul,
+.thought-body ol {
+  padding-left: 1.5em;
+  margin-block: 1.4em;
+}
+.thought-body ul {
+  list-style: disc;
+}
+.thought-body ol {
+  list-style: decimal;
+}
+.thought-body li {
+  margin-block: 0.4em;
+}
+.thought-body li::marker {
+  color: var(--faint);
+}
+.thought-body img {
+  max-width: 100%;
+  border-radius: 1rem;
+  margin-block: 2em;
+}
+.thought-body hr {
+  border: none;
+  height: 1px;
+  margin-block: 3em;
+  background: linear-gradient(90deg, transparent, var(--faint), transparent);
+  opacity: 0.35;
+}
+.thought-body code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.875em;
+}
+.thought-body pre {
+  background: var(--soft);
+  border-radius: 1rem;
+  padding: 1.25em 1.5em;
+  overflow-x: auto;
+  margin-block: 1.75em;
+  font-size: 0.8125rem;
 }
