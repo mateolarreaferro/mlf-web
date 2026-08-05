@@ -3,11 +3,13 @@ import Hero from "@/components/Hero";
 import KnowledgeGraph from "@/components/KnowledgeGraph";
 import { Reveal, Stagger, Item } from "@/components/motion";
 import { getProjects } from "@/lib/projects";
+import { getPublications } from "@/lib/publications";
 import { getThoughts, formatDate } from "@/lib/thoughts";
 
 export default function Home() {
   const thoughts = getThoughts();
   const projects = getProjects();
+  const publications = getPublications();
 
   return (
     <div className="pt-10 lg:pt-0">
@@ -45,6 +47,23 @@ export default function Home() {
                       </p>
                     ) : null}
                   </Link>
+                </Item>
+              </li>
+            ))}
+          </ul>
+        </Stagger>
+      </section>
+
+      <section id="publications" className="mt-28 scroll-mt-10">
+        <Stagger>
+          <Item>
+            <h2 className="label mb-6">publications</h2>
+          </Item>
+          <ul className="max-w-3xl space-y-5">
+            {publications.map((pub) => (
+              <li key={pub}>
+                <Item>
+                  <p className="text-sm leading-relaxed text-faint">{pub}</p>
                 </Item>
               </li>
             ))}

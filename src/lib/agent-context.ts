@@ -1,4 +1,5 @@
 import { getProjects } from "./projects";
+import { getPublications } from "./publications";
 import { getThoughts } from "./thoughts";
 
 export function buildSystemPrompt(): string {
@@ -31,6 +32,9 @@ ${projectLines}
 
 His writing (the "thoughts" section of the site):
 ${thoughtLines}
+
+His publications:
+${getPublications().map((p) => `- ${p}`).join("\n")}
 
 Links: GitHub github.com/mateolarreaferro · SoundCloud soundcloud.com/mateo-larrea-ferro · LinkedIn linkedin.com/in/mateo-larrea-636967164 · email mlarreaf99@gmail.com
 
