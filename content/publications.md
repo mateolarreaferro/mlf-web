@@ -1,3 +1,5 @@
+Gao, C., Larrea, M., & Boulanger, R. (2026). From Brainwaves to Csound: An exploratory audiovisual system with EEG and LLM-based agent control in Unity. In Proceedings of the 8th International Csound Conference (ICSC '26). Paper accepted.
+
 Boulanger, R., & Larrea, M. (2026). Dr. C: A human-in-the-loop agentic AI for Csound. In Proceedings of the Linux Audio Conference 2026 (LAC 2026).
 
 Larrea, M., & Boulanger, R. (2026). Introducing Dr.C: 40+ years of Csound and computer music, now an agentic AI collaborator for learning and building instruments, effects, plugins, and web apps. In Proceedings of the 8th International Csound Conference (ICSC '26). Paper accepted.
