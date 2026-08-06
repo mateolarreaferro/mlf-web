@@ -484,7 +484,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
         </AnimatePresence>
       </div>
 
-      <figcaption className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+      <figcaption className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
         {[
           ["agents", "var(--accent)"],
           ["tools for creativity", "var(--sun)"],
