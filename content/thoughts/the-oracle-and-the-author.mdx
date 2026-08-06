@@ -1,0 +1,62 @@
+---
+number: 6
+title: "The Oracle and the Author"
+date: "2026-08-05"
+lang: "en"
+summary: "Why prompt-to-artifact AI eliminates authorship — and what the programming languages tradition suggests instead."
+---
+
+*Written for CS 343D — Domain Specific Languages and Compilers, Stanford University.*
+
+Current generative AI systems collapse the creative pipeline into a single exchange. A user writes a prompt; the model returns a finished artifact. Suno, an AI music platform, produces full songs from a text description. ChatGPT produces essays from one-line instructions. Midjourney and Sora do the same for images and video. Call this the **oracle model**: a system that maps natural-language intent directly to a finished artifact, with no intermediate representation accessible to the user.
+
+For many tasks the oracle model is exactly right. Drafting boilerplate, summarizing documents, producing copy at scale: here the process is not the point, and output quality relative to cost is the only measure that matters. The trouble begins when these tools are applied to practices that are creative in nature, where the act of making cannot be separated from its value. To understand why, it helps to name three things the oracle model eliminates.
+
+## Decision Trace, Authorial Layer, and Generative Constraint
+
+A composer does not transcribe a completed mental image. The piece is discovered recursively: material is produced, the material resists or opens new directions, and the composer responds. The final score records every structural choice made along the way, about harmony, form, rhythm, and voice, accumulated into something specific. The same holds for an essay, a program, or a painting. Call this the **decision trace**: the structural commitments embedded in an artifact that constitute the maker's relationship to the work. It is not a byproduct of composition. It is what authorship consists of.
+
+For a decision trace to accrue, there must be somewhere for decisions to be made. In a compilation pipeline, intermediate representations are inspectable, editable structures between intent and output, each one a locus of understanding and control. Creative practice has the same structure: between an initial idea and a finished artifact lies a space of notation and revision where choices are made visible and revisable. Call this the **authorial layer**: the intermediate representation of a creative work that is accessible to the practitioner and where structural decisions are made.
+
+What makes the authorial layer productive rather than merely mechanical is the third concept. Practitioners do not work in unconstrained space. Harmonic rules, type systems, syntactic grammars: these limit what can be expressed, but the constraints are generative rather than merely restrictive. They force reasoning about structure, expose relationships that would otherwise stay implicit, and produce unexpected combinations the practitioner must negotiate. Call this **generative constraint**: the productive tension between a practitioner's intent and the structural rules of a medium, which drives refinement and constitutes the development of expertise. Generative constraint operates within the authorial layer and produces the decision trace.
+
+## What the Oracle Model Eliminates
+
+A common defense of prompt-based tools is that they support iteration. Users can keep refining: make it more formal, add a bridge in B minor, shorten the paragraph. On the surface this looks like meaningful control. But a programmer working within a type system makes foundational structural decisions through a notation that imposes generative constraint; the resulting program carries their decision trace at every level. A user asking a language model to revise a paragraph adjusts the surface of an artifact whose structure was already decided by the model. No decision trace from the user is embedded in the text. This is editorial control: modification of a finished artifact without participation in the authorial layer where it was constructed.
+
+There is a sharp irony in the terminology. These systems are called generative AI, and generative is exactly what they are, from the model's perspective. From the practitioner's, the situation is reversed. The oracle model is anti-generative: it produces output by eliminating the generative constraint that makes creative work productive for the person doing it. The more fluently the model generates, the less generative the experience becomes for the user.
+
+## What the Programming Languages Tradition Reveals
+
+The programming languages community has spent decades studying the relationship between notation, thought, and agency, and that tradition maps directly onto these three concepts. Iverson's "Notation as a Tool of Thought" argued that the structure of a language shapes the cognitive operations available to its users: notation determines what can be expressed clearly, what can be manipulated directly, and what kinds of reasoning become natural. In the present terms, notation determines the character of generative constraint and the granularity of the decision trace it makes available.
+
+This is most visible in creative coding, where artists and musicians write programs to generate visual or sonic output, treating the program itself as the authorial layer. Tools like Csound, which gives composers a language for defining instruments and scores as code, and Processing, which does the same for visual artists working programmatically, are representative of a much broader ecosystem. In each case the formal language preserves the authorial layer and with it the practitioner's ability to accumulate a genuine decision trace. Practitioners learn to think in the medium's terms, and that fluency becomes expertise.
+
+Hudak's work on domain-specific languages sharpens this. Restricting a language to a specific domain increases its effective power precisely because the restrictions align primitives with the natural abstractions of the practice, making certain operations natural, certain distinctions legible, certain mistakes impossible. The right notation does not merely record decisions; it shapes which decisions are available.
+
+Prompt-based tools invert this. There is no notation, no domain-specific primitives, no compositional structure to learn or reason about. Intermediate representations exist inside the model (attention patterns, latent embeddings) but none are accessible as a site of decision-making. Without an authorial layer, there is no generative constraint for the practitioner to work within and no decision trace for them to leave behind.
+
+## Pinning Down the Contours
+
+The issue is not quality. Current generative systems often produce impressive outputs, and output quality is not the central concern. The question is whose decision trace the artifact carries. An essay produced by a single prompt carries the model's decision trace, not the user's. That is a categorically different kind of object, even when a reader cannot tell the difference.
+
+This framing may eventually require revisiting. A model trained extensively on a single person's writing and prior work might serve as a genuine extension of their intent rather than a substitute for it, closer to a deeply personal instrument than a population-trained oracle. If a system encodes enough of who you are, the boundary between its decision trace and yours becomes harder to locate. Current systems do not approach this. They encode no record of an individual practitioner's aesthetic commitments or decision-making history, and the gap between the model's trace and the author's is the problem this essay is concerned with.
+
+The loss is also phenomenological. The experience of working within generative constraint, of discovering a piece through the decisions it demands, is part of why practitioners return to their practice. A single-prompt workflow forecloses that experience even when the output is indistinguishable. And the pattern is domain-general: in writing, music, visual art, and design, the oracle model absorbs the authorial layer and delivers only endpoints, leaving practitioners with editorial control over a surface they did not build.
+
+## A Framework for Future Work
+
+The three concepts above provide a vocabulary for asking what a different kind of tool would need to do. Restoring the authorial layer requires a notation that is generable from natural-language input, so practitioners do not need to master a formal syntax before they can begin; readable by a domain practitioner who can recognize the structural decisions it encodes; and locally editable, so that changes produce predictable effects. Primitives should correspond to meaningful domain abstractions such as sections, claims, rhetorical modes, and transitions, and compose in ways that let the practitioner reason about the whole and accumulate a decision trace as they work.
+
+These constraints are in genuine tension. Generatability favors simplicity; semantic richness favors complexity. Inspectability requires surface readability; composability requires formal structure. The right balance is domain-dependent. The open questions are concrete: What are the natural primitives for essay composition, or for melodic structure, or for visual layout? How much of the authorial layer can a model scaffold while leaving structural decisions to the practitioner? When does a notation preserve generative constraint, and when does it merely simulate it?
+
+What is at stake is not output quality but whether the practitioner had an authorial layer to work within, generative constraint to work against, and a decision trace to leave behind. The oracle model eliminates all three. Building tools that do not is an open problem, and the framework here is intended as a starting point for that work.
+
+P.s. I've started to explore a solution that embodies these principles [here](#).
+
+## References
+
+1. Hudak, P. (1996). Building domain-specific embedded languages. *ACM Computing Surveys*, 28(4es), Article 196.
+2. Iverson, K. E. (1980). Notation as a tool of thought. *Communications of the ACM*, 23(8), 444–465.
+3. Reas, C., & Fry, B. (2007). *Processing: A programming handbook for visual designers and artists.* MIT Press.
+4. Vercoe, B. (1986). *Csound: A manual for the audio processing system and programming language.* MIT Media Lab.
