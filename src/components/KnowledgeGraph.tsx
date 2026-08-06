@@ -391,7 +391,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
 
   return (
     <figure className="my-6 lg:my-0">
-      <div className="relative h-[520px] w-full sm:h-[560px] lg:h-[640px] xl:h-[740px]">
+      <div className="relative h-[520px] w-full sm:h-[560px] lg:h-[min(600px,calc(100dvh-16rem))] xl:h-[min(700px,calc(100dvh-16rem))]">
         <canvas
           ref={canvasRef}
           className={`h-full w-full touch-none transition-opacity duration-500 ${

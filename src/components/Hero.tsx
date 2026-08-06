@@ -49,7 +49,7 @@ export default function Hero() {
       </Reveal>
 
       <Reveal delay={0.45}>
-        <div className="mt-8 flex items-center gap-2">
+        <div className="mt-8 flex items-center justify-center gap-2">
           {socials.map(({ href, label, Icon }) => (
             <motion.a
               key={label}
