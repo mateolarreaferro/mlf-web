@@ -1,5 +1,5 @@
 import { getProjects } from "./projects";
-import { getPublications } from "./publications";
+import { getPublications, getTalks } from "./cv";
 import { getThoughts } from "./thoughts";
 
 export function buildSystemPrompt(): string {
@@ -34,7 +34,10 @@ His writing (the "thoughts" section of the site):
 ${thoughtLines}
 
 His publications:
-${getPublications().map((p) => `- ${p}`).join("\n")}
+${getPublications().map((p) => `- ${p.authors} (${p.year}). ${p.title}. ${p.venue}. [${p.category}]${p.note ? ` (${p.note})` : ""}`).join("\n")}
+
+His talks and workshops:
+${getTalks().map((t) => `- "${t.title}" — ${t.venue} (${t.place}, ${t.year})`).join("\n")}
 
 Links: GitHub github.com/mateolarreaferro · SoundCloud soundcloud.com/mateo-larrea-ferro · LinkedIn linkedin.com/in/mateo-larrea-636967164 · email mlarreaf99@gmail.com
 

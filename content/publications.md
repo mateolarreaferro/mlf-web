@@ -1,21 +1,79 @@
-Gao, C., Larrea, M., & Boulanger, R. (2026). From Brainwaves to Csound: An exploratory audiovisual system with EEG and LLM-based agent control in Unity. In Proceedings of the 8th International Csound Conference (ICSC '26). Paper accepted.
+## From Brainwaves to Csound: An Exploratory Audiovisual System with EEG and LLM-Based Agent Control in Unity
+authors: Gao, C., Larrea, M., & Boulanger, R.
+venue: 8th International Csound Conference (ICSC '26)
+year: 2026
+category: computer music
+note: paper accepted
+link:
 
-Boulanger, R., & Larrea, M. (2026). Dr. C: A human-in-the-loop agentic AI for Csound. In Proceedings of the Linux Audio Conference 2026 (LAC 2026).
+## Dr. C: A Human-in-the-Loop Agentic AI for Csound
+authors: Boulanger, R., & Larrea, M.
+venue: Linux Audio Conference 2026 (LAC 2026)
+year: 2026
+category: computer music
+link:
 
-Larrea, M., & Boulanger, R. (2026). Introducing Dr.C: 40+ years of Csound and computer music, now an agentic AI collaborator for learning and building instruments, effects, plugins, and web apps. In Proceedings of the 8th International Csound Conference (ICSC '26). Paper accepted.
+## Introducing Dr.C: 40+ Years of Csound and Computer Music, Now an Agentic AI Collaborator
+authors: Larrea, M., & Boulanger, R.
+venue: 8th International Csound Conference (ICSC '26)
+year: 2026
+category: computer music
+note: paper accepted
+link:
 
-Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P. (2026). Satie: A creativity support tool for authoring spatial generative audio. In Proceedings of the 26th International Conference on New Interfaces for Musical Expression (NIME '26). Paper accepted.
+## Satie: A Creativity Support Tool for Authoring Spatial Generative Audio
+authors: Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P.
+venue: New Interfaces for Musical Expression (NIME '26)
+year: 2026
+category: computer music
+note: paper accepted
+link:
 
-Larrea, M., Thakur, A., & Langenbach, L. (2026). TWINS: A design exploration of accountable autobiographical human digital twins. In Extended Abstracts of the CHI Conference on Human Factors in Computing Systems (CHI EA '26). ACM. (Interactive demo / extended abstract.)
+## TWINS: A Design Exploration of Accountable Autobiographical Human Digital Twins
+authors: Larrea, M., Thakur, A., & Langenbach, L.
+venue: CHI EA '26, ACM — interactive demo / extended abstract
+year: 2026
+category: human-computer interaction
+link:
 
-Thakur, A., Larrea Ferro, M., Baradari, D., & Langenbach, L. (2025). AugTwins: Interactive digital doubles with memory, identity, and reciprocity. In NeurIPS Creative AI Track 2025.
+## AugTwins: Interactive Digital Doubles with Memory, Identity, and Reciprocity
+authors: Thakur, A., Larrea Ferro, M., Baradari, D., & Langenbach, L.
+venue: NeurIPS Creative AI Track 2025
+year: 2025
+category: human-computer interaction
+link:
 
-Larrea, M., Zhang, X., & Zhu, X. (2025). LoveSims: Exploring "what-if" scenarios for relationship insights and compatibility. In Extended Abstracts of the CHI Conference on Human Factors in Computing Systems (CHI EA '25) (pp. 1–7). ACM.
+## LoveSims: Exploring "What-If" Scenarios for Relationship Insights and Compatibility
+authors: Larrea, M., Zhang, X., & Zhu, X.
+venue: CHI EA '25, ACM (pp. 1–7)
+year: 2025
+category: human-computer interaction
+link:
 
-Knowles, E. R., Larrea, M., Odabashian, S., Hoang, M., & Shalev, E. (2023). Impact of absolute pitch on auditory learning. Talk presented at the 2023 Auditory Perception, Cognition, and Action Meeting (APCAM).
+## New Utility Classes and Sketches for Developers and Sound Designers
+authors: Larrea, M., & Jiacomini, C.
+venue: 6th International Csound Conference
+year: 2022
+category: computer music
+link:
 
-Larrea, M., & Jiacomini, C. (2022, November 4). New utility classes and sketches for developers and sound designers. Paper presented at the 6th International Csound Conference.
+## Impact of Absolute Pitch on Auditory Learning
+authors: Knowles, E. R., Larrea, M., Odabashian, S., Hoang, M., & Shalev, E.
+venue: Auditory Perception, Cognition, and Action Meeting (APCAM) — talk
+year: 2023
+category: neuroscience/psychophysics
+link:
 
-Knowles, E. R., Larrea, M., & Odabashian, S. (2022). Auditory statistical learning in classical and jazz musicians. Poster presented at the 2022 Society for Music Perception and Cognition (SMPC) Conference.
+## Auditory Statistical Learning in Classical and Jazz Musicians
+authors: Knowles, E. R., Larrea, M., & Odabashian, S.
+venue: Society for Music Perception and Cognition (SMPC) — poster
+year: 2022
+category: neuroscience/psychophysics
+link:
 
-Larrea, M., & Knowles, E. R. (2022, November 24). Auditory statistical learning in classical and jazz musicians. Poster presented at the Auditory Perception, Cognition, and Action Meeting (APCAM).
+## Auditory Statistical Learning in Classical and Jazz Musicians
+authors: Larrea, M., & Knowles, E. R.
+venue: Auditory Perception, Cognition, and Action Meeting (APCAM) — poster
+year: 2022
+category: neuroscience/psychophysics
+link:
