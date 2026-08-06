@@ -89,10 +89,21 @@ export default function CVTabs({
           {tab === "talks" ? (
             <ul className="space-y-7">
               {talks.map((t, i) => (
-                <li key={`${t.title}-${i}`}>
+                <li key={`${t.title}-${i}`} className="group">
                   <div className="flex items-baseline gap-4">
                     <span className="label shrink-0">{t.year}</span>
-                    <span className="text-lg">{t.title}</span>
+                    {t.link ? (
+                      <a
+                        href={t.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-lg transition-colors group-hover:text-accent"
+                      >
+                        {t.title} ↗
+                      </a>
+                    ) : (
+                      <span className="text-lg">{t.title}</span>
+                    )}
                   </div>
                   <p className="mt-1 max-w-3xl pl-14 text-sm text-faint">
                     {t.venue}

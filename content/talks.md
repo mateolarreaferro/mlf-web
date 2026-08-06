@@ -12,6 +12,7 @@ year: 2025
 venue: Audio Art, Akademia Muzyczna im. Krzysztofa Pendereckiego
 place: Kraków
 year: 2025
+link: https://www.youtube.com/watch?v=eWMEtirf5sw
 
 ## MachineMonks
 venue: Augmentation Lab Summit, MIT Media Lab
@@ -27,6 +28,11 @@ year: 2025
 venue: CHI — Late Breaking Work
 place: Japan
 year: 2025
+
+## Música Algorítmica, Soundscape y Realidad Virtual en la Educación
+venue: DePsicología — interview with Juan Martín Calle
+year: 2024
+link: https://www.youtube.com/watch?v=2o_fLrmxoJc
 
 ## Impact of Absolute Pitch on Auditory Learning
 venue: Eastern Psychological Association, 94th Annual Meeting

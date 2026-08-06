@@ -23,6 +23,7 @@ export type Talk = {
   venue: string;
   place: string;
   year: string;
+  link?: string;
 };
 
 export type ClassGroup = {
@@ -70,6 +71,7 @@ export function getTalks(): Talk[] {
     venue: fields.venue ?? "",
     place: fields.place ?? "",
     year: fields.year ?? "",
+    link: fields.link,
   }));
 }
 
