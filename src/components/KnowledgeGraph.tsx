@@ -61,7 +61,9 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
     let height = 0;
     let raf = 0;
     let frame = 0;
-    let orbit = 220;
+    let orbitX = 220;
+    let orbitY = 180;
+    let labelFont = "11px var(--font-geist), system-ui, sans-serif";
 
     const me: Node = {
       id: "me",
@@ -134,10 +136,12 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      orbit = Math.min(width, height) / 2 - 90;
-      me.r = Math.min(width, height) > 540 ? 64 : 50;
+      orbitX = width / 2 - 96;
+      orbitY = height / 2 - 64;
+      me.r = Math.min(width, height) > 700 ? 74 : Math.min(width, height) > 540 ? 64 : 46;
+      labelFont = `${width < 480 ? 10 : 11}px var(--font-geist), system-ui, sans-serif`;
       readColors();
-      ctx.font = "11px var(--font-geist), system-ui, sans-serif";
+      ctx.font = labelFont;
     };
 
     const bounds = () => {
@@ -171,13 +175,15 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
           b.vy -= dy * f;
         }
       }
-      // every project is tethered to me
+      // every project is tethered to an ellipse around me,
+      // so the layout fills whatever rectangle the canvas has
       for (const n of nodes) {
         if (n === me) continue;
         const dx = n.x - me.x;
         const dy = n.y - me.y;
-        const d = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-        const f = (d - orbit) * 0.01;
+        const d = Math.max(Math.hypot(dx, dy), 1);
+        const nr = Math.hypot(dx / orbitX, dy / orbitY);
+        const f = (nr - 1) * 2.2;
         n.vx -= (dx / d) * f;
         n.vy -= (dy / d) * f;
       }
@@ -221,7 +227,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
         ctx.stroke();
       }
 
-      ctx.font = "11px var(--font-geist), system-ui, sans-serif";
+      ctx.font = labelFont;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
@@ -385,7 +391,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
 
   return (
     <figure className="my-6 lg:my-0">
-      <div className="relative h-[440px] w-full sm:h-[540px] lg:h-[640px]">
+      <div className="relative h-[520px] w-full sm:h-[560px] lg:h-[640px] xl:h-[740px]">
         <canvas
           ref={canvasRef}
           className={`h-full w-full touch-none transition-opacity duration-500 ${
@@ -432,7 +438,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
                     <LorenzThumb />
                   )}
                 </motion.div>
-                <div className="grid shrink-0 items-start gap-x-10 gap-y-4 p-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:p-8">
+                <div className="grid max-h-[65%] shrink-0 items-start gap-x-10 gap-y-4 overflow-y-auto p-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:p-8">
                   <motion.div
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}

@@ -27,12 +27,12 @@ function BioLink({ href, children }: { href: string; children: React.ReactNode }
 export default function Hero() {
   return (
     <div>
-      <h1 className="text-3xl font-light leading-snug tracking-tight sm:text-4xl lg:text-[2.75rem] lg:leading-[1.2]">
+      <h1 className="text-3xl font-light leading-snug tracking-tight sm:text-4xl lg:text-[2.75rem] lg:leading-[1.2] xl:text-[3.4rem] xl:leading-[1.15]">
         <AnimatedText text="I build technological tools for creativity and decision-making." />
       </h1>
 
       <Reveal delay={0.3}>
-        <p className="mt-8 text-sm leading-relaxed text-faint sm:text-base">
+        <p className="mt-8 text-sm leading-relaxed text-faint sm:text-base xl:text-lg">
           I am the CEO of{" "}
           <BioLink href="https://attractor.live">Attractor</BioLink>, where we
           build generative agent simulations for modeling complex social

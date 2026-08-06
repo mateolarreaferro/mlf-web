@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <header className="mx-auto w-full max-w-6xl px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
+        <header className="mx-auto w-full max-w-[88rem] px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
           <Link
             href="/"
             className="text-2xl font-light tracking-tight transition-colors hover:text-accent sm:text-3xl"
@@ -49,8 +49,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </a>
           </nav>
         </header>
-        <main className="mx-auto w-full max-w-6xl px-6 sm:px-10 flex-1">{children}</main>
-        <footer className="mx-auto w-full max-w-6xl px-6 sm:px-10 mt-28 pb-12">
+        <main className="mx-auto w-full max-w-[88rem] px-6 sm:px-10 flex-1">{children}</main>
+        <footer className="mx-auto w-full max-w-[88rem] px-6 sm:px-10 mt-28 pb-12">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <div className="flex gap-5">
               <a href="https://github.com/mateolarreaferro" className="label hover:text-accent" target="_blank" rel="noreferrer">github</a>
