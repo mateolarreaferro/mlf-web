@@ -2,7 +2,7 @@
 name: "Dr. C"
 category: "human-in-the-loop generative agent"
 group: "tools for creativity"
-order: 18
+order: 12
 repo: "https://github.com/mateolarreaferro/Dr.C"
 ---
 

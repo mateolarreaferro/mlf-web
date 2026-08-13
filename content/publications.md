@@ -55,7 +55,7 @@ authors: Larrea, M., & Jiacomini, C.
 venue: 6th International Csound Conference
 year: 2022
 category: computer music
-link:
+link: https://drive.google.com/file/d/1-xfCEq3FcND7_Fe53B7urfYAuCDO4ERE/view
 
 ## Impact of Absolute Pitch on Auditory Learning
 authors: Knowles, E. R., Larrea, M., Odabashian, S., Hoang, M., & Shalev, E.

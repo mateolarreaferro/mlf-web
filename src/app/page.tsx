@@ -1,6 +1,5 @@
 import Link from "next/link";
-import Hero from "@/components/Hero";
-import KnowledgeGraph from "@/components/KnowledgeGraph";
+import HeroGraph from "@/components/HeroGraph";
 import CVTabs from "@/components/CVTabs";
 import { Reveal, Stagger, Item } from "@/components/motion";
 import { getProjects } from "@/lib/projects";
@@ -14,12 +13,7 @@ export default function Home() {
 
   return (
     <div className="pt-10 lg:pt-0">
-      <section className="grid items-center gap-12 lg:min-h-[calc(100dvh-9rem)] lg:grid-cols-[minmax(360px,34rem)_1fr] lg:gap-24 xl:gap-32">
-        <Hero />
-        <Reveal delay={0.2} className="min-w-0">
-          <KnowledgeGraph projects={projects} />
-        </Reveal>
-      </section>
+      <HeroGraph projects={projects} />
 
       <section id="publications" className="mt-28 scroll-mt-10">
         <Reveal>

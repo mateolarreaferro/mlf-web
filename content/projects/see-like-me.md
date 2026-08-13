@@ -1,10 +1,18 @@
 ---
 name: "See Like Me"
-category: "VR & brain-computer interfaces"
+category: "non-psychotic schizophrenia phenotypes in virtual reality"
 group: "perception"
 tags: [neuro, games]
 order: 17
+role: "unity developer / researcher"
 image: "/projects/see-like-me.png"
 ---
 
-A VR and brain–computer interface project for sharing how another person perceives — visualizing perceptual patterns, including non-psychotic schizophrenia phenotypes, to support a clearer understanding of one's own experience.
+Patients with schizophrenia often struggle to articulate or recognize their own symptoms. Developed at the Harvard Innovation Labs in collaboration with leading researchers, See Like Me is a virtual reality–based diagnostic tool that recreates patients' anomalous perceptual experiences, improving patient–doctor communication and supporting earlier, more accurate diagnosis and treatment.
+
+---
+
+## notes
+
+Developed at the Harvard Innovation Labs. No public link on the old site —
+worth adding one if there is a paper, demo, or lab page.

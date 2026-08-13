@@ -5,14 +5,25 @@ import { getThoughts } from "./thoughts";
 export function buildSystemPrompt(): string {
   const projectLines = getProjects()
     .map((p) => {
+      const meta = [
+        p.category,
+        p.year,
+        p.role,
+        p.isActive ? "still in development" : null,
+        p.tags.length ? `tags: ${p.tags.join(", ")}` : null,
+      ]
+        .filter(Boolean)
+        .join("; ");
       const links = [
         p.link ? `site: ${p.link}` : null,
         p.repo ? `repo: ${p.repo}` : null,
         p.video ? `video: ${p.video}` : null,
+        p.paper ? `paper: ${p.paper}` : null,
       ]
         .filter(Boolean)
         .join(", ");
-      return `- ${p.name} (${p.category}): ${p.description}${links ? ` — ${links}` : ""}`;
+      const notes = p.notes ? `\n  Notes: ${p.notes.replace(/\n+/g, " ")}` : "";
+      return `- ${p.name} (${meta}): ${p.description}${links ? ` — ${links}` : ""}${notes}`;
     })
     .join("\n");
 

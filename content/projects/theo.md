@@ -2,7 +2,7 @@
 name: "Theo"
 category: "domain-specific language"
 group: "tools for creativity"
-order: 17
+order: 19
 repo: "https://github.com/mateolarreaferro/Theo"
 ---
 

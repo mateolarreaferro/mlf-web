@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import type { Project } from "@/lib/projects";
-import LorenzThumb from "./LorenzThumb";
+import ProjectMedia from "./ProjectMedia";
 import MateoChat from "./MateoChat";
 
 /*
@@ -29,25 +28,22 @@ type Node = {
   e: number; // emphasis 0..1, lerped
 };
 
-export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
+export default function KnowledgeGraph({
+  projects,
+  selected,
+  onSelect,
+}: {
+  projects: Project[];
+  selected: Project | null;
+  onSelect: (p: Project | null) => void;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [selected, setSelected] = useState<Project | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelected(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  // deep link: /?project=<slug> opens that card directly
-  useEffect(() => {
-    const slug = new URLSearchParams(window.location.search).get("project");
-    if (slug) setSelected(projects.find((p) => p.slug === slug) ?? null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // the canvas effect only re-runs on `projects`, so reach for the
+  // latest callback through a ref rather than capturing a stale one
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -64,6 +60,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
     let orbitX = 220;
     let orbitY = 180;
     let labelFont = "11px var(--font-geist), system-ui, sans-serif";
+    let featuredFont = "14px var(--font-geist), system-ui, sans-serif";
 
     const me: Node = {
       id: "me",
@@ -97,7 +94,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
         y: Math.sin(a) * 170,
         vx: 0,
         vy: 0,
-        r: 5,
+        r: p.featured ? 9 : 5,
         e: 0,
       });
     });
@@ -140,6 +137,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
       orbitY = height / 2 - 64;
       me.r = Math.min(width, height) > 700 ? 74 : Math.min(width, height) > 540 ? 64 : 46;
       labelFont = `${width < 480 ? 10 : 11}px var(--font-geist), system-ui, sans-serif`;
+      featuredFont = `${width < 480 ? 12 : 14}px var(--font-geist), system-ui, sans-serif`;
       readColors();
       ctx.font = labelFont;
     };
@@ -245,9 +243,11 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        ctx.globalAlpha = 0.55 + n.e * 0.45;
-        ctx.fillStyle = n.e > 0.35 ? colors.ink : colors.faint;
-        ctx.fillText(n.label, n.x, n.y + r + 12);
+        const isFeatured = n.project?.featured === true;
+        ctx.font = isFeatured ? featuredFont : labelFont;
+        ctx.globalAlpha = (isFeatured ? 0.75 : 0.55) + n.e * (isFeatured ? 0.25 : 0.45);
+        ctx.fillStyle = n.e > 0.35 || isFeatured ? colors.ink : colors.faint;
+        ctx.fillText(n.label, n.x, n.y + r + (isFeatured ? 15 : 12));
       }
 
       // me, on top: photo in a breathing ochre ring
@@ -362,7 +362,7 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
         if (n.kind === "me") {
           setChatOpen(true);
         } else if (n.kind === "project") {
-          setSelected(n.project!);
+          onSelectRef.current(n.project!);
         }
       }
       dragging = null;
@@ -413,72 +413,20 @@ export default function KnowledgeGraph({ projects }: { projects: Project[] }) {
               transition={{ duration: 0.5, ease }}
             >
               <button
-                onClick={() => setSelected(null)}
+                onClick={() => onSelect(null)}
                 aria-label="Back to the graph"
                 className="absolute right-4 top-4 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-paper/85 text-ink backdrop-blur-sm transition-colors hover:text-accent"
               >
                 ✕
               </button>
-              <div className="flex h-full flex-col">
-                <motion.div
-                  className="relative min-h-0 flex-1"
-                  initial={{ opacity: 0, scale: 1.03 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, ease }}
-                >
-                  {selected.image ? (
-                    <Image
-                      src={selected.image}
-                      alt={selected.name}
-                      fill
-                      sizes="(min-width: 1024px) 60vw, 100vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <LorenzThumb />
-                  )}
-                </motion.div>
-                <div className="grid max-h-[65%] shrink-0 items-start gap-x-10 gap-y-4 overflow-y-auto p-6 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:p-8">
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease, delay: 0.12 }}
-                  >
-                    <p className="label !text-ochre">{selected.category}</p>
-                    <h3 className="mt-1 text-2xl font-light tracking-tight lg:text-3xl">
-                      {selected.name}
-                    </h3>
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease, delay: 0.22 }}
-                  >
-                    <p className="line-clamp-4 whitespace-pre-line text-sm leading-relaxed text-faint">
-                      {selected.description}
-                    </p>
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      {[
-                        selected.video ? { href: selected.video, text: "watch video" } : null,
-                        selected.repo ? { href: selected.repo, text: "repository" } : null,
-                        selected.link ? { href: selected.link, text: "visit" } : null,
-                      ]
-                        .filter((a): a is { href: string; text: string } => a !== null)
-                        .map((a) => (
-                          <a
-                            key={a.text}
-                            href={a.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="label whitespace-nowrap rounded-full bg-ink px-4 py-1.5 !text-paper transition-transform hover:scale-105"
-                          >
-                            {a.text} ↗
-                          </a>
-                        ))}
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
+              <motion.div
+                className="relative h-full w-full"
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease }}
+              >
+                <ProjectMedia items={selected.media} alt={selected.name} />
+              </motion.div>
             </motion.div>
           ) : null}
         </AnimatePresence>

@@ -4,6 +4,7 @@ category: "creative coding"
 group: "music/art"
 tags: [tools for creativity]
 order: 26
+featured: true
 image: "/projects/computational-sketches.png"
 link: "https://www.instagram.com/3t4msketches/"
 ---
