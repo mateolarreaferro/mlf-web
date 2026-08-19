@@ -1,29 +1,30 @@
 @import "tailwindcss";
 
 /*
-  Super minimal, soft. Plain warm-neutral paper, one sans family,
-  whitespace instead of rules, rounded surfaces, one muted accent.
+  Super minimal, soft. One sans family (Inter), whitespace instead of rules, rounded
+  surfaces. Everything is drawn from one spectral ramp, warm to cool:
+
+    F94144  F3722C  F8961E  F9844A  F9C74F
+    90BE6D  43AA8B  4D908E  577590  277DA1
+
+  The five graph hues take every other step (red / yellow / green / teal /
+  blue) so the categories stay far apart. The background washes sample the
+  same ramp continuously, driven by the weather — see `src/lib/weather-theme.ts`.
+
+  Paper, ink and link colour never move. Only the washes respond to weather,
+  so text contrast is a fixed quantity no matter where the visitor is.
 */
 :root {
-  --paper: #ffffff;
-  --ink: #0d0d0c;
-  --faint: #8a8a83;
-  --soft: #f3f3ef;
-  --accent: #d9645e; /* coral */
-  --sun: #e5dc5a; /* yellow */
-  --ochre: #d89b44; /* orange */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0e0e0d;
-    --ink: #f1f1ec;
-    --faint: #8f8f88;
-    --soft: #1d1d1b;
-    --accent: #e2716b;
-    --sun: #e5dc5a;
-    --ochre: #dda44e;
-  }
+  color-scheme: light; /* light only — deliberate, there is no dark variant */
+  --paper: #f8f7f4;
+  --ink: #23282c;
+  --faint: #656f77;
+  --soft: #eeece6;
+  --accent: #23718f; /* every link hover */
+  --sun: #f9c74f;
+  --leaf: #90be6d;
+  --teal: #4d908e;
+  --flame: #f94144;
 }
 
 @theme inline {
@@ -33,16 +34,123 @@
   --color-soft: var(--soft);
   --color-accent: var(--accent);
   --color-sun: var(--sun);
-  --color-ochre: var(--ochre);
-  --font-sans: var(--font-geist);
+  --color-leaf: var(--leaf);
+  --color-teal: var(--teal);
+  --color-flame: var(--flame);
+  --font-sans: var(--font-inter);
+}
+
+/*
+  The weather-driven wash variables. Defaults are a mild spring day, matching
+  DEFAULT_ATMOSPHERE, so the page looks right before the forecast lands and for
+  anyone without JS.
+
+  These are deliberately NOT transitioned. Transitioning a registered
+  @property custom property works exactly once on the root element in Chrome —
+  after the first run, later writes are ignored and the value sticks. The
+  colours are swapped behind an opacity fade instead (see `[data-wash]`), which
+  is a plain one-way opacity transition and always works.
+*/
+:root {
+  --w1: #f7b459;
+  --w2: #a5c169;
+  --w3: #7bba79;
+  --w-alpha: 0.202;
+  --w-drift-a: 66s;
+  --w-drift-b: 86s;
+}
+
+html {
+  background: var(--paper);
 }
 
 body {
-  background: var(--paper);
+  background: transparent;
   color: var(--ink);
-  font-family: var(--font-geist), system-ui, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+  Two layers of very diffuse colour washes behind everything, drifting slowly
+  against each other. Colour, intensity and drift period all come from the
+  weather where the visitor is (src/lib/weather-theme.ts). They must stay
+  barely-there: the page reads as paper that happens to have light in it,
+  never as a "gradient background". No blur filter — the gradients' own
+  falloff is the softness, and a filter on an element this large is expensive.
+*/
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 700ms ease;
+}
+
+/* held down for one breath while the weather colours are swapped underneath */
+html[data-wash="hold"] body::before,
+html[data-wash="hold"] body::after {
+  opacity: 0;
+}
+/*
+  Each wash colour gets one clear weight — w1 dominant, w2 supporting, w3
+  faintest — so the swatches in the header can honestly claim to be listed in
+  order of how much of the page each colour is actually painting.
+*/
+body::before {
+  background:
+    radial-gradient(
+      40% 36% at 26% 18%,
+      color-mix(in srgb, var(--w1) calc(var(--w-alpha) * 100%), transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      42% 38% at 78% 72%,
+      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * 72%), transparent),
+      transparent 74%
+    );
+}
+body::after {
+  background:
+    radial-gradient(
+      38% 34% at 74% 30%,
+      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * 68%), transparent),
+      transparent 74%
+    ),
+    radial-gradient(
+      46% 42% at 30% 78%,
+      color-mix(in srgb, var(--w3) calc(var(--w-alpha) * 55%), transparent),
+      transparent 74%
+    );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: drift-a var(--w-drift-a) ease-in-out infinite alternate;
+  }
+  body::after {
+    animation: drift-b var(--w-drift-b) ease-in-out infinite alternate;
+  }
+  @keyframes drift-a {
+    from {
+      transform: translate3d(-2%, -1%, 0) scale(1);
+    }
+    to {
+      transform: translate3d(3%, 2%, 0) scale(1.09);
+    }
+  }
+  @keyframes drift-b {
+    from {
+      transform: translate3d(2%, 1%, 0) scale(1.06);
+    }
+    to {
+      transform: translate3d(-3%, -2%, 0) scale(1);
+    }
+  }
 }
 
 ::selection {
@@ -113,7 +221,7 @@ a {
 
 /* small quiet label */
 .label {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   color: var(--faint);
 }
 

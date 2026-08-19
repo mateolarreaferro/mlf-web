@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import WeatherAtmosphere from "@/components/WeatherAtmosphere";
+import HomeLink from "@/components/HomeLink";
 
-const geist = Geist({
-  variable: "--font-geist",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s — Mateo Larrea Ferro",
   },
   description:
-    "CEO of Attractor, building generative agent simulations for modeling complex social systems. Technological tools for creativity and decision-making.",
+    "CEO of Attractor Labs, building audio world models for human-centered AI. Tools at the intersection of creativity, well-being, and education.",
 };
 
 const nav = [
@@ -24,15 +26,13 @@ const nav = [
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <header className="mx-auto w-full max-w-[88rem] px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
-          <Link
-            href="/"
-            className="text-2xl font-light tracking-tight transition-colors hover:text-accent sm:text-3xl"
-          >
+          <HomeLink className="text-xl font-light tracking-tight transition-colors hover:text-accent sm:text-2xl">
             mateo larrea ferro
-          </Link>
+          </HomeLink>
+          <WeatherAtmosphere />
           <nav className="flex gap-5">
             {nav.map((item) => (
               <Link key={item.href} href={item.href} className="label hover:text-accent">

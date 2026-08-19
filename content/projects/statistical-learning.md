@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Statistical Learning"
 category: "auditory neuroscience"
 group: "perception"

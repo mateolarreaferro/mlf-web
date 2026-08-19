@@ -45,6 +45,12 @@ export type Project = {
   isActive: boolean;
   /** Drawn as a bigger node with a bigger label in the graph. */
   featured: boolean;
+  /**
+   * Parked while its content is being reviewed. The file stays exactly where
+   * it is; it just doesn't reach the graph, the cards, or the agent. Flip the
+   * frontmatter line off (or delete it) to bring the project back.
+   */
+  hidden: boolean;
   year?: string;
   role?: string;
   image?: string;
@@ -142,6 +148,7 @@ export function getProjects(): Project[] {
         tags: (data.tags ?? []) as string[],
         isActive: data.isActive === true,
         featured: data.featured === true,
+        hidden: data.hidden === true,
         year: data.year as string | undefined,
         role: data.role as string | undefined,
         image: data.image as string | undefined,
@@ -152,5 +159,16 @@ export function getProjects(): Project[] {
         paper: data.paper as string | undefined,
       };
     })
+    .filter((p) => !p.hidden)
     .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
+}
+
+/* Every project on disk, hidden ones included — for tooling that needs the
+   full list rather than what the site currently shows. */
+export function getAllProjectSlugs(): string[] {
+  return fs
+    .readdirSync(PROJECTS_DIR)
+    .filter((f) => f.endsWith(".md") || f.endsWith(".mdx"))
+    .map((f) => f.replace(/\.mdx?$/, ""))
+    .sort();
 }

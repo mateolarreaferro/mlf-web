@@ -1,20 +1,19 @@
 ---
 name: "Satie"
-category: "spatial audio systems"
+category: "audio world model"
 group: "tools for creativity"
 tags: [music, tools for creativity]
 order: 3
 featured: true
 role: "creator"
-image: "/projects/satie.png"
+media:
+  - "/projects/satie-panel.png"
 link: "https://satie.live"
-repo: "https://github.com/mateolarreaferro/SatieLang"
-video: "https://vimeo.com/1145665713"
 ---
 
-Satie is a human-in-the-loop system for authoring generative spatial audio. It is a creativity-support tool that allows sound designers to sequence, position, and transform audio using an expressive domain-specific language that works alongside natural-language prompting. A generative pipeline can produce an initial spatial audio scene from a prompt, after which Satie provides a concise and interpretable syntax for shaping timing, variation, procedural movement, and spatialization.
+Satie is an audio world model for creating spatial soundscapes that live and move within a 3D world. We believe generative systems should not only produce things, but give us a way to understand and shape them. Instead of treating a soundscape as a single opaque generation, Satie represents it as a collection of discrete, editable parts that can be created, positioned, transformed, and controlled independently.
 
-By giving creators an explicit structural layer they can inspect and modify, Satie preserves creative intent across iterations and keeps humans in control of the generative process. This enables faster experimentation, more precise adjustments to complex scenes, and tighter alignment between artistic intention and system behavior.
+Natural language can generate an initial world, while Satie's domain-specific language provides a structural layer for inspecting and shaping what happens inside it. The result is a system that keeps generation expressive while making its behavior more interpretable and its output more controllable. We think this kind of structural control is essential for building generative systems that people can meaningfully create with.
 
 ---
 
@@ -24,7 +23,8 @@ Old-site tagline: "open-source human-in-the-loop generative tool for spatial aud
 The site styles the name "sAtIe"; normalized to "Satie" here to match the rest
 of this site.
 
-The repo linked above is the Unity version (SatieLang). satie.live is the main
-site. Published as "Satie: A Creativity Support Tool for Authoring Spatial
+The Unity version lives at github.com/mateolarreaferro/SatieLang and there is a
+video at vimeo.com/1145665713 — both deliberately kept off the card, which
+shows only "visit". satie.live is the main site. Published as "Satie: A Creativity Support Tool for Authoring Spatial
 Generative Audio" (Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P.)
 at NIME '26.

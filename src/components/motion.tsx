@@ -25,17 +25,20 @@ export function Reveal({
   children,
   className,
   delay = 0,
+  margin = "0px 0px -80px 0px",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  /* shrink the trigger area less for things that sit right at the fold */
+  margin?: string;
 }) {
   return (
     <motion.div
       className={className}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, margin: "0px 0px -80px 0px" }}
+      viewport={{ once: true, margin }}
       variants={{
         hidden: fadeUp.hidden,
         show: {

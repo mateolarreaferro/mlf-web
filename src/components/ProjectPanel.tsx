@@ -13,10 +13,8 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function ProjectPanel({
   project,
-  onClose,
 }: {
   project: Project;
-  onClose: () => void;
 }) {
   const links = [
     project.link ? { href: project.link, text: "visit" } : null,
@@ -44,7 +42,7 @@ export default function ProjectPanel({
       </motion.p>
 
       <motion.h2
-        className="mt-2 text-3xl font-light leading-snug tracking-tight sm:text-4xl lg:text-[2.75rem] lg:leading-[1.2]"
+        className="mt-2 text-2xl font-light leading-snug tracking-tight sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3]"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease, delay: 0.1 }}
@@ -98,14 +96,6 @@ export default function ProjectPanel({
             {a.text} ↗
           </motion.a>
         ))}
-        <motion.button
-          onClick={onClose}
-          className="label whitespace-nowrap rounded-full bg-soft px-4 py-1.5 text-faint transition-colors hover:text-accent"
-          whileHover={{ scale: 1.05, y: -2 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ← back to the graph
-        </motion.button>
       </motion.div>
     </motion.div>
   );

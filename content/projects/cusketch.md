@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "cuSketch"
 category: "software library for audio-oriented extended reality"
 group: "tools for creativity"

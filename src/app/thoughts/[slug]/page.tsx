@@ -33,9 +33,9 @@ export default async function ThoughtPage({
         <header>
           <p className="label">
             {String(thought.number).padStart(3, "0")} ·{" "}
-            {formatDate(thought.date, thought.lang)}
+            {formatDate(thought.date)}
           </p>
-          <h1 className="mt-3 text-3xl font-light tracking-tight leading-snug">
+          <h1 className="mt-3 text-2xl font-light tracking-tight leading-snug sm:text-[1.75rem]">
             {thought.title}
           </h1>
         </header>

@@ -15,6 +15,30 @@ import MateoChat from "./MateoChat";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+/* one radius for every project node — no size hierarchy in the graph */
+const NODE_R = 8;
+
+/*
+  The graph is drawn rather than plotted: nothing is a perfect circle or a
+  clean curve. Every wobble is seeded from the node's slug, so a given project
+  always has the same hand — the shapes stay put while the layout moves, which
+  is what keeps it from shimmering.
+*/
+function seeded(id: string) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h ^= id.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return () => {
+    h += 0x6d2b79f5;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 type Node = {
   id: string;
   label: string;
@@ -26,6 +50,13 @@ type Node = {
   vy: number;
   r: number;
   e: number; // emphasis 0..1, lerped
+  /* per-node hand: radius multipliers, where the pen started, thread jitter */
+  wobble: number[];
+  lean: number;
+  thread: number[];
+  /* half-extent of the dot + its label, used to keep nodes from colliding */
+  halfW: number;
+  halfH: number;
 };
 
 export default function KnowledgeGraph({
@@ -59,9 +90,10 @@ export default function KnowledgeGraph({
     let frame = 0;
     let orbitX = 220;
     let orbitY = 180;
-    let labelFont = "11px var(--font-geist), system-ui, sans-serif";
-    let featuredFont = "14px var(--font-geist), system-ui, sans-serif";
+    let labelFont = "11px var(--font-inter), system-ui, sans-serif";
+    let featuredFont = "14px var(--font-inter), system-ui, sans-serif";
 
+    const meRand = seeded("mateo");
     const me: Node = {
       id: "me",
       label: "me",
@@ -72,6 +104,12 @@ export default function KnowledgeGraph({
       vy: 0,
       r: 64,
       e: 0,
+      // the portrait is only barely off-round — a cut edge, not a scribble
+      halfW: 90,
+      halfH: 90,
+      wobble: Array.from({ length: 13 }, () => 0.968 + meRand() * 0.062),
+      lean: meRand() * Math.PI * 2,
+      thread: [],
     };
 
     const photo = new window.Image();
@@ -85,6 +123,7 @@ export default function KnowledgeGraph({
     const nodes: Node[] = [me];
     projects.forEach((p, i) => {
       const a = (i / projects.length) * Math.PI * 2 + 0.4;
+      const rand = seeded(p.slug);
       nodes.push({
         id: p.slug,
         label: p.name,
@@ -94,8 +133,13 @@ export default function KnowledgeGraph({
         y: Math.sin(a) * 170,
         vx: 0,
         vy: 0,
-        r: p.featured ? 9 : 5,
+        r: NODE_R,
         e: 0,
+        halfW: 40,
+        halfH: 20,
+        wobble: Array.from({ length: 7 }, () => 0.7 + rand() * 0.62),
+        lean: rand() * Math.PI * 2,
+        thread: Array.from({ length: 6 }, () => rand()),
       });
     });
 
@@ -103,7 +147,7 @@ export default function KnowledgeGraph({
     let dragging: Node | null = null;
     let dragMoved = 0;
 
-    let colors = { ink: "#0d0d0c", faint: "#8a8a83", accent: "#d9645e", soft: "#f3f3ef", paper: "#ffffff", ochre: "#d89b44", sun: "#e5dc5a" };
+    let colors = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", sun: "#f9c74f", leaf: "#90be6d", teal: "#4d908e", flame: "#f94144" };
     const readColors = () => {
       const s = getComputedStyle(document.documentElement);
       colors = {
@@ -112,19 +156,21 @@ export default function KnowledgeGraph({
         accent: s.getPropertyValue("--accent").trim() || colors.accent,
         soft: s.getPropertyValue("--soft").trim() || colors.soft,
         paper: s.getPropertyValue("--paper").trim() || colors.paper,
-        ochre: s.getPropertyValue("--ochre").trim() || colors.ochre,
         sun: s.getPropertyValue("--sun").trim() || colors.sun,
+        leaf: s.getPropertyValue("--leaf").trim() || colors.leaf,
+        teal: s.getPropertyValue("--teal").trim() || colors.teal,
+        flame: s.getPropertyValue("--flame").trim() || colors.flame,
       };
     };
 
     const groupColor = (g: string | undefined) =>
       ({
-        agents: colors.accent,
+        agents: colors.flame,
         "tools for creativity": colors.sun,
-        perception: colors.ochre,
-        education: colors.faint,
-        "music/art": colors.ink,
-      })[g ?? ""] ?? colors.ink;
+        perception: colors.leaf,
+        education: colors.teal,
+        "music/art": colors.accent,
+      })[g ?? ""] ?? colors.faint;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -136,10 +182,60 @@ export default function KnowledgeGraph({
       orbitX = width / 2 - 96;
       orbitY = height / 2 - 64;
       me.r = Math.min(width, height) > 700 ? 74 : Math.min(width, height) > 540 ? 64 : 46;
-      labelFont = `${width < 480 ? 10 : 11}px var(--font-geist), system-ui, sans-serif`;
-      featuredFont = `${width < 480 ? 12 : 14}px var(--font-geist), system-ui, sans-serif`;
+      labelFont = `${width < 480 ? 10 : 11}px var(--font-inter), system-ui, sans-serif`;
+      featuredFont = `${width < 480 ? 12 : 14}px var(--font-inter), system-ui, sans-serif`;
       readColors();
       ctx.font = labelFont;
+      // a node's footprint is its label, not its dot — measure it once here
+      for (const n of nodes) {
+        if (n.kind !== "project") continue;
+        const isFeatured = n.project?.featured === true;
+        ctx.font = isFeatured ? featuredFont : labelFont;
+        n.halfW = Math.max(NODE_R, ctx.measureText(n.label).width / 2) + 7;
+        n.halfH = NODE_R + (isFeatured ? 15 : 13) + 5;
+      }
+      me.halfW = me.r + 10;
+      me.halfH = me.r + 22;
+      ctx.font = labelFont;
+    };
+
+    /*
+      Inverse-square repulsion keeps the layout loose but cannot guarantee
+      anything, so labels used to collide. This is the guarantee: treat every
+      node as the box its label occupies and push overlapping pairs apart along
+      whichever axis they overlap least. A few relaxation passes per frame is
+      enough, and pushing along the shallower axis keeps the motion small.
+    */
+    const separate = () => {
+      for (let pass = 0; pass < 3; pass++) {
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i];
+            const b = nodes[j];
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const ox = a.halfW + b.halfW - Math.abs(dx);
+            const oy = a.halfH + b.halfH - Math.abs(dy);
+            if (ox <= 0 || oy <= 0) continue;
+
+            // "me" is pinned, so a project always yields the whole distance
+            const aFixed = a === me || a === dragging;
+            const bFixed = b === me || b === dragging;
+            if (aFixed && bFixed) continue;
+            const share = aFixed || bFixed ? 1 : 0.5;
+
+            if (ox < oy) {
+              const push = (dx < 0 ? -ox : ox) * share;
+              if (!aFixed) a.x -= push;
+              if (!bFixed) b.x += push;
+            } else {
+              const push = (dy < 0 ? -oy : oy) * share;
+              if (!aFixed) a.y -= push;
+              if (!bFixed) b.y += push;
+            }
+          }
+        }
+      }
     };
 
     const bounds = () => {
@@ -185,6 +281,7 @@ export default function KnowledgeGraph({
         n.vx -= (dx / d) * f;
         n.vy -= (dy / d) * f;
       }
+      separate();
       bounds();
       for (const n of nodes) {
         if (n === me) continue;
@@ -201,6 +298,49 @@ export default function KnowledgeGraph({
       }
     };
 
+    /*
+      A closed shape traced through the node's wobbled radii, smoothed by
+      running quadratic curves through the midpoints between points. Offset
+      rotates the pen a little so a second pass doesn't retrace the first —
+      that mismatch is what makes it read as drawn by hand.
+    */
+    const inkBlob = (n: Node, r: number, offset = 0) => {
+      const w = n.wobble;
+      const count = w.length;
+      const at = (i: number): [number, number] => {
+        const a = n.lean + offset + ((i % count) / count) * Math.PI * 2;
+        const rr = r * w[((i % count) + count) % count];
+        return [n.x + Math.cos(a) * rr, n.y + Math.sin(a) * rr];
+      };
+      ctx.beginPath();
+      const [fx, fy] = at(0);
+      const [lx, ly] = at(count - 1);
+      ctx.moveTo((fx + lx) / 2, (fy + ly) / 2);
+      for (let i = 0; i < count; i++) {
+        const [cx, cy] = at(i);
+        const [nx, ny] = at(i + 1);
+        ctx.quadraticCurveTo(cx, cy, (cx + nx) / 2, (cy + ny) / 2);
+      }
+      ctx.closePath();
+    };
+
+    /* a thread drawn twice, each pass bowing differently, both overshooting */
+    const inkThread = (n: Node, pass: number) => {
+      const j = n.thread;
+      const k = pass === 0 ? 1 : -1;
+      const bow = 0.1 + (j[0] - 0.5) * 0.06;
+      const mx = (me.x + n.x) / 2 + (me.y - n.y) * bow + (j[1] - 0.5) * 16 * k;
+      const my = (me.y + n.y) / 2 + (n.x - me.x) * bow + (j[2] - 0.5) * 16 * k;
+      // start a touch off-centre and run slightly past the node, as a pen does
+      const sx = me.x + (j[3] - 0.5) * 5;
+      const sy = me.y + (j[4] - 0.5) * 5;
+      const over = 1 + j[5] * 0.05;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.quadraticCurveTo(mx, my, sx + (n.x - sx) * over, sy + (n.y - sy) * over);
+      ctx.stroke();
+    };
+
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
       ctx.save();
@@ -211,18 +351,16 @@ export default function KnowledgeGraph({
         n.e += (target - n.e) * 0.15;
       }
 
-      // threads from me to every project
+      // threads from me to every project, each stroked twice
+      ctx.lineCap = "round";
       for (const n of nodes) {
         if (n === me) continue;
         ctx.strokeStyle = groupColor(n.project?.group);
-        ctx.globalAlpha = 0.14 + n.e * 0.4;
-        ctx.lineWidth = 1 + n.e * 0.5;
-        const mx = (me.x + n.x) / 2 + (me.y - n.y) * 0.1;
-        const my = (me.y + n.y) / 2 + (n.x - me.x) * 0.1;
-        ctx.beginPath();
-        ctx.moveTo(me.x, me.y);
-        ctx.quadraticCurveTo(mx, my, n.x, n.y);
-        ctx.stroke();
+        for (let pass = 0; pass < 2; pass++) {
+          ctx.globalAlpha = (pass === 0 ? 0.16 : 0.09) + n.e * (pass === 0 ? 0.4 : 0.22);
+          ctx.lineWidth = (pass === 0 ? 1 : 0.7) + n.e * 0.5;
+          inkThread(n, pass);
+        }
       }
 
       ctx.font = labelFont;
@@ -239,31 +377,39 @@ export default function KnowledgeGraph({
           ctx.shadowBlur = 18 * n.e;
         }
         ctx.fillStyle = gc;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+        inkBlob(n, r);
         ctx.fill();
         ctx.shadowBlur = 0;
+        // the pen goes round a second time, not quite on the first line
+        ctx.strokeStyle = gc;
+        ctx.globalAlpha = 0.5 + n.e * 0.4;
+        ctx.lineWidth = 1;
+        inkBlob(n, r + 1.8 + n.e * 1.6, 0.85);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        // nodes are all one size now, so "featured" reads in the label only
         const isFeatured = n.project?.featured === true;
         ctx.font = isFeatured ? featuredFont : labelFont;
         ctx.globalAlpha = (isFeatured ? 0.75 : 0.55) + n.e * (isFeatured ? 0.25 : 0.45);
         ctx.fillStyle = n.e > 0.35 || isFeatured ? colors.ink : colors.faint;
-        ctx.fillText(n.label, n.x, n.y + r + (isFeatured ? 15 : 12));
+        ctx.fillText(n.label, n.x, n.y + r + (isFeatured ? 15 : 13));
       }
 
-      // me, on top: photo in a breathing ochre ring
+      // me, on top: photo in a breathing teal ring
       const pulse = reduceMotion ? 0.5 : 0.5 + 0.5 * Math.sin(frame * 0.04);
       const R = me.r + me.e * 4;
-      ctx.globalAlpha = 0.3 + pulse * 0.35 + me.e * 0.4;
-      ctx.strokeStyle = colors.ochre;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.arc(me.x, me.y, R + 6 + pulse * 3, 0, Math.PI * 2);
-      ctx.stroke();
+      ctx.strokeStyle = colors.teal;
+      for (let pass = 0; pass < 2; pass++) {
+        ctx.globalAlpha =
+          (0.3 + pulse * 0.35 + me.e * 0.4) * (pass === 0 ? 1 : 0.45);
+        ctx.lineWidth = pass === 0 ? 1.4 : 0.9;
+        inkBlob(me, R + 6 + pulse * 3, pass === 0 ? 0 : 0.4);
+        ctx.stroke();
+      }
       ctx.globalAlpha = 1;
       if (photoReady) {
         ctx.save();
-        ctx.beginPath();
-        ctx.arc(me.x, me.y, R, 0, Math.PI * 2);
+        inkBlob(me, R);
         ctx.clip();
         const side = Math.min(photo.width, photo.height);
         const sx = (photo.width - side) * 0.6;
@@ -272,8 +418,7 @@ export default function KnowledgeGraph({
         ctx.restore();
       } else {
         ctx.fillStyle = colors.soft;
-        ctx.beginPath();
-        ctx.arc(me.x, me.y, R, 0, Math.PI * 2);
+        inkBlob(me, R);
         ctx.fill();
       }
       ctx.globalAlpha = 0.7 + me.e * 0.3;
@@ -430,15 +575,25 @@ export default function KnowledgeGraph({
             </motion.div>
           ) : null}
         </AnimatePresence>
+
+        <MateoChat open={chatOpen} onClose={() => setChatOpen(false)} />
       </div>
 
-      <figcaption className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+      {/* the legend only explains the graph — fade it whenever the graph is
+          covered, by a project or by the chat, but keep its box so nothing
+          below it jumps */}
+      <figcaption
+        aria-hidden={selected || chatOpen ? true : undefined}
+        className={`mt-3 flex min-h-10 flex-wrap items-center justify-center gap-x-5 gap-y-2 transition-opacity duration-500 ${
+          selected || chatOpen ? "pointer-events-none opacity-0" : "opacity-100"
+        }`}
+      >
         {[
-          ["agents", "var(--accent)"],
+          ["agents", "var(--flame)"],
           ["tools for creativity", "var(--sun)"],
-          ["perception", "var(--ochre)"],
-          ["education", "var(--faint)"],
-          ["music/art", "var(--ink)"],
+          ["perception", "var(--leaf)"],
+          ["education", "var(--teal)"],
+          ["music/art", "var(--accent)"],
         ].map(([name, color]) => (
           <span key={name} className="label flex items-center gap-2">
             <span
@@ -450,7 +605,6 @@ export default function KnowledgeGraph({
         ))}
       </figcaption>
 
-      <MateoChat open={chatOpen} onClose={() => setChatOpen(false)} />
     </figure>
   );
 }

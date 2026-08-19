@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "The Last Acorn"
 category: "a video game about compassion and focus"
 group: "music/art"

@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "See Like Me"
 category: "non-psychotic schizophrenia phenotypes in virtual reality"
 group: "perception"

@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Periphery"
 category: "a breathing interface to prevent screen apnea"
 group: "tools for creativity"

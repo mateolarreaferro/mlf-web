@@ -40,9 +40,7 @@ export function getThought(slug: string): Thought | undefined {
   return getThoughts().find((t) => t.slug === slug);
 }
 
-export function formatDate(date: string, lang: "en" | "es" = "en"): string {
-  return new Date(`${date}T12:00:00`).toLocaleDateString(
-    lang === "es" ? "es-EC" : "en-US",
-    { year: "numeric", month: "long", day: "numeric" },
-  );
+/* Numeric and language-neutral, so an EN and an ES post read the same. */
+export function formatDate(date: string): string {
+  return date;
 }

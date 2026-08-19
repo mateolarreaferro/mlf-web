@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Icebreakers"
 category: "supporting weak-tie formation with generative agents"
 group: "agents"

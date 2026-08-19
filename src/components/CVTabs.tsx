@@ -30,7 +30,7 @@ export default function CVTabs({
             key={t}
             onClick={() => setTab(t)}
             className={`label cursor-pointer rounded-full px-3.5 py-1.5 transition-colors ${
-              tab === t ? "bg-sun !text-[#141412]" : "bg-soft hover:!text-accent"
+              tab === t ? "bg-accent !text-white" : "bg-soft hover:!text-accent"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -53,7 +53,7 @@ export default function CVTabs({
             <div className="space-y-12">
               {categories.map((cat) => (
                 <div key={cat}>
-                  <h3 className="label mb-5 !text-ochre">{cat}</h3>
+                  <h3 className="label mb-5 !text-teal">{cat}</h3>
                   <ul className="space-y-7">
                     {publications
                       .filter((p) => p.category === cat)
@@ -118,7 +118,7 @@ export default function CVTabs({
             <div className="space-y-10">
               {classes.map((g) => (
                 <div key={g.area}>
-                  <h3 className="label mb-3 !text-ochre">{g.area}</h3>
+                  <h3 className="label mb-3 !text-teal">{g.area}</h3>
                   <p className="max-w-3xl text-sm leading-relaxed text-faint">
                     {g.courses.join(" · ")}
                   </p>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import HeroGraph from "@/components/HeroGraph";
 import CVTabs from "@/components/CVTabs";
 import { Reveal, Stagger, Item } from "@/components/motion";
@@ -13,7 +14,9 @@ export default function Home() {
 
   return (
     <div className="pt-10 lg:pt-0">
-      <HeroGraph projects={projects} />
+      <Suspense fallback={null}>
+        <HeroGraph projects={projects} />
+      </Suspense>
 
       <section id="publications" className="mt-28 scroll-mt-10">
         <Reveal>
@@ -44,7 +47,7 @@ export default function Home() {
                         {t.title}
                       </span>
                       <span className="label ml-auto hidden shrink-0 sm:inline">
-                        {formatDate(t.date, t.lang)}
+                        {formatDate(t.date)}
                       </span>
                     </div>
                     {t.summary ? (

@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Second Brain"
 category: "llm-maintained company brain"
 group: "agents"

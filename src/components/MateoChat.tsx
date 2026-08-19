@@ -44,24 +44,22 @@ export default function MateoChat({
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
+          /* absolute, not fixed: this sits on the graph card and matches it
+             exactly, rather than floating over the whole viewport at a size
+             that never quite lined up with the square underneath */
+          className="absolute inset-0 z-30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <button
-            aria-label="Close chat"
-            onClick={onClose}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-          />
           <motion.div
             role="dialog"
             aria-label="Chat with Mateo's agent"
-            className="relative flex h-[75vh] w-full max-w-md flex-col overflow-hidden rounded-3xl bg-paper shadow-2xl"
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.96 }}
+            className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-paper shadow-2xl"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.45, ease }}
           >
             <div className="flex items-center gap-3 p-5">

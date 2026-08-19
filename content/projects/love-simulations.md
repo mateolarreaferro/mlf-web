@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "LoveSims"
 category: "generative agent simulation framework for relationship development"
 group: "agents"

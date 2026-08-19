@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Computational Sketches"
 category: "creative coding"
 group: "music/art"

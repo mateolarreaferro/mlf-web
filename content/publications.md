@@ -1,3 +1,32 @@
+## Reperceiving Everyday Sounds with Hidden Texture
+authors: Tao, Y., Larrea, M., Wang, P. Q., Li, J., & Follmer, S.
+venue: ACM Symposium on User Interface Software and Technology (UIST '26)
+year: 2026
+category: human-computer interaction
+note: paper accepted
+link:
+
+## TWINS: A Design Exploration of Accountable Autobiographical Human Digital Twins
+authors: Larrea, M., Thakur, A., & Langenbach, L.
+venue: CHI EA '26, ACM — interactive demo / extended abstract
+year: 2026
+category: human-computer interaction
+link: https://dl.acm.org/doi/10.1145/3772363.3799176
+
+## AugTwins: Interactive Digital Doubles with Memory, Identity, and Reciprocity
+authors: Thakur, A., Larrea Ferro, M., Baradari, D., & Langenbach, L.
+venue: NeurIPS Creative AI Track 2025
+year: 2025
+category: human-computer interaction
+link: https://openreview.net/forum?id=0rnPak524A
+
+## LoveSims: Exploring "What-If" Scenarios for Relationship Insights and Compatibility
+authors: Larrea, M., Zhang, X., & Zhu, X.
+venue: CHI EA '25, ACM (pp. 1–7)
+year: 2025
+category: human-computer interaction
+link: https://dl.acm.org/doi/10.1145/3706599.3720011
+
 ## From Brainwaves to Csound: An Exploratory Audiovisual System with EEG and LLM-Based Agent Control in Unity
 authors: Gao, C., Larrea, M., & Boulanger, R.
 venue: 8th International Csound Conference (ICSC '26)
@@ -27,27 +56,6 @@ venue: New Interfaces for Musical Expression (NIME '26)
 year: 2026
 category: computer music
 note: paper accepted
-link:
-
-## TWINS: A Design Exploration of Accountable Autobiographical Human Digital Twins
-authors: Larrea, M., Thakur, A., & Langenbach, L.
-venue: CHI EA '26, ACM — interactive demo / extended abstract
-year: 2026
-category: human-computer interaction
-link:
-
-## AugTwins: Interactive Digital Doubles with Memory, Identity, and Reciprocity
-authors: Thakur, A., Larrea Ferro, M., Baradari, D., & Langenbach, L.
-venue: NeurIPS Creative AI Track 2025
-year: 2025
-category: human-computer interaction
-link:
-
-## LoveSims: Exploring "What-If" Scenarios for Relationship Insights and Compatibility
-authors: Larrea, M., Zhang, X., & Zhu, X.
-venue: CHI EA '25, ACM (pp. 1–7)
-year: 2025
-category: human-computer interaction
 link:
 
 ## New Utility Classes and Sketches for Developers and Sound Designers

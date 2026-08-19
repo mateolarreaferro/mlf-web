@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Dream Machine"
 category: "social platform for shared musical performances in virtual reality"
 group: "music/art"

@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Theo"
 category: "domain-specific language"
 group: "tools for creativity"

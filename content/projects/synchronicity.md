@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Synchronicity"
 category: "bio-graphic notation system"
 group: "tools for creativity"

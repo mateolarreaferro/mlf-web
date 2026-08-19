@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Attractor"
 category: "generative agent-based modeling"
 group: "agents"

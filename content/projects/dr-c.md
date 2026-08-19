@@ -1,4 +1,5 @@
 ---
+hidden: true   # parked for content review — remove this line to publish
 name: "Dr. C"
 category: "human-in-the-loop generative agent"
 group: "tools for creativity"

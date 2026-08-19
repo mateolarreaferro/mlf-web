@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import type { Project } from "@/lib/projects";
 import Hero from "./Hero";
 import KnowledgeGraph from "./KnowledgeGraph";
 import ProjectPanel from "./ProjectPanel";
+import { HOME_EVENT } from "./HomeLink";
 import { Reveal } from "./motion";
 
 /*
@@ -29,15 +31,31 @@ export default function HeroGraph({ projects }: { projects: Project[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // deep link: /?project=<slug> opens that project directly
+  // pressing the wordmark closes an open project, wherever we already are
   useEffect(() => {
-    const slug = new URLSearchParams(window.location.search).get("project");
-    if (slug) setSelected(projects.find((p) => p.slug === slug) ?? null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const onHome = () => setSelected(null);
+    window.addEventListener(HOME_EVENT, onHome);
+    return () => window.removeEventListener(HOME_EVENT, onHome);
   }, []);
 
+  /*
+    Deep link: /?project=<slug> opens that project. Read through
+    useSearchParams rather than window.location so it stays correct across
+    client navigations — reading it once on mount meant that leaving
+    /?project=satie remounted this component, which then re-read the *old*
+    URL and reopened the project the user had just closed.
+  */
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const slug = searchParams.get("project");
+    setSelected(slug ? (projects.find((p) => p.slug === slug) ?? null) : null);
+  }, [searchParams, projects]);
+
   return (
-    <section className="grid items-center gap-12 lg:min-h-[calc(100dvh-9rem)] lg:grid-cols-[minmax(360px,34rem)_1fr] lg:gap-24 xl:gap-32">
+    /* bottom-aligned on purpose: the social row and the graph legend then sit
+       on one line at any viewport height, which no margin can promise while
+       the two columns are centred independently */
+    <section className="grid items-end gap-12 lg:min-h-[calc(100dvh-9rem)] lg:grid-cols-[minmax(360px,34rem)_1fr] lg:gap-24 xl:gap-32">
       {/* hero and panel share one grid cell, so the column is always as tall
           as whichever is showing — never an inner scroll region */}
       <div className="grid min-w-0">
@@ -58,11 +76,7 @@ export default function HeroGraph({ projects }: { projects: Project[] }) {
 
         <AnimatePresence mode="wait">
           {selected ? (
-            <ProjectPanel
-              key={selected.slug}
-              project={selected}
-              onClose={() => setSelected(null)}
-            />
+            <ProjectPanel key={selected.slug} project={selected} />
           ) : null}
         </AnimatePresence>
       </div>
