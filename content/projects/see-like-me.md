@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "See Like Me"
 category: "non-psychotic schizophrenia phenotypes in virtual reality"
-group: "perception"
+group: "experiments / tools"
 tags: [neuro, games]
-order: 17
+order: 15
 role: "unity developer / researcher"
 image: "/projects/see-like-me.png"
 ---
@@ -15,5 +14,5 @@ Patients with schizophrenia often struggle to articulate or recognize their own 
 
 ## notes
 
-Developed at the Harvard Innovation Labs. No public link on the old site —
+Developed at the Harvard Innovation Labs. No public link on the old site;
 worth adding one if there is a paper, demo, or lab page.

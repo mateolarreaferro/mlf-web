@@ -19,18 +19,18 @@ venue: Augmentation Lab Summit, MIT Media Lab
 place: Cambridge
 year: 2025
 
-## CsoundMeta — Richard Boulanger's Keynote
+## CsoundMeta: Richard Boulanger's Keynote
 venue: International Computer Music Conference, Berklee
 place: Boston
 year: 2025
 
 ## LoveSims: Exploring "What-If" Scenarios for Relationship Insights and Compatibility
-venue: CHI — Late Breaking Work
+venue: CHI, Late Breaking Work
 place: Japan
 year: 2025
 
 ## Música Algorítmica, Soundscape y Realidad Virtual en la Educación
-venue: DePsicología — interview with Juan Martín Calle
+venue: DePsicología, interview with Juan Martín Calle
 year: 2024
 link: https://www.youtube.com/watch?v=2o_fLrmxoJc
 
@@ -55,7 +55,7 @@ place: Boston
 year: 2022
 
 ## Auditory Statistical Learning in Classical and Jazz Musicians
-venue: Society for Music Perception and Cognition — video presentation
+venue: Society for Music Perception and Cognition, video presentation
 place: Portland
 year: 2022
 

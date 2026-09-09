@@ -20,9 +20,9 @@
 - Circuit Bending and Physical Computing (R. Boulanger)
 
 ## psychology / neuroscience
-- Auditory Neuroscience III — Hyperscanning EEG (T. Fujioka)
-- Auditory Neuroscience II — Neural Oscillations (T. Fujioka)
-- Auditory Neuroscience I — Event-Related Potentials (T. Fujioka)
+- Auditory Neuroscience III: Hyperscanning EEG (T. Fujioka)
+- Auditory Neuroscience II: Neural Oscillations (T. Fujioka)
+- Auditory Neuroscience I: Event-Related Potentials (T. Fujioka)
 - Psychophysics (T. Fujioka)
 - Psychoacoustics (S. Rogers)
 - Psychology of Music (E. Knowles)

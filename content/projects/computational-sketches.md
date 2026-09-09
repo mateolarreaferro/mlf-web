@@ -1,13 +1,12 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
-name: "Computational Sketches"
+name: "Sketches"
 category: "creative coding"
-group: "music/art"
+group: "art"
 tags: [tools for creativity]
-order: 26
+order: 20
 featured: true
 image: "/projects/computational-sketches.png"
 link: "https://www.instagram.com/3t4msketches/"
 ---
 
-A running collection of small p5.js sketches — spirals, mycelium, pendulums, explosions. Quick visual studies in code, collected at @3t4msketches.
+A running collection of small p5.js sketches: spirals, mycelium, pendulums, explosions. Quick visual studies in code, collected at @3t4msketches.

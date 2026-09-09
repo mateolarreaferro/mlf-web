@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
-name: "Multimodal Implicit Learning"
+name: "Trimodal Implicit Learning"
 category: "enhancing implicit learning through multimodal integration"
-group: "perception"
+group: "experiments / tools"
 tags: [neuro, education]
-order: 22
+order: 17
 image: "/projects/multimodal-learning.png"
 paper: "https://drive.google.com/file/d/1dIqo-p2G09bqlTvIIMfmzZDZr7pZsNGe/view?usp=sharing"
 ---
@@ -16,5 +15,5 @@ This pilot study investigates how integrating auditory, visual, and haptic cues 
 ## notes
 
 A pilot study. Sits next to [[statistical-learning]] in the auditory-learning
-thread — same question (what gets learned without instruction), different
+thread: same question (what gets learned without instruction), different
 modalities.

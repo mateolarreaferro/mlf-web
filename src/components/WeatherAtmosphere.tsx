@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { FaRegMoon, FaRegSun } from "react-icons/fa6";
 import type { Atmosphere } from "@/lib/weather-theme";
+import { setDaylight } from "@/lib/mood";
 
 const FADE_MS = 700; // must match the opacity transition in globals.css
+/* fired on window after the wash colours are written, for anything that caches them */
+export const ATMOSPHERE_EVENT = "mlf:atmosphere";
 
 type WeatherResponse = {
   ok: boolean;
@@ -46,6 +48,7 @@ export default function WeatherAtmosphere() {
       root.style.setProperty("--w-alpha", String(a.alpha));
       root.style.setProperty("--w-drift-a", `${a.driftA}s`);
       root.style.setProperty("--w-drift-b", `${a.driftB}s`);
+      window.dispatchEvent(new CustomEvent(ATMOSPHERE_EVENT));
     };
 
     (async () => {
@@ -55,6 +58,8 @@ export default function WeatherAtmosphere() {
         if (cancelled || !data.ok || !data.atmosphere || !data.weather) return;
 
         const atmosphere = data.atmosphere;
+        // real sunrise and sunset for this spot: the mood follows it from here
+        setDaylight(atmosphere.isDay);
         const reveal = () => {
           if (cancelled) return;
           apply(atmosphere);
@@ -99,15 +104,8 @@ export default function WeatherAtmosphere() {
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      title={`the background colour follows the weather where you are — ${
-        shown.isDay ? "daytime" : "after dark"
-      }`}
+      title="the background colour follows the weather where you are"
     >
-      {shown.isDay ? (
-        <FaRegSun className="size-3 shrink-0" aria-hidden />
-      ) : (
-        <FaRegMoon className="size-3 shrink-0" aria-hidden />
-      )}
       <span>
         {shown.city.toLowerCase()} · {Math.round(shown.temperature)}°c
       </span>

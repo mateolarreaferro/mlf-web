@@ -112,7 +112,7 @@ export default function HarmonicsDemo() {
         ))}
       </div>
       <figcaption className="mt-4 flex items-baseline justify-between">
-        <span className="label">additive synthesis — six partials on A2</span>
+        <span className="label">additive synthesis · six partials on A2</span>
         <motion.button
           onClick={toggle}
           className="label hover:text-accent cursor-pointer rounded-full bg-paper px-4 py-1"

@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "Theo"
 category: "domain-specific language"
-group: "tools for creativity"
-order: 19
+group: "experiments / tools"
+order: 10
 repo: "https://github.com/mateolarreaferro/Theo"
 ---
 
-A domain-specific generative language for writing — structured, interpretable layers between intention and text.
+A domain-specific generative language for writing: structured, interpretable layers between intention and text.

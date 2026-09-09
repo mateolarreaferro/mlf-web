@@ -64,8 +64,10 @@ export default function Hero() {
           that prompt users back (
           <BioLink href="https://www.machinemonks.studio/">TWINS</BioLink>),
           and social simulations driven by generative agents (
-          <BioLink href="https://lovesims.ai">LoveSims</BioLink>,{" "}
-          <ProjectLink slug="attractor">Attractor</ProjectLink>).
+          <BioLink href="https://dl.acm.org/doi/full/10.1145/3706599.3720011">
+            LoveSims
+          </BioLink>
+          , <ProjectLink slug="attractor-v1">Attractor v1</ProjectLink>).
         </p>
         <p className="mt-3 text-[13px] leading-relaxed text-faint sm:text-sm xl:text-[15px]">
           I also have a strong foundation in immersive technology and audio. I
@@ -75,9 +77,8 @@ export default function Hero() {
           music and psychoacoustics from Berklee.
         </p>
         <p className="mt-3 text-[13px] leading-relaxed text-faint sm:text-sm xl:text-[15px]">
-          Outside the lab, I design video games and compose music under the
-          moniker{" "}
-          <BioLink href="https://soundcloud.com/mateo-larrea-ferro">
+          Outside the lab, I design video games and compose music as{" "}
+          <BioLink href="https://open.spotify.com/artist/7z2V70xnAEDEk9Ip0YKvcn">
             Juancho Lagartos
           </BioLink>
           .
@@ -85,7 +86,7 @@ export default function Hero() {
       </Reveal>
 
       <Reveal delay={0.45} margin="0px 0px 120px 0px">
-        <div className="mt-8 flex min-h-10 items-center justify-center gap-2">
+        <div className="mt-8 flex min-h-10 items-center justify-center gap-2 lg:mt-14 xl:mt-16">
           {socials.map(({ href, label, Icon }) => (
             <motion.a
               key={label}

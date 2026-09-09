@@ -20,16 +20,36 @@ questions about the work.
 
 Super minimalistic, soft, no hard edges. One sans family (Inter, matching satie.live), whitespace
 instead of border rules, rounded corners everywhere, small lowercase gray
-labels. **Light only** — `src/app/globals.css` sets `color-scheme: light`
-and has no `prefers-color-scheme: dark` block; that is deliberate, don't
-"restore" dark mode. **Palette:** everything is drawn from one spectral ramp,
+labels. **Two moods, light and dark, chosen by the time of day.** The page
+follows the day where the visitor is, not the operating system: there is
+deliberately no `prefers-color-scheme` block. `src/lib/mood.ts` is the whole
+rule and is pure at the top. Auto mode uses the local clock until the forecast
+lands (dark from 19:00 to 07:00), then Open-Meteo's real `isDay` for that spot
+takes over via `setDaylight()` in `WeatherAtmosphere.tsx`. The header's
+sun/moon button (`MoodToggle.tsx`) is the only control: press it and you get
+the other mood, held for twelve hours in localStorage and then back to auto;
+choosing what auto would have chosen anyway clears the override on the spot.
+The mood is `data-mood` on `<html>`, set before first paint by `BOOT_SCRIPT`
+(inlined in `layout.tsx`, a minified copy of the same rule; keep them in
+step). Dark swaps only paper/ink/faint/soft/accent in `globals.css` and turns
+the weather washes up (`--w-gain`), so the ramp and the graph's group hues
+are unchanged. The swap fades over 700ms on `html` and `body`; while
+it runs, `html[data-mood-fade]` switches off the per-element colour
+transitions on links and buttons, otherwise they restart every frame and trail
+the page by seconds. **Palette:** everything is drawn from one spectral ramp,
 warm to cool (F94144 F3722C F8961E F9844A F9C74F 90BE6D 43AA8B 4D908E 577590
-277DA1). The five graph hues take every other step — `--flame` #f94144 agents,
-`--sun` #f9c74f tools for creativity, `--leaf` #90be6d perception, `--teal`
-#4d908e education, `--accent` #23718f music/art (also every link hover;
-darkened from the ramp's 277DA1 so links clear 4.5:1). Paper #f8f7f4, ink
-#23282c, `--faint` #656f77 — these three never move, so text contrast is a
-fixed quantity regardless of the weather.
+277DA1). The three graph groups are painted with the weather's three wash swatches
+(`--w1` projects, `--w2` experiments / tools, `--w3` art), so the graph is
+drawn from the same palette as the page behind it and the legend is literally
+the header's swatch row. `weather-theme.ts` keeps the three two ramp steps
+apart (`SPREAD`) and away from the ramp's ends, so they never collapse into
+one colour. `--accent` #23718f is every link hover (darkened from the ramp's
+277DA1 so links clear 4.5:1); `--sun`, `--leaf`, `--teal`, `--flame` stay
+defined (the photo ring is teal) but no longer label a group. Paper #f8f7f4, ink
+#23282c, `--faint` #656f77 in the light mood; #15181b, #e6e3dd, #98a0a6 in
+the dark one, with `--accent` lifted to #7ab7d4 so links still clear 4.5:1.
+Within a mood these never move, so text contrast is a fixed quantity
+regardless of the weather.
 
 **Weather-reactive background.** The ambient washes sample the same ramp based
 on current conditions where the visitor is. `src/lib/weather-theme.ts` is the
@@ -39,9 +59,9 @@ end. Cloud cover sets how much colour there is (overcast reads muted), daylight
 wind speed sets the drift period (calm 80s → gale 26s). Night is a real move,
 not a tint: it pulls a third of the way toward the deep end of the ramp, drops
 the alpha to ~0.68, and slows the drift by 25%, so a hot night still reads cool
-and the page feels like the room it is being read in. The header shows a sun or
-moon accordingly — `atmosphere.isDay` is carried through the API for exactly
-that.
+and the page feels like the room it is being read in. `atmosphere.isDay` is
+carried through the API so the mood can follow real sunset (see above); the
+header's sun/moon is the mood button, not a weather readout.
 
 `/api/weather` takes the visitor's location from Vercel's own
 `x-vercel-ip-latitude` / `-longitude` request headers — never the browser
@@ -55,8 +75,8 @@ hard-refresh — a stale cached body is indistinguishable from a broken
 component, and cost an hour once.
 
 `WeatherAtmosphere.tsx` writes the result to `--w1/--w2/--w3/--w-alpha` and the
-drift durations, and renders the header line that says where the colours came
-from ("palo alto · 24°c" plus three swatches). The swatches are ordered w1, w2,
+drift durations, hands `isDay` to the mood, and renders the header line that
+says where the colours came from ("palo alto · 24°c" plus three swatches). The swatches are ordered w1, w2,
 w3 — which is genuinely how much of the page each one paints, so if you
 re-weight the gradients in `globals.css`, keep that ranking or the line starts
 lying. It hides below `sm` and stays hidden entirely when no city is known. **Do not try to transition those custom properties.** A
@@ -70,9 +90,12 @@ forecast lands.
 diffuse radial gradients drifting slowly against each other. They sit at
 `z-index: -1`, so `html` carries the paper colour and `body` is transparent.
 The look is modelled on Attractor Labs' "brain" UI: paper that happens to have
-light in it, with the type left completely plain. Keep `--w-alpha` inside the
-0.13–0.24 band the mapping produces — higher and it stops being paper and
-starts being a gradient background. No blur filter on purpose; the gradient
+light in it, with the type left completely plain. `--w-alpha` runs 0.30–0.42 from
+the mapping (night ×0.85, and the dark mood multiplies by `--w-gain` 1.3
+because coloured light needs more on dark paper) and the radial gradients are large (50–60% of the
+viewport, falloff at 80%): Mateo asked for the washes to dominate, so the
+page reads as light with paper behind it rather than paper with a tint. Don't
+quietly turn it back down. No blur filter on purpose; the gradient
 falloff is the softness and a filter on an element that large is expensive.
 
 **Type scale** is deliberately compressed — the headline tops out at 2.4rem,
@@ -84,6 +107,14 @@ reveals, route fades, hover nudges, spring buttons) — always respecting
 `prefers-reduced-motion`. Do NOT reintroduce decorative grids, hairline
 borders, or mono/uppercase "technical" labels — that direction was
 explicitly rejected.
+
+**UI sound.** The same super-subtle synthesized tones as attractor.world:
+880 Hz sine on mouse hover, 587 Hz on press/Enter, eased attack, exponential
+out — no audio assets. `src/lib/sfx.ts` is the voice (keep the gains at
+0.02/0.035 — barely audible is the point); `SoundEffects.tsx` (mounted in the
+layout) delegates to every link/button, and `KnowledgeGraph.tsx` calls the
+same tones from its canvas hit-testing. Hover stays silent until the first
+click has unlocked the AudioContext — that's the browser, not a bug.
 
 ## Page anatomy
 
@@ -97,10 +128,14 @@ One page (`src/app/page.tsx`):
    page.
 2. **Knowledge graph** (`src/components/KnowledgeGraph.tsx`) — canvas
    force-layout. Mateo's photo is the pinned center node ("press to talk" →
-   opens the agent chat). Every project orbits him, colored by its `group`:
-   agents=red, tools for creativity=yellow, perception=green,
-   education=teal, music/art=blue. Color legend below. Every node is
-   drawn at the same radius (`NODE_R`); `featured` only enlarges the label.
+   opens the agent chat). Every project orbits him, colored by its `group`
+   with the weather's three swatches (see Palette). Color legend below.
+   Every node is drawn at the same radius (`NODE_R`); `featured` only
+   enlarges the label. Each group owns a third of the ring (`sectorAngle`):
+   projects on the left, experiments top right, art bottom right. Nodes
+   start inside their sector and a weak tangential pull in `tick()` drifts
+   them back, so the three neighbourhoods survive dragging and resizing
+   without being pinned.
 
    **It is drawn, not plotted.** Nothing is a true circle or a clean curve:
    nodes are closed wobbly blobs (`inkBlob`) filled once and then outlined a
@@ -115,7 +150,10 @@ One page (`src/app/page.tsx`):
    the **box its label occupies** (measured with `measureText` at resize, since
    the label is far wider than the dot) and pushing overlapping pairs apart
    along whichever axis they overlap least. "me" and whatever is being dragged
-   are pinned, so the other node yields the whole distance.
+   are pinned, so the other node yields the whole distance. After that a hard
+   clamp in `tick()` keeps every label box fully inside the canvas: the
+   `bounds()` spring can be overshot and a drag can go anywhere, and a name
+   cut off at the edge is never acceptable.
 
    The first-viewport grid is `items-end`, not `items-center`: the hero's
    social row and the graph's legend then share a bottom line at every viewport
@@ -140,9 +178,9 @@ One page (`src/app/page.tsx`):
 
 ```md
 ---
-name: "Attractor"
-category: "generative agent-based modeling"  # card label
-group: "agents"      # node color: agents | tools for creativity | perception | education | music/art
+name: "SATIE"
+category: "audio world model"  # card label
+group: "projects"    # node color and sector: projects | experiments / tools | art
 order: 1             # sort for agent prompt; lower first — keep unique
 tags: [agents]       # free-form, agent-only; used for cross-project retrieval
 year: "2025–"        # optional → shown under the name
@@ -204,8 +242,11 @@ Mateo), and declines off-topic requests. Client: `MateoChat.tsx`
 
 - `src/lib/projects.ts` / `thoughts.ts` use `fs` — server only. Client
   components receive data as props (type-only imports are fine).
-- The graph reads CSS custom properties at draw time, so it follows
-  light/dark automatically; new colors must be added to `readColors()` and to the legend in `KnowledgeGraph.tsx`.
+- The graph reads CSS custom properties into a cache (`readColors()`, every
+  90 frames and immediately on a mood change via `subscribe` from `mood.ts` or
+  when the weather colours land via `ATMOSPHERE_EVENT`), so it follows both;
+  new colors must be added to `readColors()` and to the legend in
+  `KnowledgeGraph.tsx`.
 - Old-site assets were scraped from the Squarespace CDN into
   `public/projects/`; the old `/well-being` page is gone (404).
 - Headless screenshots of the running site race the entry animations —

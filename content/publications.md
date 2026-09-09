@@ -8,7 +8,7 @@ link:
 
 ## TWINS: A Design Exploration of Accountable Autobiographical Human Digital Twins
 authors: Larrea, M., Thakur, A., & Langenbach, L.
-venue: CHI EA '26, ACM — interactive demo / extended abstract
+venue: CHI EA '26, ACM (interactive demo / extended abstract)
 year: 2026
 category: human-computer interaction
 link: https://dl.acm.org/doi/10.1145/3772363.3799176
@@ -37,10 +37,10 @@ link:
 
 ## Dr. C: A Human-in-the-Loop Agentic AI for Csound
 authors: Boulanger, R., & Larrea, M.
-venue: Linux Audio Conference 2026 (LAC 2026)
+venue: Linux Audio Conference 2026 (LAC 2026), talk recording
 year: 2026
 category: computer music
-link:
+link: https://tube.mucs.club/w/tr71c7LEmvLiM63JjwtcDb
 
 ## Introducing Dr.C: 40+ Years of Csound and Computer Music, Now an Agentic AI Collaborator
 authors: Larrea, M., & Boulanger, R.
@@ -67,21 +67,21 @@ link: https://drive.google.com/file/d/1-xfCEq3FcND7_Fe53B7urfYAuCDO4ERE/view
 
 ## Impact of Absolute Pitch on Auditory Learning
 authors: Knowles, E. R., Larrea, M., Odabashian, S., Hoang, M., & Shalev, E.
-venue: Auditory Perception, Cognition, and Action Meeting (APCAM) — talk
+venue: Auditory Perception, Cognition, and Action Meeting (APCAM), talk
 year: 2023
 category: neuroscience/psychophysics
 link:
 
 ## Auditory Statistical Learning in Classical and Jazz Musicians
 authors: Knowles, E. R., Larrea, M., & Odabashian, S.
-venue: Society for Music Perception and Cognition (SMPC) — poster
+venue: Society for Music Perception and Cognition (SMPC), poster
 year: 2022
 category: neuroscience/psychophysics
 link:
 
 ## Auditory Statistical Learning in Classical and Jazz Musicians
 authors: Larrea, M., & Knowles, E. R.
-venue: Auditory Perception, Cognition, and Action Meeting (APCAM) — poster
+venue: Auditory Perception, Cognition, and Action Meeting (APCAM), poster
 year: 2022
 category: neuroscience/psychophysics
 link:

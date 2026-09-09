@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
-name: "EEG Studies"
-category: "auditory neuroscience"
-group: "perception"
+name: "Musical Expectation"
+category: "eeg studies in auditory neuroscience"
+group: "experiments / tools"
 tags: [neuro, music]
-order: 20
+order: 19
 media:
   - { image: "/projects/eeg-eran.webp", fit: contain, caption: "ERAN responses to in-key and out-of-key stimuli" }
   - { image: "/projects/eeg-induced.webp", fit: contain, caption: "Induced alpha dynamics across mode transitions" }
@@ -25,10 +24,10 @@ report; the second is at
 https://docs.google.com/document/d/1EkHlt6LFLAwWKtzunOQR2-nBP0Eb8X8b-E0d1_Stc6A/edit
 
 **Temporal Decay of Tonal Expectations: ERAN Responses to In-Key and Out-of-Key
-Stimuli** — an EEG study examining how musical expectations persist and decay
+Stimuli**: an EEG study examining how musical expectations persist and decay
 across silent interruptions. We measured the Early Right Anterior Negativity
-(ERAN) — an event-related potential occurring ~150–250 ms after stimulus onset
-that indexes automatic music-syntactic processing — elicited by in-key and
+(ERAN), an event-related potential occurring ~150–250 ms after stimulus onset
+that indexes automatic music-syntactic processing, elicited by in-key and
 out-of-key tones following short (3 s) and long (8.5 s) silent intervals after
 a brief melodic context. Results showed larger ERAN amplitudes for out-of-key
 tones following shorter silences, consistent with stronger internally
@@ -38,7 +37,7 @@ due to limited sample size, the study motivates refined paradigms for probing
 predictive processing, tonal expectancy, and memory persistence in
 discontinuous musical streams.
 
-**Induced Oscillatory Dynamics During Musical Mode Transitions** — investigates
+**Induced Oscillatory Dynamics During Musical Mode Transitions**: investigates
 how the brain allocates attention when musical expectations are violated. Using
 EEG time–frequency analysis, we examined induced alpha-band oscillations
 (8–12 Hz), a neural signature associated with attentional gating and sensory
@@ -51,5 +50,5 @@ modulation emerged earlier than ERP markers such as ERAN, suggesting that
 induced oscillatory activity captures complementary and temporally earlier
 mechanisms underlying musical expectancy and tonal hierarchy processing.
 
-The card description above is mine, not Mateo's — the old page has no summary
+The card description above is mine, not Mateo's; the old page has no summary
 line, only the two study write-ups. Worth replacing with his own words.

@@ -11,11 +11,18 @@
   blue) so the categories stay far apart. The background washes sample the
   same ramp continuously, driven by the weather — see `src/lib/weather-theme.ts`.
 
-  Paper, ink and link colour never move. Only the washes respond to weather,
-  so text contrast is a fixed quantity no matter where the visitor is.
+  Paper, ink and link colour do not follow the weather. They follow the time
+  of day instead: after sunset the page goes to its dark mood (see
+  src/lib/mood.ts). Within a mood the three are fixed, so text contrast is a
+  known quantity no matter where the visitor is or what the sky is doing.
+
+  The mood is `data-mood` on <html>, set before first paint by the boot script
+  in layout.tsx. There is deliberately no `prefers-color-scheme` block: the
+  page follows the day where the visitor is, not the operating system, and one
+  button in the header overrides it.
 */
 :root {
-  color-scheme: light; /* light only — deliberate, there is no dark variant */
+  color-scheme: light;
   --paper: #f8f7f4;
   --ink: #23282c;
   --faint: #656f77;
@@ -25,6 +32,18 @@
   --leaf: #90be6d;
   --teal: #4d908e;
   --flame: #f94144;
+  /* how much of the weather wash shows; coloured light needs more on dark paper */
+  --w-gain: 1;
+}
+
+html[data-mood="dark"] {
+  color-scheme: dark;
+  --paper: #15181b;
+  --ink: #e6e3dd;
+  --faint: #98a0a6;
+  --soft: #1f2428;
+  --accent: #7ab7d4; /* the ramp's blue lifted so links clear 4.5:1 on dark paper */
+  --w-gain: 1.3;
 }
 
 @theme inline {
@@ -52,21 +71,24 @@
   is a plain one-way opacity transition and always works.
 */
 :root {
-  --w1: #f7b459;
-  --w2: #a5c169;
-  --w3: #7bba79;
-  --w-alpha: 0.202;
+  --w1: #f9854a;
+  --w2: #a4c067;
+  --w3: #499a8d;
+  --w-alpha: 0.378;
   --w-drift-a: 66s;
   --w-drift-b: 86s;
 }
 
 html {
   background: var(--paper);
+  /* the mood changes like the light in a room, not like a switch */
+  transition: background-color 700ms ease;
 }
 
 body {
   background: transparent;
   color: var(--ink);
+  transition: color 700ms ease;
   font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -75,10 +97,10 @@ body {
 /*
   Two layers of very diffuse colour washes behind everything, drifting slowly
   against each other. Colour, intensity and drift period all come from the
-  weather where the visitor is (src/lib/weather-theme.ts). They must stay
-  barely-there: the page reads as paper that happens to have light in it,
-  never as a "gradient background". No blur filter — the gradients' own
-  falloff is the softness, and a filter on an element this large is expensive.
+  weather where the visitor is (src/lib/weather-theme.ts). The washes lead:
+  the page reads as light with paper behind it, the type left completely
+  plain on top. No blur filter — the gradients' own falloff is the softness,
+  and a filter on an element this large is expensive.
 */
 body::before,
 body::after {
@@ -89,6 +111,13 @@ body::after {
   pointer-events: none;
   opacity: 1;
   transition: opacity 700ms ease;
+}
+
+/* surfaces painted with a token fade with the page instead of snapping */
+.bg-soft,
+.bg-paper,
+[class*="bg-paper/"] {
+  transition: background-color 700ms ease;
 }
 
 /* held down for one breath while the weather colours are swapped underneath */
@@ -104,27 +133,27 @@ html[data-wash="hold"] body::after {
 body::before {
   background:
     radial-gradient(
-      40% 36% at 26% 18%,
-      color-mix(in srgb, var(--w1) calc(var(--w-alpha) * 100%), transparent),
-      transparent 74%
+      54% 48% at 26% 18%,
+      color-mix(in srgb, var(--w1) calc(var(--w-alpha) * var(--w-gain) * 100%), transparent),
+      transparent 80%
     ),
     radial-gradient(
-      42% 38% at 78% 72%,
-      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * 72%), transparent),
-      transparent 74%
+      56% 50% at 78% 72%,
+      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * var(--w-gain) * 72%), transparent),
+      transparent 80%
     );
 }
 body::after {
   background:
     radial-gradient(
-      38% 34% at 74% 30%,
-      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * 68%), transparent),
-      transparent 74%
+      50% 44% at 74% 30%,
+      color-mix(in srgb, var(--w2) calc(var(--w-alpha) * var(--w-gain) * 68%), transparent),
+      transparent 80%
     ),
     radial-gradient(
-      46% 42% at 30% 78%,
-      color-mix(in srgb, var(--w3) calc(var(--w-alpha) * 55%), transparent),
-      transparent 74%
+      60% 54% at 30% 78%,
+      color-mix(in srgb, var(--w3) calc(var(--w-alpha) * var(--w-gain) * 55%), transparent),
+      transparent 80%
     );
 }
 
@@ -164,6 +193,11 @@ button {
     color 0.3s ease,
     opacity 0.3s ease,
     background-color 0.3s ease;
+}
+/* during a mood change they ride the page's own fade instead (see mood.ts) */
+html[data-mood-fade] a,
+html[data-mood-fade] button {
+  transition: none;
 }
 
 a {

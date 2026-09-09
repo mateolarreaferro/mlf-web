@@ -86,7 +86,7 @@ export default function MateoChat({
               {messages.length === 0 ? (
                 <div className="pt-6">
                   <p className="text-sm text-faint">
-                    Ask me anything about Mateo&apos;s work — Attractor, the Stanford
+                    Ask me anything about Mateo&apos;s work: Attractor, the Stanford
                     research, the music. En español también.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">

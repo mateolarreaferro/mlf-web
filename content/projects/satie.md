@@ -1,9 +1,9 @@
 ---
-name: "Satie"
+name: "SATIE"
 category: "audio world model"
-group: "tools for creativity"
+group: "projects"
 tags: [music, tools for creativity]
-order: 3
+order: 1
 featured: true
 role: "creator"
 media:
@@ -24,7 +24,7 @@ The site styles the name "sAtIe"; normalized to "Satie" here to match the rest
 of this site.
 
 The Unity version lives at github.com/mateolarreaferro/SatieLang and there is a
-video at vimeo.com/1145665713 — both deliberately kept off the card, which
+video at vimeo.com/1145665713, both deliberately kept off the card, which
 shows only "visit". satie.live is the main site. Published as "Satie: A Creativity Support Tool for Authoring Spatial
 Generative Audio" (Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P.)
 at NIME '26.

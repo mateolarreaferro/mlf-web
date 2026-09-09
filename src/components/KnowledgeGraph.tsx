@@ -3,11 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { Project } from "@/lib/projects";
+import { sfxHover, sfxPress } from "@/lib/sfx";
+import { subscribe as onMoodChange } from "@/lib/mood";
+import { ATMOSPHERE_EVENT } from "./WeatherAtmosphere";
 import ProjectMedia from "./ProjectMedia";
 import MateoChat from "./MateoChat";
 
 /*
-  The work as a living graph, with Mateo at the center.
+  The work as a diagram, with Mateo at the center: a symbol, not a physics
+  toy. Every project has a fixed seat on its group's arc; nodes glide to their
+  seats once, breathe almost imperceptibly, and go back when let go of.
   "me" is the photo node — press it and the agent chat opens.
   Pressing a project swaps the graph for a full card in the same
   space: image, name, category, description, video/repo links.
@@ -46,8 +51,11 @@ type Node = {
   project?: Project;
   x: number;
   y: number;
-  vx: number;
-  vy: number;
+  /* the seat this node glides to and returns to */
+  tx: number;
+  ty: number;
+  /* where in its slow breath this node is, so they don't all rise together */
+  phase: number;
   r: number;
   e: number; // emphasis 0..1, lerped
   /* per-node hand: radius multipliers, where the pen started, thread jitter */
@@ -92,6 +100,10 @@ export default function KnowledgeGraph({
     let orbitY = 180;
     let labelFont = "11px var(--font-inter), system-ui, sans-serif";
     let featuredFont = "14px var(--font-inter), system-ui, sans-serif";
+    // how quickly a node closes on its seat per frame, and how far it breathes
+    const GLIDE = 0.08;
+    const BREATH_PX = 1.5;
+    const BREATH_RATE = 0.012; // ≈ 9 s per cycle at 60 fps
 
     const meRand = seeded("mateo");
     const me: Node = {
@@ -100,8 +112,9 @@ export default function KnowledgeGraph({
       kind: "me",
       x: 0,
       y: 0,
-      vx: 0,
-      vy: 0,
+      tx: 0,
+      ty: 0,
+      phase: 0,
       r: 64,
       e: 0,
       // the portrait is only barely off-round — a cut edge, not a scribble
@@ -120,19 +133,42 @@ export default function KnowledgeGraph({
       if (reduceMotion) draw();
     };
 
+    /*
+      The three groups each own a third of the ring around me, so the graph
+      reads as three neighbourhoods rather than one confetti of colour.
+      Projects sit on the left where the eye lands first coming off the bio,
+      experiments over the top right, art below it. Nodes start inside their
+      sector and a weak tangential pull keeps them there without pinning.
+    */
+    const sectorAngle: Record<string, number> = {
+      projects: Math.PI,
+      "experiments / tools": -Math.PI / 3,
+      art: Math.PI / 3,
+    };
+    const sectorOf = (g: string | undefined) => sectorAngle[g ?? ""] ?? -Math.PI / 2;
+    const byGroup = new Map<string, Project[]>();
+    for (const p of projects) {
+      const list = byGroup.get(p.group) ?? [];
+      list.push(p);
+      byGroup.set(p.group, list);
+    }
+
     const nodes: Node[] = [me];
-    projects.forEach((p, i) => {
-      const a = (i / projects.length) * Math.PI * 2 + 0.4;
+    projects.forEach((p) => {
       const rand = seeded(p.slug);
+      const a = sectorOf(p.group);
       nodes.push({
         id: p.slug,
         label: p.name,
         kind: "project",
         project: p,
-        x: Math.cos(a) * 230,
-        y: Math.sin(a) * 170,
-        vx: 0,
-        vy: 0,
+        // begin folded in close to the centre; layout() sets the seats and
+        // the first frames unfold the diagram outward
+        x: Math.cos(a) * 40,
+        y: Math.sin(a) * 30,
+        tx: 0,
+        ty: 0,
+        phase: rand() * Math.PI * 2,
         r: NODE_R,
         e: 0,
         halfW: 40,
@@ -147,29 +183,34 @@ export default function KnowledgeGraph({
     let dragging: Node | null = null;
     let dragMoved = 0;
 
-    let colors = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", sun: "#f9c74f", leaf: "#90be6d", teal: "#4d908e", flame: "#f94144" };
+    /*
+      The three group colours are the weather's three wash swatches (--w1..3),
+      so the graph is painted from the same palette as the page behind it and
+      the legend is the header's swatch row. weather-theme.ts keeps the three
+      two ramp steps apart so the groups never blur into one another.
+    */
+    let colors = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", teal: "#4d908e", w1: "#f9854a", w2: "#a4c067", w3: "#499a8d" };
     const readColors = () => {
       const s = getComputedStyle(document.documentElement);
+      const read = (name: string, fallback: string) => s.getPropertyValue(name).trim() || fallback;
       colors = {
-        ink: s.getPropertyValue("--ink").trim() || colors.ink,
-        faint: s.getPropertyValue("--faint").trim() || colors.faint,
-        accent: s.getPropertyValue("--accent").trim() || colors.accent,
-        soft: s.getPropertyValue("--soft").trim() || colors.soft,
-        paper: s.getPropertyValue("--paper").trim() || colors.paper,
-        sun: s.getPropertyValue("--sun").trim() || colors.sun,
-        leaf: s.getPropertyValue("--leaf").trim() || colors.leaf,
-        teal: s.getPropertyValue("--teal").trim() || colors.teal,
-        flame: s.getPropertyValue("--flame").trim() || colors.flame,
+        ink: read("--ink", colors.ink),
+        faint: read("--faint", colors.faint),
+        accent: read("--accent", colors.accent),
+        soft: read("--soft", colors.soft),
+        paper: read("--paper", colors.paper),
+        teal: read("--teal", colors.teal),
+        w1: read("--w1", colors.w1),
+        w2: read("--w2", colors.w2),
+        w3: read("--w3", colors.w3),
       };
     };
 
     const groupColor = (g: string | undefined) =>
       ({
-        agents: colors.flame,
-        "tools for creativity": colors.sun,
-        perception: colors.leaf,
-        education: colors.teal,
-        "music/art": colors.accent,
+        projects: colors.w1,
+        "experiments / tools": colors.w2,
+        art: colors.w3,
       })[g ?? ""] ?? colors.faint;
 
     const resize = () => {
@@ -197,6 +238,37 @@ export default function KnowledgeGraph({
       me.halfW = me.r + 10;
       me.halfH = me.r + 22;
       ctx.font = labelFont;
+      layout();
+    };
+
+    /*
+      The seats. Each group owns a third of the ring; its projects sit evenly
+      along that arc in catalogue order, alternating between an inner and an
+      outer ring when there are enough of them that labels would otherwise
+      touch. The result is the same every visit: a diagram you can learn.
+    */
+    const SECTOR = (Math.PI * 2) / 3;
+    const layout = () => {
+      for (const [group, peers] of byGroup) {
+        const centre = sectorOf(group);
+        const usable = SECTOR * 0.82;
+        const twoRings = peers.length > 4;
+        peers.forEach((p, k) => {
+          const n = nodes.find((m) => m.id === p.slug);
+          if (!n) return;
+          const t = peers.length > 1 ? k / (peers.length - 1) - 0.5 : 0;
+          const a = centre + t * usable;
+          const ring = twoRings ? (k % 2 === 0 ? 0.84 : 1.12) : 1;
+          n.tx = Math.cos(a) * orbitX * ring;
+          n.ty = Math.sin(a) * orbitY * ring;
+          // a seat must fit on the canvas, label and all
+          const maxX = width / 2 - n.halfW - 4;
+          const maxY = height / 2 - n.halfH - 8;
+          const minY = -height / 2 + n.r + 10;
+          n.tx = Math.max(-maxX, Math.min(maxX, n.tx));
+          n.ty = Math.max(minY, Math.min(maxY, n.ty));
+        });
+      }
     };
 
     /*
@@ -224,12 +296,15 @@ export default function KnowledgeGraph({
             if (aFixed && bFixed) continue;
             const share = aFixed || bFixed ? 1 : 0.5;
 
+            // resolve most of the overlap, not all of it — a full snap makes
+            // crowded layouts (phones) visibly pop as pairs shove each other
+            const relax = 0.6;
             if (ox < oy) {
-              const push = (dx < 0 ? -ox : ox) * share;
+              const push = (dx < 0 ? -ox : ox) * share * relax;
               if (!aFixed) a.x -= push;
               if (!bFixed) b.x += push;
             } else {
-              const push = (dy < 0 ? -oy : oy) * share;
+              const push = (dy < 0 ? -oy : oy) * share * relax;
               if (!aFixed) a.y -= push;
               if (!bFixed) b.y += push;
             }
@@ -238,63 +313,34 @@ export default function KnowledgeGraph({
       }
     };
 
-    const bounds = () => {
-      const mx = width / 2 - 84;
-      const my = height / 2 - 36;
-      for (const n of nodes) {
-        if (n === me) continue;
-        if (n.x < -mx) n.vx += (-mx - n.x) * 0.02;
-        if (n.x > mx) n.vx -= (n.x - mx) * 0.02;
-        if (n.y < -my) n.vy += (-my - n.y) * 0.02;
-        if (n.y > my) n.vy -= (n.y - my) * 0.02;
-      }
-    };
-
     const tick = () => {
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i];
-          const b = nodes[j];
-          let dx = a.x - b.x;
-          let dy = a.y - b.y;
-          const d2 = Math.max(dx * dx + dy * dy, 60);
-          const k = a === me || b === me ? 9000 : 3400;
-          const f = k / d2;
-          const d = Math.sqrt(d2);
-          dx /= d;
-          dy /= d;
-          a.vx += dx * f;
-          a.vy += dy * f;
-          b.vx -= dx * f;
-          b.vy -= dy * f;
-        }
-      }
-      // every project is tethered to an ellipse around me,
-      // so the layout fills whatever rectangle the canvas has
       for (const n of nodes) {
-        if (n === me) continue;
-        const dx = n.x - me.x;
-        const dy = n.y - me.y;
-        const d = Math.max(Math.hypot(dx, dy), 1);
-        const nr = Math.hypot(dx / orbitX, dy / orbitY);
-        const f = (nr - 1) * 2.2;
-        n.vx -= (dx / d) * f;
-        n.vy -= (dy / d) * f;
+        if (n === me || n === dragging) continue;
+        // the breath is radial, a slow rise and fall along the thread
+        const breath = reduceMotion ? 0 : Math.sin(frame * BREATH_RATE + n.phase) * BREATH_PX;
+        const ang = Math.atan2(n.ty, n.tx);
+        const gx = n.tx + Math.cos(ang) * breath;
+        const gy = n.ty + Math.sin(ang) * breath;
+        n.x += (gx - n.x) * GLIDE;
+        n.y += (gy - n.y) * GLIDE;
       }
       separate();
-      bounds();
       for (const n of nodes) {
         if (n === me) continue;
-        if (!reduceMotion) {
-          n.vx += Math.sin(frame * 0.008 + n.x * 0.05) * 0.006;
-          n.vy += Math.cos(frame * 0.009 + n.y * 0.05) * 0.006;
-        }
-        if (n !== dragging) {
-          n.x += n.vx;
-          n.y += n.vy;
-        }
-        n.vx *= 0.85;
-        n.vy *= 0.85;
+        /*
+          The wall. Seats are on the canvas by construction, but a drag can go
+          anywhere and separation can nudge a node outward; every label box
+          stays fully inside, so no name is ever cut at an edge. The box hangs
+          below the dot, hence the asymmetric vertical limits.
+        */
+        const pad = 4;
+        const maxX = width / 2 - n.halfW - pad;
+        const minY = -height / 2 + n.r + 6 + pad;
+        const maxY = height / 2 - n.halfH - 4 - pad;
+        if (n.x < -maxX) n.x = -maxX;
+        else if (n.x > maxX) n.x = maxX;
+        if (n.y < minY) n.y = minY;
+        else if (n.y > maxY) n.y = maxY;
       }
     };
 
@@ -438,8 +484,12 @@ export default function KnowledgeGraph({
     };
 
     resize();
-    for (let i = 0; i < 320; i++) tick();
     if (reduceMotion) {
+      for (const n of nodes) {
+        n.x = n.tx;
+        n.y = n.ty;
+      }
+      for (let i = 0; i < 12; i++) tick();
       draw();
     } else {
       raf = requestAnimationFrame(loop);
@@ -478,6 +528,7 @@ export default function KnowledgeGraph({
         dragging = n;
         dragMoved = 0;
         canvas.setPointerCapture(e.pointerId);
+        sfxPress();
       }
     };
     const onMove = (e: PointerEvent) => {
@@ -497,6 +548,7 @@ export default function KnowledgeGraph({
         if (n !== hovered) {
           hovered = n;
           canvas.style.cursor = n ? "pointer" : "default";
+          if (n && e.pointerType === "mouse") sfxHover();
           if (reduceMotion) draw();
         }
       }
@@ -523,6 +575,10 @@ export default function KnowledgeGraph({
     canvas.addEventListener("pointerup", onUp);
     canvas.addEventListener("pointerleave", onLeave);
     window.addEventListener("resize", resize);
+    // the palette lives in CSS variables; pick the new set up the moment the
+    // mood flips or the weather colours land, not 90 frames later
+    const unsubscribeMood = onMoodChange(readColors);
+    window.addEventListener(ATMOSPHERE_EVENT, readColors);
     return () => {
       cancelAnimationFrame(raf);
       canvas.removeEventListener("pointerdown", onDown);
@@ -530,6 +586,8 @@ export default function KnowledgeGraph({
       canvas.removeEventListener("pointerup", onUp);
       canvas.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("resize", resize);
+      unsubscribeMood();
+      window.removeEventListener(ATMOSPHERE_EVENT, readColors);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects]);
@@ -539,7 +597,7 @@ export default function KnowledgeGraph({
       <div className="relative h-[520px] w-full sm:h-[560px] lg:h-[min(600px,calc(100dvh-16rem))] xl:h-[min(700px,calc(100dvh-16rem))]">
         <canvas
           ref={canvasRef}
-          className={`h-full w-full touch-none transition-opacity duration-500 ${
+          className={`h-full w-full touch-pan-y transition-opacity duration-500 ${
             selected ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
           aria-label="A living graph of all projects with Mateo at the center. Press the photo to chat with his agent; press a project to open its card."
@@ -589,11 +647,9 @@ export default function KnowledgeGraph({
         }`}
       >
         {[
-          ["agents", "var(--flame)"],
-          ["tools for creativity", "var(--sun)"],
-          ["perception", "var(--leaf)"],
-          ["education", "var(--teal)"],
-          ["music/art", "var(--accent)"],
+          ["projects", "var(--w1)"],
+          ["experiments / tools", "var(--w2)"],
+          ["art", "var(--w3)"],
         ].map(([name, color]) => (
           <span key={name} className="label flex items-center gap-2">
             <span

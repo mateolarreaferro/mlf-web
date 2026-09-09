@@ -79,6 +79,8 @@ export function sampleRamp(pos: number): string {
 /* -5°C reads as "cold", 38°C as "hot"; everything between rides the ramp. */
 const COLD_C = -5;
 const HOT_C = 38;
+/* distance between the three swatches, as a fraction of the ramp (≈2 stops) */
+const SPREAD = 0.2;
 
 export function atmosphereFor(w: Weather): Atmosphere {
   let pos = (w.temperature - COLD_C) / (HOT_C - COLD_C);
@@ -94,18 +96,23 @@ export function atmosphereFor(w: Weather): Atmosphere {
 
   // a clear sky gets its full colour; overcast washes out toward neutral
   const clarity = 1 - clamp(w.cloudCover, 0, 100) / 100;
-  let alpha = 0.13 + 0.11 * clarity;
-  if (!w.isDay) alpha *= 0.68;
+  let alpha = 0.3 + 0.12 * clarity;
+  if (!w.isDay) alpha *= 0.85;
 
   // wind moves the air: calm is a slow 80s cycle, a gale is a brisk 26s one
   let driftA = clamp(80 - clamp(w.windSpeed, 0, 45) * 1.3, 26, 80);
   if (!w.isDay) driftA *= 1.25; // everything settles after dark
 
+  /*
+    The three colours sit two ramp steps apart around the sampled point, and
+    the point is kept far enough from either end that they never collapse into
+    one. They have to stay distinct: besides painting the washes, they are the
+    graph's three group colours, so the legend is literally the header swatches.
+  */
+  const centre = clamp(pos, SPREAD, 1 - SPREAD);
   return {
     isDay: w.isDay,
-    // spread the three layers around the sampled point so the washes differ
-    // from each other without ever jumping to the far end of the ramp
-    colors: [sampleRamp(pos - 0.1), sampleRamp(pos + 0.06), sampleRamp(pos + 0.16)],
+    colors: [sampleRamp(centre - SPREAD), sampleRamp(centre), sampleRamp(centre + SPREAD)],
     alpha: Number(alpha.toFixed(3)),
     driftA: Math.round(driftA),
     driftB: Math.round(driftA * 1.31),

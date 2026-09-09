@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "Prisms VR"
 category: "embodied learning"
-group: "education"
+group: "projects"
 tags: [education, games]
-order: 23
+order: 7
 featured: true
 role: "unity developer"
 image: "/projects/prisms.png"
@@ -19,4 +18,4 @@ At Prisms of Reality, I worked as a Unity developer on a large-scale VR educatio
 
 This is written in the first person on the old site, unlike most other entries.
 Prisms is a16z-backed. The old page also headlines a section "Multimodal
-Grammars" — the standardization work is the part Mateo emphasizes.
+Grammars"; the standardization work is the part Mateo emphasizes.

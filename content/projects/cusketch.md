@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "cuSketch"
 category: "software library for audio-oriented extended reality"
-group: "tools for creativity"
+group: "projects"
 tags: [tools for creativity, music, games]
-order: 15
+order: 5
 featured: true
 year: "2022"
 role: "initiator and concept-creator"

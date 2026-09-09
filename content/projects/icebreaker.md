@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "Icebreakers"
 category: "supporting weak-tie formation with generative agents"
-group: "agents"
+group: "experiments / tools"
 tags: [agents, education]
-order: 11
+order: 16
 role: "initiator + concept + agent architecture"
 image: "/projects/icebreaker.png"
 repo: "https://github.com/mateolarreaferro/Icebreakers"
@@ -21,5 +20,5 @@ Renamed from "Icebreaker" to "Icebreakers" to match the old site and the repo.
 Full old-site subtitle: "Supporting Weak-Tie Formation for International
 Students with Generative Agents." The `paper` link is the project report.
 
-Pairs with [[love-simulations]] — both use generative agents to rehearse
+Pairs with [[love-simulations]]; both use generative agents to rehearse
 social situations rather than to replace the person in them.

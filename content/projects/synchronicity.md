@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "Synchronicity"
 category: "bio-graphic notation system"
-group: "tools for creativity"
+group: "experiments / tools"
 tags: [neuro, music]
-order: 18
+order: 11
 role: "initiator / concept + software architecture"
 image: "/projects/synchronicity.png"
 video: "https://vimeo.com/777687036"
@@ -19,4 +18,4 @@ By giving participants a responsive medium grounded in their own physiology, Syn
 ## notes
 
 The old site titles this page "Bio-Graphic Notations" and carries an MIT Media
-Lab logo — confirm the affiliation before stating it publicly.
+Lab logo; confirm the affiliation before stating it publicly.

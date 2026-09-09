@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
-name: "Statistical Learning"
+name: "Auditory Statistical Learning"
 category: "auditory neuroscience"
-group: "perception"
+group: "projects"
 tags: [neuro, education, music]
-order: 21
+order: 6
 year: "2022"
 image: "/projects/statistical-learning.png"
 link: "https://bpmresearchlab.org/"
@@ -16,7 +15,7 @@ Two studies on how listeners internalize musical structure they were never expli
 
 ## notes
 
-The card description above is mine — the old page leads straight into the two
+The card description above is mine; the old page leads straight into the two
 abstracts with no summary line. Replace with Mateo's own framing when he has it.
 
 **Auditory statistical learning in classical and jazz musicians**

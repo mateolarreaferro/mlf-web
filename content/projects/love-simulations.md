@@ -1,10 +1,9 @@
 ---
-hidden: true   # parked for content review — remove this line to publish
 name: "LoveSims"
 category: "generative agent simulation framework for relationship development"
-group: "agents"
+group: "projects"
 tags: [agents, games]
-order: 10
+order: 4
 role: "created with Xuyang Zhu, Xingyi Zhang, and Andrew Park"
 image: "/projects/love-simulations.png"
 video: "https://vimeo.com/1035385847"
@@ -17,7 +16,7 @@ A simulation tool for exploring how people think, feel, and adapt within everyda
 
 ## notes
 
-Created with Xuyang Zhu, Xingyi Zhang, and Andrew Park. Published at CHI —
+Created with Xuyang Zhu, Xingyi Zhang, and Andrew Park. Published at CHI;
 the paper link above is the ACM DL full text (10.1145/3706599.3720011).
 
 Sits alongside [[icebreaker]] as social simulation with generative agents, and
