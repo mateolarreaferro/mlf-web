@@ -8,6 +8,7 @@ featured: true
 role: "creator"
 media:
   - "/projects/satie-panel.png"
+paper: "https://nime.org/proceedings/2026/nime2026_157.pdf"
 link: "https://satie.live"
 ---
 

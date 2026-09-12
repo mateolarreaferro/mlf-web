@@ -27,6 +27,13 @@ year: 2025
 category: human-computer interaction
 link: https://dl.acm.org/doi/10.1145/3706599.3720011
 
+## Satie: A Creativity Support Tool for Authoring Spatial Generative Audio
+authors: Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P.
+venue: New Interfaces for Musical Expression (NIME '26)
+year: 2026
+category: computer music
+link: https://nime.org/proceedings/2026/nime2026_157.pdf
+
 ## From Brainwaves to Csound: An Exploratory Audiovisual System with EEG and LLM-Based Agent Control in Unity
 authors: Gao, C., Larrea, M., & Boulanger, R.
 venue: 8th International Csound Conference (ICSC '26)
@@ -45,14 +52,6 @@ link: https://tube.mucs.club/w/tr71c7LEmvLiM63JjwtcDb
 ## Introducing Dr.C: 40+ Years of Csound and Computer Music, Now an Agentic AI Collaborator
 authors: Larrea, M., & Boulanger, R.
 venue: 8th International Csound Conference (ICSC '26)
-year: 2026
-category: computer music
-note: paper accepted
-link:
-
-## Satie: A Creativity Support Tool for Authoring Spatial Generative Audio
-authors: Larrea, M., Boulanger, R., Zhang, Y., Chen, J., & Sodre, P.
-venue: New Interfaces for Musical Expression (NIME '26)
 year: 2026
 category: computer music
 note: paper accepted
