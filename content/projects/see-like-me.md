@@ -7,8 +7,7 @@ order: 15
 role: "unity developer / researcher"
 image: "/projects/see-like-me.png"
 ---
-
-Patients with schizophrenia often struggle to articulate or recognize their own symptoms. Developed at the Harvard Innovation Labs in collaboration with leading researchers, See Like Me is a virtual reality–based diagnostic tool that recreates patients' anomalous perceptual experiences, improving patient–doctor communication and supporting earlier, more accurate diagnosis and treatment.
+Patients with schizophrenia often struggle to articulate or recognize their own symptoms. Developed at the Harvard Innovation Labs in collaboration with leading researchers, See Like Me is a virtual-reality diagnostic tool that recreates patients' anomalous perceptual experiences, improving patient-doctor communication and supporting earlier, more accurate diagnosis and treatment.
 
 ---
 

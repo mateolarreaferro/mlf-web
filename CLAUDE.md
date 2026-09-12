@@ -165,9 +165,26 @@ One page (`src/app/page.tsx`):
    fades out and `ProjectPanel.tsx` takes its place (category, name,
    year · role, "in development" dot, description, link pills), while the
    card on the right becomes pure media — `ProjectMedia.tsx` renders the
-   project's `media` list as a vertical snap-scrolling stack (images, Vimeo/
-   YouTube, arbitrary iframe embeds, local p5-style sketches), with dot
-   navigation when there's more than one. `HeroGraph.tsx` owns the selected
+   first item of the project's `media` (an image, a Vimeo/YouTube video, an
+   arbitrary iframe embed, or a local p5-style sketch), or a live Lorenz
+   attractor when the project has none. **One item per project**: the
+   snap-scrolling multi-slide stack was tried and cut, so a video a project
+   only wants linked belongs in `video:`, not in `media`.
+
+   **The card is shaped to its picture.** `measure()` in `projects.ts` reads
+   the intrinsic size out of a local image's file header (PNG/JPEG/GIF/WebP,
+   no dependency) at build time, and the card takes that aspect ratio: height
+   capped at 70% of the graph box, width at 90% of the column, centred either
+   way. A fixed square cropped every wide screenshot in half, and full bleed
+   read as a billboard. Videos and embeds fall back to 16:9, anything
+   unmeasurable to a square.
+
+   The two columns are bottom-aligned, so the left one takes a fixed
+   `--graph-h + 6.5rem` (twice the legend strip under the card) while a
+   project is open — that puts its centre, and the panel centred inside it,
+   exactly on the centre of the image whatever height the copy is.
+   `--graph-h` is the graph box's height, declared once in `globals.css`
+   because both columns need it. `HeroGraph.tsx` owns the selected
    state for both columns; `KnowledgeGraph` is controlled via `selected` /
    `onSelect`. Esc closes. Deep link: `/?project=<slug>`.
 3. **Thoughts** — reverse-numbered list; posts at `/thoughts/[slug]`.
@@ -192,12 +209,13 @@ hidden: true         # optional, default false → file stays, project leaves th
 featured: true       # optional, default false → bigger label in the graph
                      # (all nodes share one radius, NODE_R)
 image: "/projects/attractor.png"   # optional; shorthand for a one-item media list
-media:                             # optional; the right-hand panel, in order
-  - "/projects/a.png"                        # bare string — type is inferred
+media:                             # optional; the right-hand panel. ONE item —
+                                   # multi-slide cards were tried and cut, and
+                                   # anything past the first is ignored
   - { image: "/projects/b.png", fit: contain, caption: "what this shows" }
-  - { vimeo: "https://vimeo.com/123456" }    # or { youtube: "..." }
-  - { embed: "https://editor.p5js.org/.../embed" }   # any iframe-able URL
-  - { sketch: "lorenz" }                     # local component, see ProjectMedia
+  # other shapes: a bare "/projects/a.png" string (type inferred),
+  # { vimeo: "..." } or { youtube: "..." }, { embed: "<any iframe-able URL>" },
+  # { sketch: "lorenz" } (local component, see ProjectMedia)
 video: "https://vimeo.com/..."     # optional → "watch video" pill
 repo: "https://github.com/..."     # optional → "repository" pill
 paper: "https://..."               # optional → "read paper" pill

@@ -592,9 +592,22 @@ export default function KnowledgeGraph({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects]);
 
+  /*
+    The card takes the shape of whatever it holds: a measured image's own
+    ratio (see `measure` in lib/projects), 16:9 for video and embeds, square
+    for a sketch or for anything we couldn't measure.
+  */
+  const item = selected?.media[0];
+  const cardRatio =
+    item?.width && item.height
+      ? item.width / item.height
+      : item && item.type !== "sketch" && item.type !== "image"
+        ? 16 / 9
+        : 1;
+
   return (
     <figure className="my-6 lg:my-0">
-      <div className="relative h-[520px] w-full sm:h-[560px] lg:h-[min(600px,calc(100dvh-16rem))] xl:h-[min(700px,calc(100dvh-16rem))]">
+      <div className="relative h-[var(--graph-h)] w-full">
         <canvas
           ref={canvasRef}
           className={`h-full w-full touch-pan-y transition-opacity duration-500 ${
@@ -609,7 +622,16 @@ export default function KnowledgeGraph({
               key={selected.slug}
               role="dialog"
               aria-label={selected.name}
-              className="absolute inset-0 overflow-hidden rounded-3xl bg-soft"
+              /* Centred in the graph box and shaped to its picture: a fixed
+                 square cropped every wide screenshot in half. Height is
+                 capped at 70% of the box — at full bleed the card swallowed
+                 the viewport and read as a billboard — and width at 90% of
+                 the column, which is what a wide, short image hits first. */
+              className="absolute inset-0 m-auto overflow-hidden rounded-3xl bg-soft"
+              style={{
+                aspectRatio: cardRatio,
+                width: `min(90%, calc(var(--graph-h) * 0.7 * ${cardRatio}))`,
+              }}
               initial={{ opacity: 0, scale: 0.96, filter: "blur(6px)" }}
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0, scale: 0.96, filter: "blur(6px)" }}
@@ -618,7 +640,7 @@ export default function KnowledgeGraph({
               <button
                 onClick={() => onSelect(null)}
                 aria-label="Back to the graph"
-                className="absolute right-4 top-4 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full bg-paper/85 text-ink backdrop-blur-sm transition-colors hover:text-accent"
+                className="absolute right-3 top-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full bg-paper/85 text-ink backdrop-blur-sm transition-colors hover:text-accent"
               >
                 ✕
               </button>

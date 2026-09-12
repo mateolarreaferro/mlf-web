@@ -29,6 +29,13 @@ export type MediaItem = {
   caption?: string;
   /** images only; defaults to cover */
   fit?: "cover" | "contain";
+  /**
+   * Intrinsic pixel size, filled in at build time for local images (see
+   * `measure`). The card is shaped to this, so a wide screenshot gets a wide
+   * card instead of being cropped into a square one.
+   */
+  width?: number;
+  height?: number;
 };
 
 export type Project = {
@@ -62,6 +69,75 @@ export type Project = {
 };
 
 const IMAGE_EXT = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
+
+/*
+  Intrinsic size of a local image, read straight out of the file header —
+  PNG, JPEG, GIF and WebP cover everything in public/projects/. This runs at
+  build time on the server and is the only reason the panel can shape a card
+  to its picture; a format we can't read just falls back to a square card.
+*/
+function measure(src: string): { width: number; height: number } | undefined {
+  if (!src.startsWith("/")) return undefined;
+  let b: Buffer;
+  try {
+    b = fs.readFileSync(path.join(process.cwd(), "public", src));
+  } catch {
+    return undefined;
+  }
+
+  // PNG: width and height are the first two fields of the IHDR chunk
+  if (b.length > 24 && b.readUInt32BE(0) === 0x89504e47) {
+    return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) };
+  }
+
+  // GIF: logical screen descriptor, little-endian, right after the header
+  if (b.length > 10 && b.toString("ascii", 0, 3) === "GIF") {
+    return { width: b.readUInt16LE(6), height: b.readUInt16LE(8) };
+  }
+
+  // WebP: one of three chunk flavours inside the RIFF container
+  if (b.length > 30 && b.toString("ascii", 8, 12) === "WEBP") {
+    const kind = b.toString("ascii", 12, 16);
+    if (kind === "VP8X") {
+      return {
+        width: 1 + b.readUIntLE(24, 3),
+        height: 1 + b.readUIntLE(27, 3),
+      };
+    }
+    if (kind === "VP8 ") {
+      return {
+        width: b.readUInt16LE(26) & 0x3fff,
+        height: b.readUInt16LE(28) & 0x3fff,
+      };
+    }
+    if (kind === "VP8L") {
+      const bits = b.readUInt32LE(21);
+      return {
+        width: (bits & 0x3fff) + 1,
+        height: ((bits >> 14) & 0x3fff) + 1,
+      };
+    }
+  }
+
+  // JPEG: walk the segments to the start-of-frame, which carries the size
+  if (b.length > 4 && b.readUInt16BE(0) === 0xffd8) {
+    let i = 2;
+    while (i + 9 < b.length) {
+      if (b[i] !== 0xff) {
+        i += 1;
+        continue;
+      }
+      const marker = b[i + 1];
+      // SOF0–SOF15, minus the three that aren't frame headers
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { width: b.readUInt16BE(i + 7), height: b.readUInt16BE(i + 5) };
+      }
+      i += 2 + b.readUInt16BE(i + 2);
+    }
+  }
+
+  return undefined;
+}
 
 /* Infer a media type from a bare string, so `media: ["/projects/a.png"]` works. */
 function fromString(src: string): MediaItem | null {
@@ -110,14 +186,15 @@ function toMediaItem(raw: unknown): MediaItem | null {
 /* `media` wins; otherwise fall back to the single `image` field. */
 function normalizeMedia(data: Record<string, unknown>): MediaItem[] {
   const raw = data.media;
-  if (Array.isArray(raw)) {
-    const items = raw.map(toMediaItem).filter((m): m is MediaItem => m !== null);
-    if (items.length) return items;
+  const items = Array.isArray(raw)
+    ? raw.map(toMediaItem).filter((m): m is MediaItem => m !== null)
+    : [];
+  if (!items.length && typeof data.image === "string" && data.image) {
+    items.push({ type: "image", src: data.image, fit: "cover" });
   }
-  if (typeof data.image === "string" && data.image) {
-    return [{ type: "image", src: data.image, fit: "cover" }];
-  }
-  return [];
+  return items.map((m) =>
+    m.type === "image" ? { ...m, ...measure(m.src) } : m,
+  );
 }
 
 const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");

@@ -6,9 +6,6 @@ tags: [neuro, music]
 order: 19
 media:
   - { image: "/projects/eeg-eran.webp", fit: contain, caption: "ERAN responses to in-key and out-of-key stimuli" }
-  - { image: "/projects/eeg-induced.webp", fit: contain, caption: "Induced alpha dynamics across mode transitions" }
-  - { image: "/projects/eeg-studies.png", caption: "In the lab" }
-  - { vimeo: "https://vimeo.com/775133827" }
 video: "https://vimeo.com/775133827"
 paper: "https://drive.google.com/file/d/12h7f6cAZfHtEYtqvNrvMdNY96hwS9Dzx/view?usp=sharing"
 ---

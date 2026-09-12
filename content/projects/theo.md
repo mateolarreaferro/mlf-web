@@ -4,14 +4,9 @@ category: "domain-specific language"
 group: "experiments / tools"
 order: 10
 repo: "https://github.com/mateolarreaferro/Theo"
-media:
-  - { image: "/projects/theo-studio.png", caption: "Theo Studio: freeform input, the .theo editor, and the rendered prose" }
-  - { image: "/projects/theo-graph.png", caption: "Graph view: sections, claims, and arguments and how they connect" }
+image: "/projects/theo-graph.png"
 ---
-
-Theo is a thinking tool for writers. You describe what you want to say in a plain-text notation for the structure of an essay: its sections, claims, arguments, and references. The shape of the whole argument is laid out before a single sentence exists, and you decide what stays, what moves, and what gets cut. Only then does Theo render each section into prose.
-
-The notation carries the semantics of academic writing, from rhetorical modes to claim strengths, so an essay can be reasoned about at the level of ideas rather than sentences. A set of cognitive agents, the Critic, the Oblique Strategist, and the Facilitator, reads the rendered prose and returns structured feedback. They never rewrite anything. The point is to keep the loop of action and reflection that writing is made of.
+Theo is a thinking tool for writers. You describe what you want to say in a plain-text notation for the structure of an essay: its sections, claims, arguments, and references. The whole argument is laid out before a single sentence exists, and you decide what stays, what moves, and what gets cut. Only then does Theo render each section into prose. A set of cognitive agents, the Critic, the Oblique Strategist, and the Facilitator, reads the result and returns structured feedback. They never rewrite anything. The point is to keep the loop of action and reflection that writing is made of.
 
 ---
 

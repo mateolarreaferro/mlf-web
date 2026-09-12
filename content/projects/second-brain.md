@@ -7,11 +7,9 @@ order: 14
 year: "2026–"
 role: "creator"
 isActive: true
+image: "/projects/cerebro-digital.png"
 ---
-
-A company is mostly memory: what it learned, why it chose what it chose, what it already tried and abandoned. Almost none of that gets written down, and what does goes stale the moment it is filed. Cerebro Digital (Second Brain) is the company brain I built for Attractor: a wiki the model maintains rather than one people are supposed to remember to update.
-
-The division of labor is the idea. Humans curate sources and ask questions; the model owns the bookkeeping: writing pages, updating cross-references, keeping the whole thing consistent with itself. Raw material stays immutable underneath, the wiki layer above it is continuously rewritten, and the schema governing both co-evolves with use. Drop in a paper and it gets integrated. Ask a question and the answer arrives with its provenance. Run a lint and the system reports its own contradictions, orphans, and stale claims. A knowledge base that can audit itself is a different kind of object from a folder of documents.
+A company is mostly memory: what it learned, why it chose what it chose, what it already tried and abandoned. Almost none of that gets written down, and what does goes stale the moment it is filed. Cerebro Digital is the company brain I built for Attractor: a wiki the model maintains rather than one people are supposed to remember to update. Humans curate sources and ask questions; the model owns the bookkeeping, writing pages, updating cross-references, and keeping the whole thing consistent with itself. Run a lint and it reports its own contradictions, orphans, and stale claims.
 
 ---
 
@@ -51,5 +49,6 @@ Attractor's brain is the company case.
 Related: [[augtwins]]; a twin is a brain with a voice and a point of view.
 [[attractor]] is the company this was built for.
 
-Needs: an image (a sanitized brain-UI screenshot?), and a decision on whether
-there is anything public to link to.
+The card image is the brain UI's own graph view, cropped to drop the menu
+bar. Nothing on it is company-specific: node titles are unreadable at that
+size and the only text is the section names. Still nothing public to link to.

@@ -79,6 +79,32 @@ html[data-mood="dark"] {
   --w-drift-b: 86s;
 }
 
+/*
+  The height of the graph box, as one value. Two things need it: the box
+  itself, and the left column, which sizes itself to `--graph-h + 6.5rem`
+  (twice the legend strip below the card) so that the bottom-aligned column's
+  centre lands exactly on the centre of the project card. Change it here and
+  the copy stays level with the image.
+*/
+:root {
+  --graph-h: 520px;
+}
+@media (min-width: 640px) {
+  :root {
+    --graph-h: 560px;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --graph-h: min(600px, calc(100dvh - 16rem));
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --graph-h: min(700px, calc(100dvh - 16rem));
+  }
+}
+
 html {
   background: var(--paper);
   /* the mood changes like the light in a room, not like a switch */

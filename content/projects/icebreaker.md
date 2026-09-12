@@ -9,8 +9,7 @@ image: "/projects/icebreaker.png"
 repo: "https://github.com/mateolarreaferro/Icebreakers"
 paper: "https://drive.google.com/file/d/1aZANf1U1bru9NzCD3sw--O4OiIKIM_0d/view?usp=sharing"
 ---
-
-Icebreakers is a co-pilot system designed to help international students participate more comfortably in newly formed groups. Entering a new social setting often involves navigating silence, uncertainty, and the fear of making a social or linguistic mistake. To ease this transition, the system introduces two generative agents that work together. A shared facilitator guides the group with culturally aware prompts that deepen conversation at a steady pace. A personal companion provides private support by helping users interpret messages, check phrasing, and understand cultural cues. Rather than speaking for anyone, these agents are intended to act as co-pilots that make it feel safer and more manageable for students to speak for themselves.
+Icebreakers is a co-pilot system designed to help international students participate more comfortably in newly formed groups. Entering a new social setting often means navigating silence, uncertainty, and the fear of making a social or linguistic mistake. Two generative agents work together to ease that transition: a shared facilitator guides the group with culturally aware prompts, and a personal companion offers private support with interpreting messages, checking phrasing, and reading cultural cues. Rather than speaking for anyone, they make it safer and more manageable for students to speak for themselves.
 
 ---
 

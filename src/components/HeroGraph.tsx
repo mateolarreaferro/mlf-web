@@ -57,8 +57,16 @@ export default function HeroGraph({ projects }: { projects: Project[] }) {
        the two columns are centred independently */
     <section className="grid items-end gap-12 lg:min-h-[calc(100dvh-9rem)] lg:grid-cols-[minmax(360px,34rem)_1fr] lg:gap-24 xl:gap-32">
       {/* hero and panel share one grid cell, so the column is always as tall
-          as whichever is showing — never an inner scroll region */}
-      <div className="grid min-w-0">
+          as whichever is showing — never an inner scroll region.
+
+          With a project open the cell takes a fixed height instead: the graph
+          box plus twice the legend strip beneath it. Both columns are
+          bottom-aligned, so that makes the cell's centre — and the panel
+          centred in it — land exactly on the centre of the card, whatever
+          height the copy happens to be. */}
+      <div
+        className={`grid min-w-0 ${selected ? "lg:h-[calc(var(--graph-h)+6.5rem)]" : ""}`}
+      >
         {/* fades out immediately on select, but waits for the panel to
             clear before fading back in — otherwise the two overlap */}
         <motion.div

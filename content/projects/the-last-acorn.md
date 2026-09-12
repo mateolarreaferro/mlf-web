@@ -6,6 +6,7 @@ tags: [games, music]
 order: 22
 featured: true
 role: "systems developer, game feel, audio/music"
+image: "/projects/the-last-acorn.png"
 link: "https://studio-team22.itch.io/the-last-acorn"
 repo: "https://github.com/mateolarreaferro/TheLastAcorn"
 paper: "https://mechanicsofmagic.com/2025/06/06/p2-the-last-acorn/"

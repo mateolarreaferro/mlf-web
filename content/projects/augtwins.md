@@ -11,10 +11,7 @@ link: "https://www.machinemonks.studio/"
 video: "https://vimeo.com/1113021410"
 paper: "https://drive.google.com/file/d/1CgxNw0BxJETs7eWoWltHROUUnUVyW71D/view?usp=sharing"
 ---
-
-A digital twin is a way of extending a person past the edges of one body and one lifetime: their memory, their reasoning, the particular shape of their attention. TWINS is a pipeline for building them: generative agents grounded in someone's own memories, conversational style, and relational history.
-
-Most AI is asymmetrical. You prompt, it answers. But a system that knows how you think can prompt back, surfacing the thread you dropped, pressing where you flinched, asking the question you would have asked yourself with more time. That symmetry is the point: not an assistant that waits, but a counterpart that provokes. It also means twins reach past personal AI into cultural preservation and museums, where a way of thinking can outlast the person who held it.
+A digital twin extends a person past the edges of one body and one lifetime: their memory, their reasoning, the particular shape of their attention. TWINS is a pipeline for building them, with generative agents grounded in someone's own memories, conversational style, and relational history. Most AI is asymmetrical: you prompt, it answers. A system that knows how you think can prompt back, surfacing the thread you dropped or pressing where you flinched. That symmetry is the point, and it carries twins past personal AI into cultural preservation, where a way of thinking can outlast the person who held it.
 
 ---
 
