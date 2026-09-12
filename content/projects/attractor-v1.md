@@ -8,9 +8,12 @@ featured: true
 year: "2025"
 role: "founder"
 link: "https://attractor.live"
+media:
+  - { vimeo: "https://vimeo.com/1217030363" }
+  - { image: "/projects/attractor-v1.jpg", fit: contain }
 ---
 
-Generative agent-based modeling: societies of language-model agents you can run forward to rehearse a decision inside a simulated population before making it in the real one. The first Attractor, before the audio world models.
+Attractor v1 was generative agent-based modeling as infrastructure. We built the API for running societies of language-model agents forward, so a decision can be rehearsed inside a simulated population before it is made in the real one: define a population, run the simulation, read the results back. It was the first Attractor, before the audio world models.
 
 ---
 
@@ -27,7 +30,6 @@ Lineage: grew out of [[love-simulations]] and [[icebreaker]], both generative
 agent simulations of social situations; v1 generalised that into a modeling
 tool for complex social systems. Mateo is founder and CEO of the company.
 
-Card description is mine, written Sept 2026 when the node was added. Replace
-with Mateo's own framing. Needs: an image or a short screen recording of a
-simulation for the media panel (it currently falls back to the live Lorenz
-attractor), and the year if 2025 is wrong.
+Media: a walkthrough video (vimeo.com/1217030363) and the attractor.live
+butterfly logo. Mateo's framing of the work: the team built the infrastructure,
+exposed through an API, for running GABM simulations.
