@@ -4,14 +4,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 /*
-  The wordmark is also "close whatever is open". Pressing it has to clear an
-  open project panel even when we are already on "/" — in that case the Link
-  has nothing to navigate to, so nothing would re-render and the panel would
-  stay put. HeroGraph owns that state and lives in a different tree, so the
-  two talk through one event rather than a shared store.
+  The wordmark is also "close whatever is open". An open project lives in the
+  URL as /?project=<slug> (see HeroGraph), so a plain Link back to "/" is
+  enough to close it: the search param goes, and the panel with it.
 */
-export const HOME_EVENT = "mlf:home";
-
 export default function HomeLink({
   className,
   children,
@@ -20,11 +16,7 @@ export default function HomeLink({
   children: ReactNode;
 }) {
   return (
-    <Link
-      href="/"
-      className={className}
-      onClick={() => window.dispatchEvent(new CustomEvent(HOME_EVENT))}
-    >
+    <Link href="/" className={className}>
       {children}
     </Link>
   );

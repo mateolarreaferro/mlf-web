@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { FaGithub, FaInstagram, FaLinkedinIn, FaSoundcloud } from "react-icons/fa6";
-import { AnimatedText, Reveal } from "./motion";
+import { AnimatedText, hoverSpring, Reveal, useTempo } from "./motion";
 
 const socials = [
   { href: "https://www.instagram.com/larreaferro/", label: "Instagram", Icon: FaInstagram },
@@ -36,6 +36,7 @@ function ProjectLink({ slug, children }: { slug: string; children: React.ReactNo
 }
 
 export default function Hero() {
+  const tempo = useTempo();
   return (
     <div>
       <h1 className="text-2xl font-light leading-snug tracking-tight sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3] xl:text-[2.4rem] xl:leading-[1.25]">
@@ -97,7 +98,7 @@ export default function Hero() {
               className="flex size-10 items-center justify-center rounded-full bg-soft text-faint transition-colors hover:text-accent"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 400, damping: 18 }}
+              transition={hoverSpring(tempo)}
             >
               <Icon className="size-[18px]" />
             </motion.a>

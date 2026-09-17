@@ -57,7 +57,8 @@ export function nextOverride(current: Mood, isDay: boolean | null, now: Date): O
 /* ---------- DOM layer (client only) ---------- */
 
 let daylight: boolean | null = null;
-const listeners = new Set<(m: Mood) => void>();
+type Listener = (m: Mood, fadeMs: number) => void;
+const listeners = new Set<Listener>();
 
 function readOverride(): Override | null {
   try {
@@ -91,28 +92,92 @@ export function isOverridden(): boolean {
   return overrideIsLive(readOverride(), Date.now());
 }
 
-export const FADE_MS = 700; // must match the transitions in globals.css
+/*
+  Two speeds. A press is answered in FADE_MS: you asked, it happened. The day
+  itself moves in DAWN_MS: when sunset reaches a page that is already open, or
+  an override runs out, the room dims over a minute, which nobody sees happen
+  and everybody finds right afterwards. The first forecast after load still
+  takes the fast path, because a page that opens grey and stays grey for a
+  minute reads as broken, not as evening.
+*/
+export const FADE_MS = 700; // must match --mood-fade in globals.css
+export const DAWN_MS = 60_000;
 let fadeTimer: ReturnType<typeof setTimeout> | undefined;
+let gainTimer: ReturnType<typeof setInterval> | undefined;
 
-function apply(m: Mood) {
-  if (currentMood() === m) return;
+/*
+  The wash gain (how much coloured light the dark paper gets) is a CSS token
+  and cannot be transitioned, so a slow fade carries it by hand: read the
+  before and after values around the flip, then walk an inline value between
+  them at ten steps a second and hand control back to the stylesheet at the
+  end. Ten a second is plenty for a minute-long move, and it costs the
+  browser only the two wash layers.
+*/
+function rampGain(from: number, ms: number) {
   const root = document.documentElement;
-  /*
-    While the page fades, elements with their own colour transition (links,
-    buttons) must not restart theirs every frame or they trail the page by
-    seconds. `data-mood-fade` lets globals.css switch those off for the ride.
-  */
-  root.dataset.moodFade = "";
-  clearTimeout(fadeTimer);
-  fadeTimer = setTimeout(() => delete root.dataset.moodFade, FADE_MS + 50);
-  root.dataset.mood = m;
-  for (const l of listeners) l(m);
+  root.style.removeProperty("--w-gain");
+  const to = Number(getComputedStyle(root).getPropertyValue("--w-gain")) || 1;
+  clearInterval(gainTimer);
+  if (from === to) return;
+  const start = performance.now();
+  root.style.setProperty("--w-gain", String(from));
+  gainTimer = setInterval(() => {
+    const t = Math.min(1, (performance.now() - start) / ms);
+    const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+    root.style.setProperty("--w-gain", (from + (to - from) * e).toFixed(3));
+    if (t >= 1) {
+      clearInterval(gainTimer);
+      root.style.removeProperty("--w-gain");
+    }
+  }, 100);
 }
 
-/* Called once the forecast is in; only moves the page if it is in auto mode. */
+function apply(m: Mood, fadeMs = FADE_MS) {
+  if (currentMood() === m) return;
+  const root = document.documentElement;
+  const slow = fadeMs > FADE_MS;
+  const gainBefore = Number(getComputedStyle(root).getPropertyValue("--w-gain")) || 1;
+  /*
+    While the page fades fast, elements with their own colour transition
+    (links, buttons) must not restart theirs every frame or they trail the
+    page by seconds. `data-mood-fade="fast"` lets globals.css switch those off
+    for the ride; over a slow fade their 0.3s lag is invisible, so they keep
+    it and hovers stay soft.
+  */
+  root.dataset.moodFade = slow ? "slow" : "fast";
+  clearTimeout(fadeTimer);
+  fadeTimer = setTimeout(() => delete root.dataset.moodFade, fadeMs + 50);
+  root.dataset.mood = m;
+  if (slow) rampGain(gainBefore, fadeMs);
+  else {
+    clearInterval(gainTimer);
+    root.style.removeProperty("--w-gain");
+  }
+  for (const l of listeners) l(m, fadeMs);
+}
+
+/*
+  Called whenever a forecast is in; only moves the page if it is in auto
+  mode. The first one settles the page quickly; later ones (the page re-asks
+  every quarter hour) are the sun actually going down, and take the dawn.
+*/
 export function setDaylight(isDay: boolean) {
+  const first = daylight === null;
   daylight = isDay;
-  apply(resolveMood(readOverride(), daylight, new Date()));
+  apply(resolveMood(readOverride(), daylight, new Date()), first ? FADE_MS : DAWN_MS);
+}
+
+/*
+  Once a minute, see whether the day has moved on: the clock crossing seven
+  or nineteen when no forecast ever landed, or a twelve-hour override running
+  out. Either way the page follows slowly. Idempotent; mounted once.
+*/
+let clock: ReturnType<typeof setInterval> | undefined;
+export function followTheDay() {
+  if (clock) return;
+  clock = setInterval(() => {
+    apply(resolveMood(readOverride(), daylight, new Date()), DAWN_MS);
+  }, 60_000);
 }
 
 export function toggleMood() {
@@ -121,7 +186,7 @@ export function toggleMood() {
   apply(resolveMood(o, daylight, new Date()));
 }
 
-export function subscribe(l: (m: Mood) => void) {
+export function subscribe(l: Listener) {
   listeners.add(l);
   return () => {
     listeners.delete(l);

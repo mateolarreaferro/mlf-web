@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useChat } from "@ai-sdk/react";
+import { hoverSpring, useTempo } from "./motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -14,6 +15,7 @@ export default function MateoChat({
   open: boolean;
   onClose: () => void;
 }) {
+  const tempo = useTempo();
   const [input, setInput] = useState("");
   const { messages, sendMessage, status, error } = useChat();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ export default function MateoChat({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.3 * tempo }}
         >
           <motion.div
             role="dialog"
@@ -60,7 +62,7 @@ export default function MateoChat({
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.45, ease }}
+            transition={{ duration: 0.45 * tempo, ease }}
           >
             <div className="flex items-center gap-3 p-5">
               <Image
@@ -109,7 +111,7 @@ export default function MateoChat({
                   key={m.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, ease }}
+                  transition={{ duration: 0.35 * tempo, ease }}
                   className={
                     m.role === "user"
                       ? "ml-auto w-fit max-w-[80%] rounded-3xl rounded-br-lg bg-ink px-4 py-2.5 text-sm text-paper"
@@ -153,7 +155,7 @@ export default function MateoChat({
                   className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-ink text-paper"
                   whileHover={{ scale: 1.08 }}
                   whileTap={{ scale: 0.92 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 18 }}
+                  transition={hoverSpring(tempo)}
                 >
                   ↑
                 </motion.button>

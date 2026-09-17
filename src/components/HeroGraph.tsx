@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import type { Project } from "@/lib/projects";
 import Hero from "./Hero";
 import KnowledgeGraph from "./KnowledgeGraph";
 import ProjectPanel from "./ProjectPanel";
-import { HOME_EVENT } from "./HomeLink";
-import { Reveal } from "./motion";
+import { Reveal, useTempo } from "./motion";
 
 /*
   Owns the selected-project state for the whole first viewport, so that
@@ -21,35 +20,43 @@ import { Reveal } from "./motion";
 */
 
 export default function HeroGraph({ projects }: { projects: Project[] }) {
-  const [selected, setSelected] = useState<Project | null>(null);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelected(null);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  // pressing the wordmark closes an open project, wherever we already are
-  useEffect(() => {
-    const onHome = () => setSelected(null);
-    window.addEventListener(HOME_EVENT, onHome);
-    return () => window.removeEventListener(HOME_EVENT, onHome);
-  }, []);
-
   /*
-    Deep link: /?project=<slug> opens that project. Read through
-    useSearchParams rather than window.location so it stays correct across
-    client navigations — reading it once on mount meant that leaving
+    The URL is the open project, not just a way in. /?project=<slug> opens
+    that card, and it is the only state: selecting a node writes the slug to
+    the address bar so copying the link, or sharing the tab, lands on the
+    same card; closing writes "/" back; the wordmark's Link to "/" closes it
+    the same way. pushState rather than router.push, because the page is
+    static and the graph already holds the data, so there is nothing to
+    fetch, and Next's router still notices through useSearchParams. Each
+    change is a history entry, so Back walks through the projects you opened
+    the way it would through sub-pages.
+
+    Reading useSearchParams rather than window.location keeps it correct
+    across client navigations — reading it once on mount meant that leaving
     /?project=satie remounted this component, which then re-read the *old*
     URL and reopened the project the user had just closed.
   */
+  const tempo = useTempo();
   const searchParams = useSearchParams();
+  const slug = searchParams.get("project");
+  const selected = useMemo(
+    () => (slug ? (projects.find((p) => p.slug === slug) ?? null) : null),
+    [slug, projects],
+  );
+
+  const select = useCallback((p: Project | null) => {
+    const next = p ? `/?project=${p.slug}` : "/";
+    const here = window.location.pathname + window.location.search;
+    if (here !== next) window.history.pushState(null, "", next);
+  }, []);
+
   useEffect(() => {
-    const slug = searchParams.get("project");
-    setSelected(slug ? (projects.find((p) => p.slug === slug) ?? null) : null);
-  }, [searchParams, projects]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") select(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [select]);
 
   return (
     /* bottom-aligned on purpose: the social row and the graph legend then sit
@@ -72,9 +79,9 @@ export default function HeroGraph({ projects }: { projects: Project[] }) {
         <motion.div
           animate={{ opacity: selected ? 0 : 1 }}
           transition={{
-            duration: 0.3,
+            duration: 0.3 * tempo,
             ease: [0.22, 1, 0.36, 1],
-            delay: selected ? 0 : 0.25,
+            delay: selected ? 0 : 0.25 * tempo,
           }}
           className={`col-start-1 row-start-1 self-center ${selected ? "pointer-events-none" : ""}`}
           aria-hidden={selected ? true : undefined}
@@ -93,7 +100,7 @@ export default function HeroGraph({ projects }: { projects: Project[] }) {
         <KnowledgeGraph
           projects={projects}
           selected={selected}
-          onSelect={setSelected}
+          onSelect={select}
         />
       </Reveal>
     </section>

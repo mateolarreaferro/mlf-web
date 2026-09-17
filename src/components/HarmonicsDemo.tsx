@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
+import { hoverSpring, useTempo } from "./motion";
 
 /*
   An additive-synthesis toy that can live inside any thought:
@@ -10,6 +11,7 @@ import { motion } from "motion/react";
 const PARTIALS = 6;
 
 export default function HarmonicsDemo() {
+  const tempo = useTempo();
   const [amps, setAmps] = useState<number[]>([1, 0.5, 0.33, 0, 0, 0]);
   const [playing, setPlaying] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -119,7 +121,7 @@ export default function HarmonicsDemo() {
           aria-pressed={playing}
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.94 }}
-          transition={{ type: "spring", stiffness: 400, damping: 18 }}
+          transition={hoverSpring(tempo)}
         >
           {playing ? "stop" : "play"}
         </motion.button>

@@ -1,24 +1,43 @@
 "use client";
 
 import { motion, type Variants } from "motion/react";
-import type { ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
+import { currentMood, subscribe, type Mood } from "@/lib/mood";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export const fadeUp: Variants = {
+/*
+  Tempo. After dark everything that moves takes a quarter longer: reveals,
+  the word-by-word headline, the hover springs, the card's entrance. The
+  wash drift already slows at night in weather-theme.ts and the CSS
+  animations read `--tempo` from globals.css; this is the same idea for
+  motion's JS animations. Read the mood through a store subscription so the
+  tempo follows a mood change without remounting anything. The server has no
+  mood, so it answers "light" and the first frame after hydration corrects it.
+*/
+export const NIGHT_TEMPO = 1.25;
+const readMood = () => currentMood();
+const serverMood = (): Mood => "light";
+
+export function useTempo(): number {
+  const mood = useSyncExternalStore(subscribe, readMood, serverMood);
+  return mood === "dark" ? NIGHT_TEMPO : 1;
+}
+
+/* the one hover/press spring, slackened by the tempo */
+export function hoverSpring(tempo: number, damping = 18) {
+  return { type: "spring" as const, stiffness: 400 / tempo, damping };
+}
+
+const fadeUpFor = (tempo: number, delay = 0): Variants => ({
   hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
   show: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.7, ease },
+    transition: { duration: 0.7 * tempo, ease, delay: delay * tempo },
   },
-};
-
-const stagger: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
+});
 
 /* Reveals its children once when scrolled into view. */
 export function Reveal({
@@ -33,19 +52,14 @@ export function Reveal({
   /* shrink the trigger area less for things that sit right at the fold */
   margin?: string;
 }) {
+  const tempo = useTempo();
   return (
     <motion.div
       className={className}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin }}
-      variants={{
-        hidden: fadeUp.hidden,
-        show: {
-          ...(fadeUp.show as object),
-          transition: { duration: 0.7, ease, delay },
-        },
-      }}
+      variants={fadeUpFor(tempo, delay)}
     >
       {children}
     </motion.div>
@@ -60,13 +74,17 @@ export function Stagger({
   children: ReactNode;
   className?: string;
 }) {
+  const tempo = useTempo();
   return (
     <motion.div
       className={className}
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "0px 0px -60px 0px" }}
-      variants={stagger}
+      variants={{
+        hidden: {},
+        show: { transition: { staggerChildren: 0.08 * tempo } },
+      }}
     >
       {children}
     </motion.div>
@@ -80,8 +98,9 @@ export function Item({
   children: ReactNode;
   className?: string;
 }) {
+  const tempo = useTempo();
   return (
-    <motion.div className={className} variants={fadeUp}>
+    <motion.div className={className} variants={fadeUpFor(tempo)}>
       {children}
     </motion.div>
   );
@@ -95,13 +114,14 @@ export function AnimatedText({
   text: string;
   className?: string;
 }) {
+  const tempo = useTempo();
   const words = text.split(" ");
   return (
     <motion.span
       className={className}
       initial="hidden"
       animate="show"
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
+      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 * tempo } } }}
       aria-label={text}
     >
       {words.map((word, i) => (
@@ -110,13 +130,13 @@ export function AnimatedText({
             className="inline-block"
             variants={{
               hidden: { y: "110%" },
-              show: { y: 0, transition: { duration: 0.8, ease } },
+              show: { y: 0, transition: { duration: 0.8 * tempo, ease } },
             }}
             aria-hidden
           >
             {word}
           </motion.span>
-          {i < words.length - 1 ? " " : null}
+          {i < words.length - 1 ? " " : null}
         </span>
       ))}
     </motion.span>

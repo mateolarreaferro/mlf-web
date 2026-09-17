@@ -94,9 +94,11 @@ export function atmosphereFor(w: Weather): Atmosphere {
   if (!w.isDay) pos = pos + (1 - pos) * 0.33;
   pos = clamp(pos, 0, 1);
 
-  // a clear sky gets its full colour; overcast washes out toward neutral
+  // a clear sky gets its full colour; overcast washes out toward neutral.
+  // 0.22–0.32: light in the paper, not paint on it (it ran 0.30–0.42 once and
+  // Mateo asked for a notch more subtle)
   const clarity = 1 - clamp(w.cloudCover, 0, 100) / 100;
-  let alpha = 0.3 + 0.12 * clarity;
+  let alpha = 0.22 + 0.1 * clarity;
   if (!w.isDay) alpha *= 0.85;
 
   // wind moves the air: calm is a slow 80s cycle, a gale is a brisk 26s one

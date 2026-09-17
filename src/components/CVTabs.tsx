@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ClassGroup, Publication, Talk } from "@/lib/cv";
+import { hoverSpring, useTempo } from "./motion";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -20,6 +21,7 @@ export default function CVTabs({
   talks: Talk[];
   classes: ClassGroup[];
 }) {
+  const tempo = useTempo();
   const [tab, setTab] = useState<Tab>("publications");
 
   return (
@@ -34,7 +36,7 @@ export default function CVTabs({
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            transition={hoverSpring(tempo, 20)}
           >
             {t}
           </motion.button>
@@ -47,7 +49,7 @@ export default function CVTabs({
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.35, ease }}
+          transition={{ duration: 0.35 * tempo, ease }}
         >
           {tab === "publications" ? (
             <div className="space-y-12">

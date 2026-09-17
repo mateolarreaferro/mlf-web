@@ -15,6 +15,13 @@ const PRESS_HZ = 587,
   PRESS_GAIN = 0.035,
   PRESS_DUR = 0.22;
 const TONE_ATTACK = 0.015; // no hard edges: eased in, exponential out
+/* the same tone at 1 a.m. is not the same tone: half as loud in the dark mood */
+const NIGHT_GAIN = 0.5;
+
+const nightGain = () =>
+  typeof document !== "undefined" && document.documentElement.dataset.mood === "dark"
+    ? NIGHT_GAIN
+    : 1;
 
 let ctx: AudioContext | null = null;
 
@@ -40,7 +47,7 @@ function tone(freq: number, peak: number, dur: number) {
   o.frequency.value = freq;
   const g = ctx.createGain();
   g.gain.setValueAtTime(0.0001, t);
-  g.gain.linearRampToValueAtTime(peak, t + TONE_ATTACK);
+  g.gain.linearRampToValueAtTime(peak * nightGain(), t + TONE_ATTACK);
   g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
   o.connect(g);
   g.connect(ctx.destination);

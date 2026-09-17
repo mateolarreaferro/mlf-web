@@ -34,6 +34,13 @@
   --flame: #f94144;
   /* how much of the weather wash shows; coloured light needs more on dark paper */
   --w-gain: 1;
+  /* how long a mood change takes: a press is fast, the sun itself is slow (mood.ts) */
+  --mood-fade: 700ms;
+  /* everything that moves takes this much longer after dark (motion.tsx uses the same) */
+  --tempo: 1;
+}
+html[data-mood-fade="slow"] {
+  --mood-fade: 60s;
 }
 
 html[data-mood="dark"] {
@@ -44,6 +51,7 @@ html[data-mood="dark"] {
   --soft: #1f2428;
   --accent: #7ab7d4; /* the ramp's blue lifted so links clear 4.5:1 on dark paper */
   --w-gain: 1.3;
+  --tempo: 1.25;
 }
 
 @theme inline {
@@ -74,7 +82,7 @@ html[data-mood="dark"] {
   --w1: #f9854a;
   --w2: #a4c067;
   --w3: #499a8d;
-  --w-alpha: 0.378;
+  --w-alpha: 0.285;
   --w-drift-a: 66s;
   --w-drift-b: 86s;
 }
@@ -108,13 +116,13 @@ html[data-mood="dark"] {
 html {
   background: var(--paper);
   /* the mood changes like the light in a room, not like a switch */
-  transition: background-color 700ms ease;
+  transition: background-color var(--mood-fade) ease;
 }
 
 body {
   background: transparent;
   color: var(--ink);
-  transition: color 700ms ease;
+  transition: color var(--mood-fade) ease;
   font-family: var(--font-inter), system-ui, sans-serif;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -143,7 +151,7 @@ body::after {
 .bg-soft,
 .bg-paper,
 [class*="bg-paper/"] {
-  transition: background-color 700ms ease;
+  transition: background-color var(--mood-fade) ease;
 }
 
 /* held down for one breath while the weather colours are swapped underneath */
@@ -220,9 +228,9 @@ button {
     opacity 0.3s ease,
     background-color 0.3s ease;
 }
-/* during a mood change they ride the page's own fade instead (see mood.ts) */
-html[data-mood-fade] a,
-html[data-mood-fade] button {
+/* during a fast mood change they ride the page's own fade instead (see mood.ts) */
+html[data-mood-fade="fast"] a,
+html[data-mood-fade="fast"] button {
   transition: none;
 }
 
@@ -233,7 +241,7 @@ a {
 /* "all →" links: the arrow drifts on hover */
 .link-nudge {
   display: inline-block;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+  transition: transform calc(0.4s * var(--tempo)) cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
 }
 .link-nudge:hover {
   transform: translateX(4px);
@@ -243,10 +251,10 @@ a {
 @media (prefers-reduced-motion: no-preference) {
   header,
   footer {
-    animation: breathe-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: breathe-in calc(0.9s * var(--tempo)) cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   footer {
-    animation-delay: 0.15s;
+    animation-delay: calc(0.15s * var(--tempo));
   }
   @keyframes breathe-in {
     from {

@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Project } from "@/lib/projects";
+import { hoverSpring, useTempo } from "./motion";
 
 /*
   When a project is selected, this takes over the left column — where the
@@ -16,6 +17,7 @@ export default function ProjectPanel({
 }: {
   project: Project;
 }) {
+  const tempo = useTempo();
   const links = [
     project.link ? { href: project.link, text: "visit" } : null,
     project.video ? { href: project.video, text: "watch video" } : null,
@@ -28,15 +30,15 @@ export default function ProjectPanel({
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.2 } }}
-      exit={{ opacity: 0, y: -12, transition: { duration: 0.22, ease } }}
+      animate={{ opacity: 1, y: 0, transition: { duration: 0.5 * tempo, ease, delay: 0.2 * tempo } }}
+      exit={{ opacity: 0, y: -12, transition: { duration: 0.22 * tempo, ease } }}
       className="col-start-1 row-start-1 self-center"
     >
       <motion.p
         className="label !text-ochre"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease, delay: 0.06 }}
+        transition={{ duration: 0.4 * tempo, ease, delay: 0.06 * tempo }}
       >
         {project.category}
       </motion.p>
@@ -45,7 +47,7 @@ export default function ProjectPanel({
         className="mt-2 text-2xl font-light leading-snug tracking-tight sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3]"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease, delay: 0.1 }}
+        transition={{ duration: 0.45 * tempo, ease, delay: 0.1 * tempo }}
       >
         {project.name}
       </motion.h2>
@@ -55,7 +57,7 @@ export default function ProjectPanel({
           className="label mt-3 flex flex-wrap items-center gap-x-3 gap-y-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, ease, delay: 0.16 }}
+          transition={{ duration: 0.4 * tempo, ease, delay: 0.16 * tempo }}
         >
           {meta ? <span>{meta}</span> : null}
           {project.isActive ? (
@@ -71,7 +73,7 @@ export default function ProjectPanel({
         className="mt-6 whitespace-pre-line text-sm leading-relaxed text-faint sm:text-base"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease, delay: 0.2 }}
+        transition={{ duration: 0.45 * tempo, ease, delay: 0.2 * tempo }}
       >
         {project.description}
       </motion.p>
@@ -80,7 +82,7 @@ export default function ProjectPanel({
         className="mt-8 flex flex-wrap items-center gap-2"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease, delay: 0.28 }}
+        transition={{ duration: 0.45 * tempo, ease, delay: 0.28 * tempo }}
       >
         {links.map((a) => (
           <motion.a
@@ -91,7 +93,7 @@ export default function ProjectPanel({
             className="label whitespace-nowrap rounded-full bg-ink px-4 py-1.5 !text-paper"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 18 }}
+            transition={hoverSpring(tempo)}
           >
             {a.text} ↗
           </motion.a>

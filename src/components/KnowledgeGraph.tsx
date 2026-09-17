@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { Project } from "@/lib/projects";
 import { sfxHover, sfxPress } from "@/lib/sfx";
-import { subscribe as onMoodChange } from "@/lib/mood";
+import { FADE_MS, subscribe as onMoodChange } from "@/lib/mood";
 import { ATMOSPHERE_EVENT } from "./WeatherAtmosphere";
 import ProjectMedia from "./ProjectMedia";
 import MateoChat from "./MateoChat";
@@ -82,7 +82,23 @@ export default function KnowledgeGraph({
   // the canvas effect only re-runs on `projects`, so reach for the
   // latest callback through a ref rather than capturing a stale one
   const onSelectRef = useRef(onSelect);
-  onSelectRef.current = onSelect;
+  useEffect(() => {
+    onSelectRef.current = onSelect;
+  }, [onSelect]);
+
+  /*
+    Let the graph rest. It breathes on every frame by design, but not while
+    nobody can see it: a project card or the chat covers it, or it has been
+    scrolled off the screen. The loop stops itself in those states and is
+    woken by whatever ends them. `covered` reaches the loop through a ref so
+    the canvas effect can stay keyed to `projects` alone.
+  */
+  const coveredRef = useRef(false);
+  const wakeRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    coveredRef.current = selected !== null || chatOpen;
+    wakeRef.current();
+  }, [selected, chatOpen]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -189,21 +205,66 @@ export default function KnowledgeGraph({
       the legend is the header's swatch row. weather-theme.ts keeps the three
       two ramp steps apart so the groups never blur into one another.
     */
-    let colors = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", teal: "#4d908e", w1: "#f9854a", w2: "#a4c067", w3: "#499a8d" };
+    type Palette = { ink: string; faint: string; accent: string; soft: string; paper: string; teal: string; w1: string; w2: string; w3: string };
+    let target: Palette = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", teal: "#4d908e", w1: "#f9854a", w2: "#a4c067", w3: "#499a8d" };
+    let colors: Palette = target;
     const readColors = () => {
       const s = getComputedStyle(document.documentElement);
       const read = (name: string, fallback: string) => s.getPropertyValue(name).trim() || fallback;
-      colors = {
-        ink: read("--ink", colors.ink),
-        faint: read("--faint", colors.faint),
-        accent: read("--accent", colors.accent),
-        soft: read("--soft", colors.soft),
-        paper: read("--paper", colors.paper),
-        teal: read("--teal", colors.teal),
-        w1: read("--w1", colors.w1),
-        w2: read("--w2", colors.w2),
-        w3: read("--w3", colors.w3),
+      target = {
+        ink: read("--ink", target.ink),
+        faint: read("--faint", target.faint),
+        accent: read("--accent", target.accent),
+        soft: read("--soft", target.soft),
+        paper: read("--paper", target.paper),
+        teal: read("--teal", target.teal),
+        w1: read("--w1", target.w1),
+        w2: read("--w2", target.w2),
+        w3: read("--w3", target.w3),
       };
+      if (!blendFrom) colors = target;
+    };
+
+    /*
+      The tokens are plain hex and switch at once, but the page around the
+      graph fades (700ms for a press, a minute when the sun sets under an open
+      page), so the graph walks its own colours over the same time rather
+      than snapping ahead of the paper. The mood listener says how long.
+    */
+    let blendFrom: Palette | null = null;
+    let blendStart = 0;
+    let blendMs = FADE_MS;
+    const hex = (c: string) =>
+      /^#[0-9a-f]{6}$/i.test(c)
+        ? [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)]
+        : null;
+    const mix = (a: string, b: string, t: number) => {
+      const x = hex(a);
+      const y = hex(b);
+      if (!x || !y) return b;
+      const ch = (i: number) => Math.round(x[i] + (y[i] - x[i]) * t).toString(16).padStart(2, "0");
+      return `#${ch(0)}${ch(1)}${ch(2)}`;
+    };
+    const blend = () => {
+      if (!blendFrom) return;
+      const t = Math.min(1, (performance.now() - blendStart) / blendMs);
+      const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      const from = blendFrom;
+      colors = Object.fromEntries(
+        (Object.keys(target) as (keyof Palette)[]).map((k) => [k, mix(from[k], target[k], e)]),
+      ) as Palette;
+      if (t >= 1) blendFrom = null;
+    };
+    const startBlend = (ms: number) => {
+      blendFrom = { ...colors };
+      blendStart = performance.now();
+      blendMs = ms;
+      readColors();
+      if (reduceMotion) {
+        blendFrom = null;
+        colors = target;
+        draw();
+      } else wake();
     };
 
     const groupColor = (g: string | undefined) =>
@@ -388,6 +449,7 @@ export default function KnowledgeGraph({
     };
 
     const draw = () => {
+      blend();
       ctx.clearRect(0, 0, width, height);
       ctx.save();
       ctx.translate(width / 2, height / 2);
@@ -475,13 +537,34 @@ export default function KnowledgeGraph({
       ctx.restore();
     };
 
+    let running = false;
+    let onScreen = true;
     const loop = () => {
+      if (!onScreen || coveredRef.current) {
+        running = false;
+        return;
+      }
       frame++;
       tick();
       draw();
       if (frame % 90 === 0) readColors();
       raf = requestAnimationFrame(loop);
     };
+    const wake = () => {
+      if (reduceMotion) {
+        draw();
+        return;
+      }
+      if (running || !onScreen || coveredRef.current) return;
+      running = true;
+      raf = requestAnimationFrame(loop);
+    };
+    wakeRef.current = wake;
+    const watcher = new IntersectionObserver(([entry]) => {
+      onScreen = entry.isIntersecting;
+      wake();
+    });
+    watcher.observe(canvas);
 
     resize();
     if (reduceMotion) {
@@ -492,7 +575,7 @@ export default function KnowledgeGraph({
       for (let i = 0; i < 12; i++) tick();
       draw();
     } else {
-      raf = requestAnimationFrame(loop);
+      wake();
     }
 
     const toLocal = (e: PointerEvent) => {
@@ -577,19 +660,20 @@ export default function KnowledgeGraph({
     window.addEventListener("resize", resize);
     // the palette lives in CSS variables; pick the new set up the moment the
     // mood flips or the weather colours land, not 90 frames later
-    const unsubscribeMood = onMoodChange(readColors);
-    window.addEventListener(ATMOSPHERE_EVENT, readColors);
+    const unsubscribeMood = onMoodChange((_, fadeMs) => startBlend(fadeMs));
+    const onAtmosphere = () => startBlend(FADE_MS);
+    window.addEventListener(ATMOSPHERE_EVENT, onAtmosphere);
     return () => {
       cancelAnimationFrame(raf);
+      watcher.disconnect();
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerup", onUp);
       canvas.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("resize", resize);
       unsubscribeMood();
-      window.removeEventListener(ATMOSPHERE_EVENT, readColors);
+      window.removeEventListener(ATMOSPHERE_EVENT, onAtmosphere);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projects]);
 
   /*
