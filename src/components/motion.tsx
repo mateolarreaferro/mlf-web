@@ -136,7 +136,9 @@ export function AnimatedText({
           >
             {word}
           </motion.span>
-          {i < words.length - 1 ? " " : null}
+          {/* a non-breaking space: a plain one is trailing whitespace inside
+              the inline-block and gets collapsed, jamming the words together */}
+          {i < words.length - 1 ? "\u00A0" : null}
         </span>
       ))}
     </motion.span>
