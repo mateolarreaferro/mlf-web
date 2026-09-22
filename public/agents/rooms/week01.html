@@ -1,0 +1,53 @@
+<!--
+  Week 1. A fragment, not a page: main.js drops it into the reading panel.
+  Paths are relative to website/ (so media lives at media/week01/...).
+  A .todo block is something still to write; delete the class as it fills in.
+  A .slot is a place held for a picture or a recording; replace it with
+  <img>, <video controls> or an <iframe>.
+-->
+
+<h1>a first agent, from scratch</h1>
+<p class="lede todo">One or two sentences: what the agent does, in plain words.</p>
+
+<figure>
+  <div class="slot">example run: a screen recording goes here (media/week01/run.mp4)</div>
+  <figcaption>An example run, start to finish.</figcaption>
+</figure>
+
+<h2>the task, and why this one</h2>
+<p class="todo">What the agent is for and why I chose it. What made it the right size for a first loop.</p>
+
+<h2>the loop</h2>
+<p class="todo">A short description of the loop, then the three lists below. A diagram of observation, action, result and back again would say it faster than the paragraph.</p>
+<div class="slot">diagram of the loop (media/week01/loop.png)</div>
+
+<h3>what it observes</h3>
+<p class="todo">What the environment hands the model on each turn, and in what form.</p>
+
+<h3>what it can do</h3>
+<p class="todo">The available actions, one line each, and how the model's text becomes a call.</p>
+
+<h3>when it stops</h3>
+<p class="todo">The finished condition and the iteration limit.</p>
+
+<h2>the model</h2>
+<p class="todo">Which downloaded model, where inference runs (this laptop or Colab), and why that one. No hosted API and no agent framework: the loop is mine.</p>
+
+<h2>code</h2>
+<p class="todo">Link to weekly_builds/week01 in the repository and say how to run it.</p>
+
+<h2>an example run</h2>
+<p class="todo">An annotated transcript: each observation, the action chosen, what came back.</p>
+<pre><code>step 1  observe  ...
+        act      ...
+        result   ...</code></pre>
+
+<h2>what I tried</h2>
+<p class="todo">The process, in order: what I tried, what worked, what did not.</p>
+
+<h2>reflection</h2>
+<p class="todo">What worked, where it struggled (especially when the environment changed or something went wrong), and what I would improve.</p>
+
+<h2>how I used AI</h2>
+<p>The initial website and its structure were built with Claude Code from my direction and design decisions. Codex refined the underwater rendering, interface and audio integration. Satie composed the spatial sound through its MCP using library recordings and generated takes; Codex adjusted the mix and tested playback. This describes the website, not the agent built for this week.</p>
+<p class="todo">The same disclosure for the agent itself: what I used AI for in this build, what I wrote myself, and why.</p>

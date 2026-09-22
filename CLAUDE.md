@@ -287,6 +287,55 @@ real MDX: markdown plus React components registered in
 `<HarmonicsDemo>`). Ordering is by `number`, descending. Dates on the five
 migrated posts are approximate — Mateo may still correct them.
 
+## /agents (the class site)
+
+`mateolarreaferro.com/agents` is Mateo's documentation site for an agents class
+at the MIT Media Lab (fall 2026): a three.js world you swim through, one room
+per week plus the final project. **Read this history before restyling it**;
+Mateo rejected four versions and each rejection is a rule. (1) Solid white
+architecture with glass and shadows: "not the aesthetics at all", wanted zen,
+point cloud, abstract. (2) Rainbow particles on random loops: "looks like
+shit": wanted a **restricted palette** (cool teal/blue/pale ink for water and
+creature; warm amber-to-red only for the work; departing shards deepen to blue)
+and **motion with a cause** (one flow field, ordered streamlines, letting go in
+waves, not per-point dice). (3) Momentum and lagged look: "hate the
+controllers": **controls copy Satie's** (`~/attractor-labs/apps/satie`,
+`src/ui/components/viewport/controls.tsx`): immediate drag-look, WASD and
+arrows both move, Q/E dive/rise, shift sprint, scroll dolly, double-click
+teleport, key legend at the bottom centre. (4) A rectilinear two-storey
+building in points: "don't like the vibe at all, everything feels too straight,
+the environment doesn't change as I move". So now there is **no building and
+no straight line**: the world is one jellyfish (`js/world.js` header explains
+it): pods spiralling up a column of current, the bell on top as the final
+project, dunes, kelp, tendrils; **everything wobbles together** on one slow
+noise; and **it reacts to the visitor** (forms within ~7 m of you and dissolves
+beyond ~19 m, pods swell as you near, a fading wake of trail marks, water
+colour by depth). Also kept from his asks: dark only; shards are **triangles
+with heavy-tailed sizes**; curl of quintic gradient noise for the flow; type is
+**Instrument Serif + Instrument Sans** (not the main site's Inter); each week's
+object is a **strange attractor** drawn fine and faint (additive light burns
+out fast: eleven thousand shards share a cubic metre). Audio must come from
+Satie's MCP, never synthesis; the brief lives in `js/sound.js`. **Its source is not in this
+repo.** It lives in `agents2026-mateo/website/` (the course's private repo,
+`mitmedialab/agents2026-mateo`, checked out in the project root and
+git-ignored here) as plain static files with vendored three.js and no build
+step, because the course's Pages workflow deploys that folder as is.
+`npm run sync:agents` (`scripts/sync-agents.mjs`) mirrors it into
+`public/agents/`, which is committed; never edit `public/agents/` by hand, the
+next sync replaces it. `next.config.ts` rewrites `/agents` to
+`/agents/index.html`, and the page sets its own `<base>` so its relative URLs
+work with or without a trailing slash (it is also served from GitHub Pages
+under a different path, so nothing in it may be root-absolute). ESLint ignores
+both folders. The graph node is `content/projects/agents.md`; its card media is
+the site itself in `?embed=1` mode (no interface, drifting camera). The class
+repo's README covers the rest: `js/rooms.js` is the manifest everything derives
+from, and `js/sound.js` is the live Satie playback integration and authoring brief
+(24 hosts, five signals, 19 events). The audio files are local in
+`website/satie/`; sound and the membranes share `world.swell`, and opening
+a page ducks the scene. Its underwater appearance is always dark. Course policy requires
+disclosing AI use, so keep the disclosure lines in the README and the weekly
+pages truthful when you change things.
+
 ## The agent
 
 `src/app/api/chat/route.ts` streams via AI SDK; the system prompt is built

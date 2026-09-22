@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The class site: its own repo, and the static copy of it that
+    // `npm run sync:agents` writes (vendored three.js included).
+    "agents2026-mateo/**",
+    "public/agents/**",
   ]),
 ]);
 

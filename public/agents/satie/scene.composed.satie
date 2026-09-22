@@ -1,0 +1,180 @@
+# We are under water, inside one vast, slow creature: a jellyf — the developer's layout, as fixtures
+world We are under water, inside one vast, slow creature: a jellyf
+  seed 1
+  size 40
+  terrain relief 0 roughness 0
+  ground water weight 1
+  fixture column rising bubble column size 5x21.1x5 material water porous 1 at 0,0
+  fixture pod_week01 pod membrane size 5.4x5.4x5.4 material water porous 1 at 2.91,7.99
+  fixture pod_final the bell of the jellyfish size 11.2x7.28x11.2 material water porous 1 at 0,0
+  fixture attractor_week01 strange attractor (lorenz) size 1.9x1.9x1.9 material water porous 1 at 2.91,7.99
+  fixture bell_voice_1 strange attractor (halvorsen) size 1.7x1.7x1.7 material water porous 1 at -2.6,-0.3
+  fixture bell_voice_2 strange attractor (rossler) size 1.7x1.7x1.7 material water porous 1 at 0,-0.3
+  fixture bell_voice_3 strange attractor (dadras) size 1.7x1.7x1.7 material water porous 1 at 2.6,-0.3
+  weather rain 0 wind 0.2 fog 0
+  time 10:00 season summer temp 18
+
+level_reference 70
+gen water_pressure
+    prompt submerged slow water current, broad low fluid pressure surges with smooth upper harmonics, irregular continuous flow, no impacts, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen pod_singing
+    prompt sustained wordless singing tone, rounded vowel, two closely detuned pitches beating slowly and irregularly, gentle organic pitch modulation, smooth continuous delivery, dry, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen bell_singing
+    prompt sustained wordless alto singing on D, rounded vowel with warm harmonic overtones, slow irregular organic modulation, no syllables or attacks, dry, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+2 * loop water_pressure
+    source_id deep_water_pressure
+    bed
+    zone reading
+    move static
+    spl 48
+    volume follow depth 0to1 1to0.7
+    pitch follow depth 0to1 0.65to1.05
+    reverb wet 0.5 size 1 damping 0.9
+    filter lowpass cutoff follow depth 0to1 320to1100
+    visual none
+    randomstart
+
+loop whale-song-underwater every 160to260
+    source_id remote_call
+    radius 15
+    zone reading
+    place 0 12 -260
+    move static
+    spl 100
+    start 100
+    duration 16
+    reverb wet 0.4 size 1 damping 0.95
+    filter lowpass cutoff 550
+    visual sphere
+
+loop gen continuous rising stream of small underwater bubbles, rounded liquid gurgles with irregular overlapping releases, gentle flow without sharp pops, close dry recording, seamless ambience loop, consistent texture
+    source_id column_bubbles
+    line
+    radius 0.65
+    zone reading
+    at column
+    spl 55
+    reverb wet 0.35 size 0.9 damping 0.9
+    filter lowpass cutoff 1200
+    visual sphere
+
+loop pod_singing
+    source_id week01_singing
+    persistent
+    radius 1.2
+    at attractor_week01
+    spl 76
+    reverb wet 0.4 size 0.95 damping 0.9
+    filter lowpass cutoff follow distance 3to12 2200to550
+    visual sphere
+
+oneshot gen small cluster of bubbles released into water, rounded liquid burbles gently dwindling, close dry recording every 18to35
+    source_id week01_bubbles
+    radius 0.4
+    zone reading
+    at attractor_week01
+    spl 43
+    start 12
+    cooldown 12
+    reverb wet 0.4 size 0.9 damping 0.9
+    filter lowpass cutoff 1100
+    variants 3
+    visual sphere
+
+3 * loop bell_singing
+    source_id bell_singers
+    persistent
+    randomstart
+    radius 2
+    at bell_voice
+    spl 73
+    pitch 1to1.5
+    reverb wet 0.55 size 1 damping 0.9
+    filter lowpass cutoff follow distance 3to22 2200to650
+    visual sphere
+
+loop gen water flowing smoothly around a submerged swimming body, gentle irregular fluid rush without splashes or strokes, close dry recording, seamless ambience loop, consistent texture
+    source_id swimming_water
+    zone reading
+    attach listener
+    spl 44
+    volume follow speed 0to2 0to1
+    reverb wet 0.35 size 0.65 damping 0.95
+    filter lowpass cutoff 850
+    visual none
+
+on pod_enter gen single smooth liquid membrane deformation, rounded low tonal swell rising gently, no impact, close dry recording
+    source_id membrane_enter
+    radius 2
+    spl 55
+    cooldown 1.5
+    within 5
+    reverb wet 0.55 size 0.9 damping 0.9
+    filter lowpass cutoff 1400
+    variants 3
+    visual sphere
+
+on pod_leave gen single smooth liquid membrane deformation, rounded low tonal swell falling gently and releasing, no impact, close dry recording
+    source_id membrane_leave
+    radius 2
+    spl 53
+    cooldown 1.5
+    within 5
+    reverb wet 0.55 size 0.9 damping 0.9
+    filter lowpass cutoff 1200
+    variants 3
+    visual sphere
+
+on page_open gen single submerged bronze bell struck gently with a padded mallet, rounded low fundamental and sustained harmonic decay, no sharp attack, close dry recording
+    source_id page_open_bell
+    zone reading strict
+    attach listener
+    spl 51
+    cooldown 1
+    within 2
+    reverb wet 0.65 size 1 damping 0.93
+    filter lowpass cutoff 1000
+    variants 3
+    visual none
+
+on page_close gen single small release of underwater bubbles, rounded liquid burble dwindling smoothly, close dry recording
+    source_id page_close_bubbles
+    attach listener
+    spl 44
+    cooldown 0.6
+    within 2
+    reverb wet 0.4 size 0.8 damping 0.9
+    filter lowpass cutoff 1100
+    variants 3
+    visual none
+
+on ui_hover gen single tiny underwater bubble blip, rounded low liquid resonance, close dry recording
+    source_id hover_bubble
+    attach listener
+    spl 29
+    cooldown 0.2
+    within 2
+    reverb wet 0.15 size 0.5 damping 0.95
+    filter lowpass cutoff 850
+    variants 3
+    visual none
+
+on ui_press gen single small underwater bubble blup, rounded liquid resonance with a gently descending pitch, close dry recording
+    source_id press_bubble
+    attach listener
+    spl 33
+    cooldown 0.25
+    within 2
+    reverb wet 0.2 size 0.6 damping 0.95
+    filter lowpass cutoff 950
+    variants 3
+    visual none

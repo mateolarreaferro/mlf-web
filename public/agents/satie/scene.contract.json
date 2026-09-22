@@ -1,0 +1,579 @@
+{
+  "version": "satie.scene/v1",
+  "coordinates": {
+    "units": "metres",
+    "frame": "threejs",
+    "handedness": "right",
+    "up": "+Y",
+    "cameraForward": "-Z"
+  },
+  "listener": "first_person",
+  "scene": {
+    "engine": "threejs",
+    "unitsPerMeter": 1,
+    "listener": "first_person",
+    "objects": [
+      {
+        "id": "column",
+        "label": "rising bubble column",
+        "position": [
+          0,
+          10.55,
+          0
+        ],
+        "sizeM": [
+          5,
+          21.1,
+          5
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "an extended vertical source from the seabed (y 0) to the bell (y 21). Bound as a line."
+      },
+      {
+        "id": "pod_week01",
+        "label": "pod membrane",
+        "position": [
+          2.91,
+          2.4,
+          7.99
+        ],
+        "sizeM": [
+          5.4,
+          5.4,
+          5.4
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 1: a first agent, from scratch. A breathing, permeable membrane the listener swims through. Silent in itself; its voice is the attractor inside it."
+      },
+      {
+        "id": "pod_final",
+        "label": "the bell of the jellyfish",
+        "position": [
+          0,
+          21.1,
+          0
+        ],
+        "sizeM": [
+          11.2,
+          7.28,
+          11.2
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "final project: three ideas. A breathing, permeable membrane the listener swims through. Silent in itself; its voice is the attractor inside it."
+      },
+      {
+        "id": "attractor_week01",
+        "label": "strange attractor (lorenz)",
+        "position": [
+          2.91,
+          2.4,
+          7.99
+        ],
+        "sizeM": [
+          1.9,
+          1.9,
+          1.9
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "a sounding object: an orbit of light turning slowly in place, shedding colour into the current, small bubbles climbing away from it"
+      },
+      {
+        "id": "bell_voice_1",
+        "label": "strange attractor (halvorsen)",
+        "position": [
+          -2.6,
+          21.1,
+          -0.3
+        ],
+        "sizeM": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "a sounding object: an orbit of light turning slowly in place, shedding colour into the current, small bubbles climbing away from it"
+      },
+      {
+        "id": "bell_voice_2",
+        "label": "strange attractor (rossler)",
+        "position": [
+          0,
+          21.6,
+          -0.3
+        ],
+        "sizeM": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "a sounding object: an orbit of light turning slowly in place, shedding colour into the current, small bubbles climbing away from it"
+      },
+      {
+        "id": "bell_voice_3",
+        "label": "strange attractor (dadras)",
+        "position": [
+          2.6,
+          21.1,
+          -0.3
+        ],
+        "sizeM": [
+          1.7,
+          1.7,
+          1.7
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "a sounding object: an orbit of light turning slowly in place, shedding colour into the current, small bubbles climbing away from it"
+      },
+      {
+        "id": "tendrils_week01",
+        "label": "tendrils under a pod",
+        "position": [
+          2.91,
+          0.8,
+          7.99
+        ],
+        "sizeM": [
+          3.78,
+          2.6,
+          3.78
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "eleven fine strands trailing beneath the pod, swaying from their roots"
+      },
+      {
+        "id": "bud_week02",
+        "label": "sleeping bud",
+        "position": [
+          -5.23,
+          3.65,
+          6.7
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 2, not open yet: a small cool bud that cannot hold its shape. Bud 1 of 10 going up the spiral, so step 1 of the scale."
+      },
+      {
+        "id": "bud_week03",
+        "label": "sleeping bud",
+        "position": [
+          -8.45,
+          4.9,
+          -0.89
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 3, not open yet: a small cool bud that cannot hold its shape. Bud 2 of 10 going up the spiral, so step 2 of the scale."
+      },
+      {
+        "id": "bud_week04",
+        "label": "sleeping bud",
+        "position": [
+          -3.73,
+          6.15,
+          -7.64
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 4, not open yet: a small cool bud that cannot hold its shape. Bud 3 of 10 going up the spiral, so step 3 of the scale."
+      },
+      {
+        "id": "bud_week06",
+        "label": "sleeping bud",
+        "position": [
+          4.5,
+          7.4,
+          -7.21
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 6, not open yet: a small cool bud that cannot hold its shape. Bud 4 of 10 going up the spiral, so step 4 of the scale."
+      },
+      {
+        "id": "bud_week07",
+        "label": "sleeping bud",
+        "position": [
+          8.5,
+          8.65,
+          0
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 7, not open yet: a small cool bud that cannot hold its shape. Bud 5 of 10 going up the spiral, so step 5 of the scale."
+      },
+      {
+        "id": "bud_week09",
+        "label": "sleeping bud",
+        "position": [
+          4.5,
+          9.9,
+          7.21
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 9, not open yet: a small cool bud that cannot hold its shape. Bud 6 of 10 going up the spiral, so step 6 of the scale."
+      },
+      {
+        "id": "bud_week10",
+        "label": "sleeping bud",
+        "position": [
+          -3.73,
+          11.15,
+          7.64
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 10, not open yet: a small cool bud that cannot hold its shape. Bud 7 of 10 going up the spiral, so step 7 of the scale."
+      },
+      {
+        "id": "bud_week11",
+        "label": "sleeping bud",
+        "position": [
+          -8.45,
+          12.4,
+          0.89
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 11, not open yet: a small cool bud that cannot hold its shape. Bud 8 of 10 going up the spiral, so step 8 of the scale."
+      },
+      {
+        "id": "bud_week12",
+        "label": "sleeping bud",
+        "position": [
+          -5.23,
+          13.65,
+          -6.7
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 12, not open yet: a small cool bud that cannot hold its shape. Bud 9 of 10 going up the spiral, so step 9 of the scale."
+      },
+      {
+        "id": "bud_week13",
+        "label": "sleeping bud",
+        "position": [
+          2.91,
+          14.9,
+          -7.99
+        ],
+        "sizeM": [
+          3,
+          3,
+          3
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "week 13, not open yet: a small cool bud that cannot hold its shape. Bud 10 of 10 going up the spiral, so step 10 of the scale."
+      },
+      {
+        "id": "bell_rim",
+        "label": "frilled rim of the bell",
+        "position": [
+          0,
+          19.59,
+          0
+        ],
+        "sizeM": [
+          11.2,
+          0.6,
+          11.2
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "a ring, not a point: nine frills round an 11 m circle, rippling"
+      },
+      {
+        "id": "kelp_1",
+        "label": "tall kelp",
+        "position": [
+          4.45,
+          6.55,
+          -17.17
+        ],
+        "sizeM": [
+          1,
+          12.26,
+          1
+        ],
+        "occludes": false,
+        "material": "kelp",
+        "motion": "static",
+        "notes": "a strand 12.3 m tall rooted in the sand, leaning in the current"
+      },
+      {
+        "id": "kelp_2",
+        "label": "tall kelp",
+        "position": [
+          -20.38,
+          7.36,
+          -20.79
+        ],
+        "sizeM": [
+          1,
+          11.64,
+          1
+        ],
+        "occludes": false,
+        "material": "kelp",
+        "motion": "static",
+        "notes": "a strand 11.6 m tall rooted in the sand, leaning in the current"
+      },
+      {
+        "id": "kelp_3",
+        "label": "tall kelp",
+        "position": [
+          -16.06,
+          6.23,
+          -1.01
+        ],
+        "sizeM": [
+          1,
+          10.74,
+          1
+        ],
+        "occludes": false,
+        "material": "kelp",
+        "motion": "static",
+        "notes": "a strand 10.7 m tall rooted in the sand, leaning in the current"
+      },
+      {
+        "id": "kelp_4",
+        "label": "tall kelp",
+        "position": [
+          -2.43,
+          5.88,
+          15.5
+        ],
+        "sizeM": [
+          1,
+          9.47,
+          1
+        ],
+        "occludes": false,
+        "material": "kelp",
+        "motion": "static",
+        "notes": "a strand 9.5 m tall rooted in the sand, leaning in the current"
+      },
+      {
+        "id": "sign",
+        "label": "lettering hanging in the water",
+        "position": [
+          -3.6,
+          3.1,
+          9.5
+        ],
+        "sizeM": [
+          4.4,
+          1.5,
+          0.1
+        ],
+        "occludes": false,
+        "material": "water",
+        "motion": "static",
+        "notes": "the title, near where you arrive; it surfaces as you come near and sinks as you leave"
+      }
+    ],
+    "environment": {
+      "setting": "deep under water, inside one vast slow jellyfish made of drifting light",
+      "ground": "water",
+      "enclosure": "open water, 33 m out from a central column, sand dunes below, a bell at 21 m. No walls, surface or air.",
+      "notes": "Threejs frame, +Y up, camera looks down -Z, metres. The listener swims freely in three dimensions. Pods are permeable membranes, not walls: nothing occludes."
+    },
+    "events": [
+      {
+        "name": "pod_enter",
+        "description": "the listener passes through a membrane into a pod; fired at the pod's centre"
+      },
+      {
+        "name": "pod_leave",
+        "description": "the listener passes out of a pod; fired at the pod's centre"
+      },
+      {
+        "name": "bell_enter",
+        "description": "the listener arrives inside the bell; fired at the bell's centre"
+      },
+      {
+        "name": "bell_leave",
+        "description": "the listener leaves the bell; fired at the bell's centre"
+      },
+      {
+        "name": "bud_stir",
+        "description": "the listener comes close to a sleeping bud; fired at the bud"
+      },
+      {
+        "name": "attractor_pass",
+        "description": "the listener brushes right past an attractor; fired at it"
+      },
+      {
+        "name": "glide_start",
+        "description": "the listener is carried off along a curve (a teleport or a trip to a room); at the listener"
+      },
+      {
+        "name": "glide_end",
+        "description": "the glide sets the listener down; at the listener"
+      },
+      {
+        "name": "sprint",
+        "description": "a burst of speed begins; at the listener"
+      },
+      {
+        "name": "seabed_touch",
+        "description": "the listener reaches the sand; fired on the sand beneath them"
+      },
+      {
+        "name": "ceiling_touch",
+        "description": "the listener reaches the top of the water; fired just above them"
+      },
+      {
+        "name": "edge_touch",
+        "description": "the listener reaches the edge of the world, 33 m out; fired just beyond them"
+      },
+      {
+        "name": "page_open",
+        "description": "a page opens to be read; fired at the listener"
+      },
+      {
+        "name": "page_close",
+        "description": "the page closes; fired at the listener"
+      },
+      {
+        "name": "menu_open",
+        "description": "the rooms menu opens; non-spatial, at the listener"
+      },
+      {
+        "name": "menu_close",
+        "description": "the rooms menu closes; non-spatial, at the listener"
+      },
+      {
+        "name": "sound_on",
+        "description": "sound starts, on the visitor's first press; non-spatial, at the listener"
+      },
+      {
+        "name": "ui_hover",
+        "description": "pointer over an interface control; non-spatial, at the listener"
+      },
+      {
+        "name": "ui_press",
+        "description": "an interface control is pressed; non-spatial, at the listener"
+      }
+    ],
+    "states": [
+      {
+        "name": "reading",
+        "description": "a page is open over the world: everything ducks and dulls"
+      }
+    ],
+    "signals": [
+      {
+        "name": "ascent",
+        "description": "how high the listener has swum",
+        "min": 0,
+        "max": 1,
+        "unit": "0 at the seabed, 1 at the bell"
+      },
+      {
+        "name": "far",
+        "description": "how far out the listener is, of 33 m",
+        "min": 0,
+        "max": 1,
+        "unit": "0 at the column, 1 at the edge of the world"
+      },
+      {
+        "name": "vertical",
+        "description": "the listener's vertical speed, smoothed",
+        "min": -1,
+        "max": 1,
+        "unit": "-1 diving fast, 1 rising fast"
+      },
+      {
+        "name": "warmth",
+        "description": "nearness to the work",
+        "min": 0,
+        "max": 1,
+        "unit": "0 far from any attractor, 1 beside one"
+      },
+      {
+        "name": "swell",
+        "description": "one very slow irregular wave, the one the whole world wobbles on",
+        "min": 0,
+        "max": 1,
+        "unit": "0 to 1"
+      }
+    ]
+  },
+  "revision": "6f76d835e655616c62bf9e8b40e9a1093b2e029ea8b59e6c7082cc27e5553606",
+  "scriptHash": "687c5a1558e4d8c81b9145730aad3352b66fba0c8690327281b8b8236ca8f1f1"
+}

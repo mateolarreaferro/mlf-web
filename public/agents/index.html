@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" data-mood="dark">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      This folder is served from three places: GitHub Pages (/agents2026-mateo/),
+      mateolarreaferro.com (/agents, with no trailing slash) and a local server.
+      Every URL in the site is relative, so the one thing that has to be right
+      is what they are relative to. Without a trailing slash "js/main.js" would
+      resolve against the parent, so the page gets a base first. The stylesheet
+      and the script are written here, after it, rather than as plain tags:
+      the browser's preloader fetches plain tags before the base exists, and
+      each one costs a 404.
+    -->
+    <script>
+      if (!/(\/|\.html)$/.test(location.pathname)) {
+        document.write('<base href="' + location.pathname + '/">');
+      }
+      document.write('<link rel="stylesheet" href="css/style.css">');
+      // Satie's adapter imports "three" by name; this is the one we already ship.
+      document.write('<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}<\/script>');
+    </script>
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0a1015" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>agents · mateo larrea ferro</title>
+    <meta name="description" content="Mateo Larrea Ferro's agents class at the MIT Media Lab: an underwater world of light and spatial sound. Every pod is a week. Follow the current up." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='10' fill='%230a1015'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='%2343AA8B'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <canvas id="world" aria-label="An underwater jellyfish made of drifting light. Each pod holds one week of the class. Use the rooms button to visit a pod and read its page."></canvas>
+
+    <header class="hud top">
+      <div class="who">
+        <h1>agents</h1>
+        <p class="label">
+          <a href="https://mateolarreaferro.com">mateo larrea ferro</a> · mit media lab · 2026
+        </p>
+      </div>
+      <nav class="tools" aria-label="site">
+        <button id="sound-button" class="pill" aria-pressed="false">sound</button>
+        <button id="menu-button" class="pill" aria-expanded="false" aria-controls="menu">rooms</button>
+      </nav>
+    </header>
+
+    <nav id="menu" class="menu" hidden aria-label="rooms">
+      <ol id="menu-list"></ol>
+    </nav>
+
+    <div id="here" class="here" hidden>
+      <p class="label" id="here-label"></p>
+      <p id="here-title"></p>
+      <button id="here-read" class="pill solid">read</button>
+    </div>
+
+    <!-- The controls are Satie's. This says so in keys, and lights up as you press them. -->
+    <aside id="legend" class="legend" aria-label="controls">
+      <div class="keys" aria-hidden="true">
+        <span></span><kbd data-key="KeyW">w</kbd><span></span>
+        <kbd data-key="KeyA">a</kbd><kbd data-key="KeyS">s</kbd><kbd data-key="KeyD">d</kbd>
+      </div>
+      <div class="keys" aria-hidden="true">
+        <span></span><kbd data-key="ArrowUp"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="rotate:0deg"><path d="M12 5l7 8h-5v6h-4v-6H5z" fill="currentColor"/></svg></kbd><span></span>
+        <kbd data-key="ArrowLeft"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="rotate:-90deg"><path d="M12 5l7 8h-5v6h-4v-6H5z" fill="currentColor"/></svg></kbd><kbd data-key="ArrowDown"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="rotate:180deg"><path d="M12 5l7 8h-5v6h-4v-6H5z" fill="currentColor"/></svg></kbd><kbd data-key="ArrowRight"><svg viewBox="0 0 24 24" width="11" height="11" aria-hidden="true" style="rotate:90deg"><path d="M12 5l7 8h-5v6h-4v-6H5z" fill="currentColor"/></svg></kbd>
+      </div>
+      <dl>
+        <div><dt><span class="sr">w a s d or arrow keys: </span>move</dt></div>
+        <div><dt><kbd data-key="KeyW">w</kbd><kbd data-key="ArrowUp">↑</kbd></dt><dd>swim where you look</dd></div>
+        <div><dt><kbd data-key="Shift" class="wide">shift</kbd></dt><dd>faster</dd></div>
+      </dl>
+      <dl class="mouse">
+        <div><dt><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0"/><path d="M14 10V4a2 2 0 0 0-4 0v2"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>drag</dt><dd>look</dd></div>
+        <div><dt>scroll</dt><dd>zoom</dd></div>
+        <div><dt>double-click</dt><dd>go there</dd></div>
+      </dl>
+      <p class="touch">drag to look · pinch to move · double-tap the ground to go there</p>
+    </aside>
+
+    <aside id="panel" class="panel" role="dialog" aria-modal="true" hidden aria-labelledby="panel-label" tabindex="-1">
+      <div class="panel-bar">
+        <p class="label" id="panel-label"></p>
+        <button id="panel-close" class="pill">close</button>
+      </div>
+      <article id="panel-body" class="prose"></article>
+    </aside>
+
+    <noscript><p class="flat-note">This underwater world needs JavaScript. Read <a href="rooms/week01.html">week 1</a> or the <a href="rooms/final.html">final project</a> directly.</p></noscript>
+
+    <script>
+      var main = document.createElement("script");
+      main.type = "module";
+      main.src = "js/main.js"; // resolved against the base set in the head
+      document.body.append(main);
+    </script>
+  </body>
+</html>

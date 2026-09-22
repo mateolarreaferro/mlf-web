@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# the class repository (its own git repo); public/agents is its published copy,
+# made by `npm run sync:agents`
+/agents2026-mateo/

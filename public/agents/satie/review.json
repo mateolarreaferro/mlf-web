@@ -1,0 +1,105 @@
+{
+  "reviewedOn": "2026-09-21",
+  "scriptHash": "687c5a1558e4d8c81b9145730aad3352b66fba0c8690327281b8b8236ca8f1f1",
+  "sceneRevision": "6f76d835e655616c62bf9e8b40e9a1093b2e029ea8b59e6c7082cc27e5553606",
+  "runtimeVersion": "0.4.2",
+  "browser": {
+    "pageErrors": [],
+    "acceptedEvents": [
+      "attractor_pass",
+      "bell_enter",
+      "bell_leave",
+      "bud_stir",
+      "ceiling_touch",
+      "edge_touch",
+      "glide_end",
+      "glide_start",
+      "menu_close",
+      "menu_open",
+      "page_close",
+      "page_open",
+      "pod_enter",
+      "pod_leave",
+      "seabed_touch",
+      "sound_on",
+      "sprint",
+      "ui_hover",
+      "ui_press"
+    ],
+    "sharedSwell": true,
+    "touchStartup": "passed in Chromium touch emulation",
+    "mutePersistence": "passed",
+    "readingWhileMuted": "passed",
+    "vocalFilters": "2200 Hz, checked in the rendered graph",
+    "heightSignal": "ascent, checked at the bell with shimmer on and sand off",
+    "readingAttenuationDb": 15.0,
+    "earlyGesture": "AudioContext unlocked before held sample manifest was released, mouse and Chromium touch emulation",
+    "continuousArrival": "12 seconds, every measured RMS above 0.005, mouse and Chromium touch emulation",
+    "interruptionRecovery": "Resumes existing voices after context suspension"
+  },
+  "listening": {
+    "version": "satie.listening/v2",
+    "sha256": "e49abbb2a671a284d21ccd640bb010139ec030c2186f1a253dcf888dfe96bbc5",
+    "conditioning": [],
+    "origin": "agent",
+    "heard": "A low-frequency bubbling or gurgling sound with a wet, fluid texture is present throughout. Overlaid on this is a sustained, resonant vocalization, resembling a human voice singing a single, modulated tone with a nasal, slightly metallic quality. The vocal tone shifts in pitch and intensity, creating a drone-like effect that fluctuates in prominence against the continuous bubbling background.",
+    "assessment": "The audio features a continuous, wet bubbling water bed throughout the entire duration. A wordless, resonant singing voice enters around 0:07, growing in volume as the listener approaches the pod. During the reading state from 0:14 to 0:21, the overall volume of the singing and water ducks noticeably, becoming quieter. From 0:21 to 0:28, the sound shifts to a resonant, metallic drone-like quality, simulating standing inside the bell.",
+    "issues": [],
+    "verdict": "accept"
+  },
+  "playthroughAudit": {
+    "ok": true,
+    "issues": [],
+    "warnings": [],
+    "next": [
+      "Exercise each declared event and room transition, then use the devtools mixer to make subjective refinements."
+    ],
+    "evidence": {
+      "version": "satie.playthrough/v2",
+      "frames": 59,
+      "motionObserved": [],
+      "eventCoverage": {
+        "exercised": [
+          "sound_on",
+          "menu_open",
+          "ui_press",
+          "menu_close",
+          "pod_enter",
+          "page_close",
+          "ui_hover",
+          "sprint",
+          "seabed_touch",
+          "pod_leave",
+          "ceiling_touch",
+          "edge_touch",
+          "bud_stir",
+          "attractor_pass",
+          "bell_enter",
+          "bell_leave",
+          "glide_start",
+          "page_open",
+          "glide_end"
+        ],
+        "missing": []
+      },
+      "limitation": "Runtime observations and modelled levels do not prove perceptual quality or calibrated acoustic accuracy."
+    }
+  },
+  "humanListeningApproval": false,
+  "playbackReference": 52,
+  "mixComparison": {
+    "before": {
+      "arrival": -50.2,
+      "week01": -34.0,
+      "reading": -47.6,
+      "bell": -38.3
+    },
+    "after": {
+      "arrival": -31.5,
+      "week01": -16.4,
+      "reading": -30.3,
+      "bell": -20.0
+    },
+    "unit": "mean window RMS, dBFS; same comparison route, before final visual arrival reframing"
+  }
+}

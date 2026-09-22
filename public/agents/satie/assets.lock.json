@@ -1,0 +1,1592 @@
+{
+  "version": "satie.assets/v1",
+  "sceneRevision": "6f76d835e655616c62bf9e8b40e9a1093b2e029ea8b59e6c7082cc27e5553606",
+  "scriptHash": "687c5a1558e4d8c81b9145730aad3352b66fba0c8690327281b8b8236ca8f1f1",
+  "runtime": {
+    "version": "0.4.3",
+    "url": "https://www.satie.live/runtime/0.4.3/satie-runtime.tgz"
+  },
+  "assets": [
+    {
+      "clipPath": "Audio/whale-song-underwater",
+      "sampleId": "13b46fdd-4826-4a94-9900-67c515a1ec64",
+      "source": "library",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4ad74f9f-7c6d-402f-bf9a-f2f4ec50de28_whale",
+      "license": "CC0",
+      "attribution": null,
+      "qa": {
+        "heard": "Deep whale songs with haunting harmonic overtones and low frequencies rolling through water, with some water movement sounds.",
+        "verdict": "pass",
+        "reason": "recording carries reverb"
+      },
+      "sha256": "375441feebc3a009296feda154707d455772702efaae5765c54d915de9ae0824",
+      "localFile": "375441feebc3a009296feda154707d455772702efaae5765c54d915de9ae0824.audio"
+    },
+    {
+      "clipPath": "Audio/generation/continuous_rising_stream_of_sm",
+      "sampleId": "01b2d818-9141-4a9d-acce-59688118c476",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/39adeee8-a8ff-4e47-869c-57d271c0b3a0_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "continuous stream of small underwater bubbles and gurgles",
+        "verdict": "pass"
+      },
+      "sha256": "2d815666b757f6211b531d9b4ce94feb12ea377fde11d03c87db646507ca897a",
+      "localFile": "2d815666b757f6211b531d9b4ce94feb12ea377fde11d03c87db646507ca897a.audio"
+    },
+    {
+      "clipPath": "Audio/generation/fine_submerged_tendrils_brushi",
+      "sampleId": "35a6ef46-36f5-49fa-84e3-bf16547c3fa9",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/98a3b4b9-9d11-4084-8ee7-45043f41d6fa_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "delicate rustling and brushing sounds, like submerged fibers or tendrils moving gently",
+        "verdict": "pass"
+      },
+      "sha256": "b95fd297775b80f5a3c4a752e0a4a9b5207f4615d2ec5a87557750a32d94bc84",
+      "localFile": "b95fd297775b80f5a3c4a752e0a4a9b5207f4615d2ec5a87557750a32d94bc84.audio"
+    },
+    {
+      "clipPath": "Audio/generation/frilled_gelatinous_membrane_ri",
+      "sampleId": "abdbaa65-4357-4871-b166-8ead15205c7f",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/1c4e07ee-4887-4e76-82e7-cd99695e123f_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "bubbling and squelching water sounds with wet friction",
+        "verdict": "pass"
+      },
+      "sha256": "87e170129e3f32f52ab0e9332e27bf179334d470eb3c15240cb101f9dc06ee53",
+      "localFile": "87e170129e3f32f52ab0e9332e27bf179334d470eb3c15240cb101f9dc06ee53.audio"
+    },
+    {
+      "clipPath": "Audio/generation/huge_elastic_jelly_dome_slowly",
+      "sampleId": "0b8c9863-312e-4f59-a7c0-4f76fbafc09b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/51c2f0d5-af14-4ce8-b973-f8cc35b1bafd_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "underwater bubbling and squelching sounds",
+        "verdict": "pass"
+      },
+      "sha256": "22ed601c13df79347761c8d05f3693f66bf539722859f7bc58c494bbac1045f5",
+      "localFile": "22ed601c13df79347761c8d05f3693f66bf539722859f7bc58c494bbac1045f5.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_gelatinous_strands_draggi",
+      "sampleId": "5e472944-fcf6-4da0-90bf-cea144c9713d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/fc401d37-36b0-4c83-8578-16582ee343e4_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "bubbling and squelching water sounds with a gelatinous texture",
+        "verdict": "pass"
+      },
+      "sha256": "621d965224d191f31138105c460304572a705ea95a7e2e2d2cc03e0b0d528530",
+      "localFile": "621d965224d191f31138105c460304572a705ea95a7e2e2d2cc03e0b0d528530.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_broad_gelatinous_membra",
+      "sampleId": "5b7f1843-e718-4bc1-8794-44e3dd2652c4",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/cfde4123-a6ed-4712-9875-bd65cf0bbe24_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low, deep rumbling wind or breath-like sound with subtle liquid texture",
+        "verdict": "pass"
+      },
+      "sha256": "906a5212ab00860937badd5f636dd81e399e21b74970e504bee61ae4b89f750c",
+      "localFile": "906a5212ab00860937badd5f636dd81e399e21b74970e504bee61ae4b89f750c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_cohesive_school_of_tiny",
+      "sampleId": "08feac9b-bb1e-4f15-87eb-2c327afdc17b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/743e5fdc-c23c-4790-8cf4-7e6c89386e6d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "delicate bubbling and swirling water sounds",
+        "verdict": "pass"
+      },
+      "sha256": "c6a971c254ae66c229ce6cec715e9129d23d30b80556df311534e6e063e54c4a",
+      "localFile": "c6a971c254ae66c229ce6cec715e9129d23d30b80556df311534e6e063e54c4a.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_drawn-in_underwater_who",
+      "sampleId": "99952ee5-befa-4b89-bd93-8da2c4f11e00",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2d5f746c-5773-4913-9181-d5e16a225aff_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "An underwater bubbling and whooshing sound",
+        "verdict": "pass"
+      },
+      "sha256": "731c48d3be9bc1655caab95570b7c5a01082262dc07b180cc1cabd4d1ad66143",
+      "localFile": "731c48d3be9bc1655caab95570b7c5a01082262dc07b180cc1cabd4d1ad66143.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_enormous_gelatinous_bod",
+      "sampleId": "1c37b321-65f7-45fc-a212-8f7f74440a0b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4ae990ae-80c7-429f-bb32-9f935f7d578e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, rumbling, organic groan with bending subharmonics and a smooth pressure rise and release",
+        "verdict": "pass"
+      },
+      "sha256": "fa0cc0cd2571f015862e0ff62b9d5e01cd34d401d9f0cf8ec773fef9be86b53b",
+      "localFile": "fa0cc0cd2571f015862e0ff62b9d5e01cd34d401d9f0cf8ec773fef9be86b53b.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_flexible_jelly_membrane",
+      "sampleId": "5fea916d-99c0-40fa-9824-42b32742f09e",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/179a3b82-9066-4948-ae11-99a23e1a4d1c_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A soft, squishy underwater bubbling or membrane movement sound",
+        "verdict": "pass"
+      },
+      "sha256": "cbde46e46318a35bbbd9119014b1e26f360c08a23379e581d09cd2cec283b0eb",
+      "localFile": "cbde46e46318a35bbbd9119014b1e26f360c08a23379e581d09cd2cec283b0eb.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_hollow_liquid_cavity_co",
+      "sampleId": "49fd6f2e-0705-4607-bbba-94c7b0dc1ad1",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/5b482d61-aadc-440e-9b4c-b29dd823806f_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a wet, squelchy liquid compression and release sound",
+        "verdict": "pass"
+      },
+      "sha256": "7b272b551774d4680f9a7b88a6b765686a5dc02808d62531c45a98e8cc6e5770",
+      "localFile": "7b272b551774d4680f9a7b88a6b765686a5dc02808d62531c45a98e8cc6e5770.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_loose_cluster_of_tiny_g",
+      "sampleId": "68fdf72e-ec37-4355-901d-bd508ad018b6",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/1b1a05b3-0744-45e5-9349-6eff54d80be5_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "glassy friction sounds with singing resonances and water movement",
+        "verdict": "pass"
+      },
+      "sha256": "3be46ee56e9b5f4aee4ce7d43d100c84248811441d16d02bd38a122f1526ace5",
+      "localFile": "3be46ee56e9b5f4aee4ce7d43d100c84248811441d16d02bd38a122f1526ace5.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_puff_of_fine_wet_sand_l",
+      "sampleId": "450ae690-f9ab-493a-8a04-7f09fb0cac2e",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/dec8579f-fdca-4333-9a47-615eb07a48e7_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A soft, granular scraping or sliding sound, like sand or fine particles moving against a surface",
+        "verdict": "pass"
+      },
+      "sha256": "b546c660cdfa0402545a322824b6bcb0a77dd4f4dcac0b6f10cd2b0d27880ce2",
+      "localFile": "b546c660cdfa0402545a322824b6bcb0a77dd4f4dcac0b6f10cd2b0d27880ce2.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_short_push_of_water,_ro",
+      "sampleId": "6ff470d0-d900-40a9-bf42-35ac5844a91d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/d96d88f5-dcfc-416e-808e-e1cf56b1ff53_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a gentle, low-frequency water surge with a smooth onset and trailing eddy",
+        "verdict": "pass"
+      },
+      "sha256": "9a5f602b536fea4427784051ed8d9eacd7557aafba78178014da93aeaaaf1268",
+      "localFile": "9a5f602b536fea4427784051ed8d9eacd7557aafba78178014da93aeaaaf1268.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slender_whale-like_liqu",
+      "sampleId": "5a0c16a3-17ad-4040-b3cf-d1067dc27a58",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/10d58a4c-18a0-44cf-933c-4ec0eed78fe1_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, wavering tonal sweep resembling a whale call",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "d94faae4e72a5497e0b3e48f035d3f85aca3732df0e05b28c3bbd1048e35246f",
+      "localFile": "d94faae4e72a5497e0b3e48f035d3f85aca3732df0e05b28c3bbd1048e35246f.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_wash_of_submerged_",
+      "sampleId": "3d005574-8fed-4971-9b01-cf45ca21394c",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/b26b3136-de47-4dfd-a1c8-bcc9f22f9959_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a continuous bubbling and gurgling sound under water",
+        "verdict": "pass"
+      },
+      "sha256": "81b2403731e480f37778ab2d80dccaeeb08066b510dd99cd6f1589be55ea52f7",
+      "localFile": "81b2403731e480f37778ab2d80dccaeeb08066b510dd99cd6f1589be55ea52f7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_gelatinous_capsul",
+      "sampleId": "852afda7-5902-4462-86c7-72571b844e82",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/05175b8f-a31e-4a52-99e3-1743bc3c2bef_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a wet, squelchy, bubbling sound with a squeaky, rubbery texture",
+        "verdict": "pass"
+      },
+      "sha256": "f6a02c0c3a4273d796f7eb455d350df9fbada585edf71787c4c3f1f216597d3d",
+      "localFile": "f6a02c0c3a4273d796f7eb455d350df9fbada585edf71787c4c3f1f216597d3d.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_liquid_droplet_re",
+      "sampleId": "363d410b-6536-4203-a34a-d9f41511bcf7",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/65884f17-d2ac-4a5b-a1a8-a84a0bb9baa0_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A series of small, synthetic liquid droplet sounds with an upward pitch glide",
+        "verdict": "pass"
+      },
+      "sha256": "e3b9f73280d27f89cbaf8cbc31acbbe75e08e88b0fdb224b72eca2a114772399",
+      "localFile": "e3b9f73280d27f89cbaf8cbc31acbbe75e08e88b0fdb224b72eca2a114772399.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_release_of_underw",
+      "sampleId": "bc8046a0-8e24-4d4a-a94c-4e2b5a3c3d53",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/1e59ef6a-8135-4188-bea3-0808b5970858_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a single small release of underwater bubbles with a rounded liquid burble",
+        "verdict": "pass"
+      },
+      "sha256": "1de5f405f86c426411cf7b5038065d34c31ec5d4f478e63a2dea33c036bd29ca",
+      "localFile": "1de5f405f86c426411cf7b5038065d34c31ec5d4f478e63a2dea33c036bd29ca.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_underwater_bubble",
+      "sampleId": "06cbd3b5-d757-414c-b699-1edc7dfd9a37",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/ad659d26-c2e8-4a00-bed2-0fc8e79c1a76_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single small underwater bubble blup with a descending pitch",
+        "verdict": "pass"
+      },
+      "sha256": "3971db62363e63a6c56385f6cbd655ece1885566f058e969a58bca065a840705",
+      "localFile": "3971db62363e63a6c56385f6cbd655ece1885566f058e969a58bca065a840705.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_smooth_liquid_membrane_",
+      "sampleId": "a449cbc9-912c-4956-8798-886fed09edd5",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/f7a92c0c-c273-49b0-be05-79d899901dae_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, synthetic tonal swell with a subtle warbling texture",
+        "verdict": "pass"
+      },
+      "sha256": "052be90a74cd0be6f5119310087dd68e5fb72f6746e3c636c0b5c214538cf3ad",
+      "localFile": "052be90a74cd0be6f5119310087dd68e5fb72f6746e3c636c0b5c214538cf3ad.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_submerged_bronze_bell_s",
+      "sampleId": "197e20fe-4546-43f7-9899-6015d211bb2c",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/85a3884b-3a24-4fb1-b683-68ab8a345e15_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single, clear metallic bell strike with a long, sustained decay and a soft attack",
+        "verdict": "pass"
+      },
+      "sha256": "ccd72f8ff401aaafe836586fde0e8fc3299db94e000a98ecc252137d3cc0e6d7",
+      "localFile": "ccd72f8ff401aaafe836586fde0e8fc3299db94e000a98ecc252137d3cc0e6d7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_tiny_underwater_bubble_",
+      "sampleId": "17805a12-0c2f-4afc-8d77-7e8d5b57f408",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/6491e22f-eee3-48e9-9e3e-9d633722434a_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single tiny underwater bubble blip with a low liquid resonance",
+        "verdict": "pass"
+      },
+      "sha256": "0f16437c5771bd5121d7f920116b501a44018f646433a70b7f9601a6edd74e22",
+      "localFile": "0f16437c5771bd5121d7f920116b501a44018f646433a70b7f9601a6edd74e22.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_warm_liquid_harmonic_sw",
+      "sampleId": "cd0ad86d-8548-47a1-89db-759b9c6cd89f",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/9e5fc7ea-64b1-4386-be04-8fe87d587f48_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a synthetic tonal sweep with a metallic, resonant whistle that glides upward and then down",
+        "verdict": "pass"
+      },
+      "sha256": "4300408850dea767e178a186745d56e30f1eef1c8f1efdf61af31e183bc4842c",
+      "localFile": "4300408850dea767e178a186745d56e30f1eef1c8f1efdf61af31e183bc4842c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_water_eddy_relaxing_aft",
+      "sampleId": "f7893492-aa86-4705-b2fd-537a46946613",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/522c4127-3bd5-49bd-8bc6-55bc18772afc_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A gentle, close-up water swirling and bubbling sound",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "8c280d8c14e579fb285e15d639a07be26e6715a76da91b69d43a5e2a1310e28c",
+      "localFile": "8c280d8c14e579fb285e15d639a07be26e6715a76da91b69d43a5e2a1310e28c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_bubbles_streaming_gently",
+      "sampleId": "024f83a8-0177-43ab-a184-e1892d66f3c8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/a85b45d1-21e0-4f80-b4bd-39ecfef95fa5_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "gentle bubbling water with a smooth, consistent texture",
+        "verdict": "pass"
+      },
+      "sha256": "517093716bfe182284fe68f9ea19180193283232515f609afaaabe06e135afbd",
+      "localFile": "517093716bfe182284fe68f9ea19180193283232515f609afaaabe06e135afbd.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_cluster_of_bubbles_relea",
+      "sampleId": "708d3bda-afc5-41ff-b453-764dfbd76104",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/64468506-df72-4611-999d-978b6cb032de_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "small cluster of liquid bubbles popping and burbling close up",
+        "verdict": "pass"
+      },
+      "sha256": "d901c30fba30e35c0cc28a28084333ad9ecd5702b1429dffd3e32f0c6893e1ff",
+      "localFile": "d901c30fba30e35c0cc28a28084333ad9ecd5702b1429dffd3e32f0c6893e1ff.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_gelatinous_water_capsule",
+      "sampleId": "e822025d-9c9f-4566-a0d4-f1f5571d7a4b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/5a76e5a3-1bad-4bf2-bf55-4707db3b8d14_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "bubbling and squelching water sounds",
+        "verdict": "pass"
+      },
+      "sha256": "464ff14598a3b41a5705d8fa9d179b3735a3a1afc9f3d58a04a23ad706f9f498",
+      "localFile": "464ff14598a3b41a5705d8fa9d179b3735a3a1afc9f3d58a04a23ad706f9f498.audio"
+    },
+    {
+      "clipPath": "Audio/generation/sustained_rounded_liquid_harmo",
+      "sampleId": "f8c12795-b91f-40a4-b188-3f5cac69a071",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/0b582de5-34dd-4ab2-9299-730dc913b0d0_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "low, resonant bubbling and liquid gurgling with subtle harmonic overtones",
+        "verdict": "pass"
+      },
+      "sha256": "976aa35658cc0f6d6ee12490166a617bed639af74d92929d5409f22a25ef643e",
+      "localFile": "976aa35658cc0f6d6ee12490166a617bed639af74d92929d5409f22a25ef643e.audio"
+    },
+    {
+      "clipPath": "Audio/generation/sustained_wordless_singing_ton",
+      "sampleId": "a10c7467-1bd8-46f4-8d04-df2d4822228d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/fc017ed8-5a3b-45b3-928b-096d41df867d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A sustained, wordless vocal drone with two closely detuned pitches creating a slow beating effect, sung with a rounded vowel",
+        "verdict": "pass"
+      },
+      "sha256": "1b0af31aefe3a9bf91f04920012c0548f4a457cb5a0edcd94448c3b2df50502f",
+      "localFile": "1b0af31aefe3a9bf91f04920012c0548f4a457cb5a0edcd94448c3b2df50502f.audio"
+    },
+    {
+      "clipPath": "Audio/generation/thin_elastic_jelly_membrane_sl",
+      "sampleId": "f79f97af-ff12-4d52-9a2b-39db45933a22",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/979d489e-b2f0-48ce-a711-b1f97ae6618e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and bubbling sounds of a jelly-like substance in water",
+        "verdict": "pass"
+      },
+      "sha256": "89987149e80818d1fb3d423467ba9c88a3a9774623d2801c58b239e3acd035d7",
+      "localFile": "89987149e80818d1fb3d423467ba9c88a3a9774623d2801c58b239e3acd035d7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/thin_glass_filament_singing_a_",
+      "sampleId": "adfb0840-9fa2-45e5-8d90-8845cbe06025",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4f475c57-5155-4856-9e5d-7f5b65ae9191_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, resonant whistling or singing tone with a glass-like quality and slow pitch wavering",
+        "verdict": "pass"
+      },
+      "sha256": "122197cf7d2b4a388c507baf3e727515021d41f156d2f5891e3ef14bab94125f",
+      "localFile": "122197cf7d2b4a388c507baf3e727515021d41f156d2f5891e3ef14bab94125f.audio"
+    },
+    {
+      "clipPath": "Audio/generation/water_flowing_smoothly_around_",
+      "sampleId": "82511f93-c9f0-4c83-9583-b1ab47956051",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/659e5fc0-c072-4e61-a00a-8068347ffc41_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "water splashing and sloshing around a submerged object",
+        "verdict": "pass"
+      },
+      "sha256": "b0d27a603f5b4a85f06879009fedc3cc25366b017c8c751b448bcbdfffe4f359",
+      "localFile": "b0d27a603f5b4a85f06879009fedc3cc25366b017c8c751b448bcbdfffe4f359.audio"
+    },
+    {
+      "clipPath": "Audio/generation/water_pressure_compressing_a_f",
+      "sampleId": "14ba9d0d-b005-4363-90e2-690012adedbc",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/c2734410-cca6-4bea-ac1d-da9eaef1c718_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "water flowing or bubbling through a narrow tube or cavity",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "1cd303258876c8420961f171276818d2308f92cd94620155ce00d08ea08624ca",
+      "localFile": "1cd303258876c8420961f171276818d2308f92cd94620155ce00d08ea08624ca.audio"
+    },
+    {
+      "clipPath": "Audio/generation/fine_waterlogged_sand_grains_s_1",
+      "sampleId": "df5876a4-f5c3-4178-9370-7583e5ff40f3",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/ca1081ad-fa7d-4f1f-b016-bc4a0f23910f_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "granular rustling and sliding sounds, resembling sand or small particles shifting",
+        "verdict": "pass"
+      },
+      "sha256": "48e3756931845065104aae5b8f5debfd1fd739e2cbb7e3d40504797027800364",
+      "localFile": "48e3756931845065104aae5b8f5debfd1fd739e2cbb7e3d40504797027800364.audio"
+    },
+    {
+      "clipPath": "Audio/generation/fine_waterlogged_sand_grains_s_2",
+      "sampleId": "f9c51170-c607-4acc-8e5e-6b8e6be82c6d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2a8d4565-787a-4f96-ae0a-fe7708717131_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "waterlogged sand grains sliding and settling with a gentle granular friction",
+        "verdict": "pass"
+      },
+      "sha256": "5db27c32bdbf3e0ccec19105e56b8e096caccf61399c3dff1ca4493a960e8ec0",
+      "localFile": "5db27c32bdbf3e0ccec19105e56b8e096caccf61399c3dff1ca4493a960e8ec0.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_1",
+      "sampleId": "3e2d7edc-4a87-4fc2-8bf9-bba963cddf33",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/98ad3310-f09a-4a18-b7f5-8eee352615c7_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed being handled and rubbed closely",
+        "verdict": "pass"
+      },
+      "sha256": "4fc196b6b412d2a3c2d56a22b748213c7fa93eafca2daa0f323ff8c50cbec627",
+      "localFile": "4fc196b6b412d2a3c2d56a22b748213c7fa93eafca2daa0f323ff8c50cbec627.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_2",
+      "sampleId": "911d42b7-977b-437b-baf3-3d3c0cd26afa",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/ca734891-0922-469e-a20d-fb79c27f63df_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed being squished and rubbed together",
+        "verdict": "pass"
+      },
+      "sha256": "55feb7f54ea936038cf9944f5ce78f61af61fc44dbea75861e4ec45dee73364e",
+      "localFile": "55feb7f54ea936038cf9944f5ce78f61af61fc44dbea75861e4ec45dee73364e.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_3",
+      "sampleId": "348c77f1-23ce-4f1e-82de-f3f72c3f600d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/252b5622-1263-4891-bd34-64377a9ced2b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rustling of leaves or seaweed",
+        "verdict": "pass"
+      },
+      "sha256": "148f3de11efd596307874a61fb15a777e8fdcd13a7bc81c6e0e7d159318fbbc7",
+      "localFile": "148f3de11efd596307874a61fb15a777e8fdcd13a7bc81c6e0e7d159318fbbc7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_4",
+      "sampleId": "b1ed1a45-a471-47df-a55c-0102ea7b9b18",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/8aea5afe-c984-4efe-9870-8288e3670863_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed being squished and rubbed together",
+        "verdict": "pass"
+      },
+      "sha256": "017167f11be7263546972a624bcc804dc67dd33b83f7bfac3db19365a3d2b1af",
+      "localFile": "017167f11be7263546972a624bcc804dc67dd33b83f7bfac3db19365a3d2b1af.audio"
+    },
+    {
+      "clipPath": "Audio/generation/low_hollow_fluid_resonance_fro_1",
+      "sampleId": "d9e654a5-53a7-498e-bcf5-3796b6d1f1b9",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2b49ac6f-31d8-42f5-9a44-ff6ea3cd145c_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low, hollow, fluid-like drone with organic pitch fluctuations",
+        "verdict": "pass"
+      },
+      "sha256": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d",
+      "localFile": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d.audio"
+    },
+    {
+      "clipPath": "Audio/generation/low_hollow_fluid_resonance_fro_2",
+      "sampleId": "9a69dc59-3601-4b95-922e-c089115289cb",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/6511b82a-91f0-4b3f-b02a-3a348133d906_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "low hollow fluid drone with organic pitch sags",
+        "verdict": "pass"
+      },
+      "sha256": "61ed586687f49c33a80c7a4782b23d467e8a278db4644a00e41e9656ef330b08",
+      "localFile": "61ed586687f49c33a80c7a4782b23d467e8a278db4644a00e41e9656ef330b08.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_broad_gelatinous_membra#2",
+      "sampleId": "40ffe3d1-c0ae-4393-9826-ff881de44bc5",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/424df957-8412-4d68-99e7-e75b0b261bc9_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low, deep synthetic rumble with a slow downward pitch sweep and a subtle liquid texture",
+        "verdict": "pass"
+      },
+      "sha256": "a17aa87573256b45a4d33893cd804ca4e1bebe4aa1fb1814b1c4263883fa1118",
+      "localFile": "a17aa87573256b45a4d33893cd804ca4e1bebe4aa1fb1814b1c4263883fa1118.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_broad_gelatinous_membra#3",
+      "sampleId": "fec5a6dc-cc0e-4902-b854-518f802162d1",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/456ad62e-4866-45c3-888e-8aca7693fc69_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, deep, rumbling wind-like or breath-like sound with a subtle liquid texture",
+        "verdict": "pass"
+      },
+      "sha256": "ea91a59ab2ed0036685f4e90c42a36b7468f88497c6150c301c83959cb1c09ee",
+      "localFile": "ea91a59ab2ed0036685f4e90c42a36b7468f88497c6150c301c83959cb1c09ee.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_cohesive_school_of_tiny#2",
+      "sampleId": "97f92a65-1c00-48f4-9552-b522cffa781d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/dbe178f3-61b4-4635-8194-417381ab8a09_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "gentle bubbling and stirring water",
+        "verdict": "pass"
+      },
+      "sha256": "cc6ca9f16c2366fe0c9c16028173d03d3f5f337d6a0cb12cbab76fce1ee73ca4",
+      "localFile": "cc6ca9f16c2366fe0c9c16028173d03d3f5f337d6a0cb12cbab76fce1ee73ca4.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_cohesive_school_of_tiny#3",
+      "sampleId": "280c4365-9f95-40dc-a47b-5719a15b0519",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/cdabb98f-ee9c-4856-8f20-a65c32efb875_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "delicate bubbling and stirring water sounds",
+        "verdict": "pass"
+      },
+      "sha256": "901ff132483fc5237cfffb6fa8760bf865068e6d7d7b1e4d2d9785722ac25ae1",
+      "localFile": "901ff132483fc5237cfffb6fa8760bf865068e6d7d7b1e4d2d9785722ac25ae1.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_drawn-in_underwater_who#2",
+      "sampleId": "63b785a5-d47e-4b88-9cae-83d1f2d87670",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/90d16863-2040-439a-85a6-c92d168d684a_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "An underwater whoosh or bubble movement",
+        "verdict": "pass"
+      },
+      "sha256": "e214e1b6f9602e374e210030532f2c72a622e0f5209826b25cac4cfe92c0f780",
+      "localFile": "e214e1b6f9602e374e210030532f2c72a622e0f5209826b25cac4cfe92c0f780.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_drawn-in_underwater_who#3",
+      "sampleId": "1722a143-ec5d-41ef-b93e-6516052a31a0",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/b47796ad-eb3a-4994-aed9-041339442a48_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "An underwater whoosh or bubble movement",
+        "verdict": "pass"
+      },
+      "sha256": "d5e92ff66c4ba3fc99cf25ffa42a3b8a910a1491d2c89b9fe8ca0610000df020",
+      "localFile": "d5e92ff66c4ba3fc99cf25ffa42a3b8a910a1491d2c89b9fe8ca0610000df020.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_enormous_gelatinous_bod#2",
+      "sampleId": "000c8a3d-4940-45bf-ae9a-4e6c899606f3",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/07a9e19b-b697-4160-a1ae-4417ab97de9d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "low-frequency organic rumbling and squelching sound",
+        "verdict": "pass"
+      },
+      "sha256": "bfad2e26e8bfe46029ddaec0603b34bd9e6373a508ed5f2c096bd1ea73a708c1",
+      "localFile": "bfad2e26e8bfe46029ddaec0603b34bd9e6373a508ed5f2c096bd1ea73a708c1.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_enormous_gelatinous_bod#3",
+      "sampleId": "61de78cc-bc76-47c9-b7f6-9550b6c05530",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/08300f54-bc66-4e20-a253-eecaa5d58bc5_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, deep organic groan with bending subharmonics and a smooth pressure rise and release",
+        "verdict": "pass"
+      },
+      "sha256": "d071cf3ae9ff8db321599b0eb707259165069bd99d4700b4597429535073368a",
+      "localFile": "d071cf3ae9ff8db321599b0eb707259165069bd99d4700b4597429535073368a.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_flexible_jelly_membrane#2",
+      "sampleId": "011e1c78-010c-423d-b481-d4d042ba31dc",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/e86ced63-2fd6-423a-9bb7-e6e3abb5b20b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and bubbling sounds under water",
+        "verdict": "pass"
+      },
+      "sha256": "7685310734c298d9cf4596859d66ed881c3f5e790bd2ba488c5f66a9c5f06a71",
+      "localFile": "7685310734c298d9cf4596859d66ed881c3f5e790bd2ba488c5f66a9c5f06a71.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_flexible_jelly_membrane#3",
+      "sampleId": "7526ab61-8c35-42ee-b34b-03f0d5f6b255",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/62f73631-6fa9-4e00-b9bc-91c8856f26b2_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a soft, squishy underwater bubbling or membrane movement",
+        "verdict": "pass"
+      },
+      "sha256": "80847be0206112d750c129efdfaabc86f15adbd02c554fdbda37bc5ad7555615",
+      "localFile": "80847be0206112d750c129efdfaabc86f15adbd02c554fdbda37bc5ad7555615.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_hollow_liquid_cavity_co#2",
+      "sampleId": "a13f3be9-cac3-438c-b9e1-2df1a9d54782",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/6169fe8e-d195-4c62-abbe-149cca425c0b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, hollow, descending liquid-like bubble or cavity compression sound",
+        "verdict": "pass"
+      },
+      "sha256": "33128d80fa5cf83d58af70357069a86e3fbe3212c4a5ecf441289277c8d31b03",
+      "localFile": "33128d80fa5cf83d58af70357069a86e3fbe3212c4a5ecf441289277c8d31b03.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_hollow_liquid_cavity_co#3",
+      "sampleId": "116a3061-697f-4c7d-b0d7-9373c8193fc8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/8294c7f1-c502-4c9f-81e0-8e868a1bbf25_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single wet, squelchy suction or liquid compression sound with a hollow, descending resonance",
+        "verdict": "pass"
+      },
+      "sha256": "afb421c3d0d57f86945b4090911e4a1e28aad91cc24c37a0f5dcd497ed74a9a4",
+      "localFile": "afb421c3d0d57f86945b4090911e4a1e28aad91cc24c37a0f5dcd497ed74a9a4.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_loose_cluster_of_tiny_g#2",
+      "sampleId": "d88ba9de-d4b9-4472-985e-f9248d136347",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/f49519d2-92cd-49d0-a86b-ae5c2a793c00_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "rounded glassy singing glissandi from rubbing glass in water",
+        "verdict": "pass"
+      },
+      "sha256": "91d7bcd769bcb0a82dfdbcd4c1a2d7dc6da92027f122be536439c02e11ab502a",
+      "localFile": "91d7bcd769bcb0a82dfdbcd4c1a2d7dc6da92027f122be536439c02e11ab502a.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_puff_of_fine_wet_sand_l#2",
+      "sampleId": "5ef471bc-7df0-4c9e-ab7d-bef8711e71b1",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4e683c47-482f-40eb-8735-4ce54ac8b832_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A gentle, granular bubbling and rolling sound, like sand or small pebbles shifting underwater",
+        "verdict": "pass"
+      },
+      "sha256": "9df6f11a9513d2360b6f18f87a541f4949ca01cdf841a790d4c709f572f88c82",
+      "localFile": "9df6f11a9513d2360b6f18f87a541f4949ca01cdf841a790d4c709f572f88c82.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_puff_of_fine_wet_sand_l#3",
+      "sampleId": "7f5d461d-c9c1-4bf9-99fd-5ed18113a58b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/a41c437a-250d-4113-bde4-4e4a44f1c76e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "granular bubbling and rolling friction under water",
+        "verdict": "pass"
+      },
+      "sha256": "602f280b5b978a1249da784232c4e76199ee8fea5d7f835c05e9e8eb37f210c5",
+      "localFile": "602f280b5b978a1249da784232c4e76199ee8fea5d7f835c05e9e8eb37f210c5.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_short_push_of_water,_ro#2",
+      "sampleId": "c62bfaac-39b5-422d-95cb-59b53eff074d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/fd3a66a0-8a13-494b-8971-83756d9395d6_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a single gentle push of water with a smooth onset and trailing eddy",
+        "verdict": "pass"
+      },
+      "sha256": "466086ef187ee8bb195f1e7a73fae31048a748c6f647e6d51aa75249dff7ed7c",
+      "localFile": "466086ef187ee8bb195f1e7a73fae31048a748c6f647e6d51aa75249dff7ed7c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_short_push_of_water,_ro#3",
+      "sampleId": "4ea07cc1-d43a-48a0-9e41-2358f5d0797e",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/9820e3bf-105f-4262-92cb-ad5e2ad1b9f8_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a short, gentle underwater movement or bubble surge",
+        "verdict": "pass"
+      },
+      "sha256": "9291161697a1db3081e259afd434190259cdfeb4a97ba8c81d1e887695dd5d6c",
+      "localFile": "9291161697a1db3081e259afd434190259cdfeb4a97ba8c81d1e887695dd5d6c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slender_whale-like_liqu#2",
+      "sampleId": "3f58f654-4f79-41e2-9280-451d29646ed2",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2148a44a-486a-46c9-b315-4f4f06586ccf_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, high-pitched rising whistle resembling a whale-like call",
+        "verdict": "pass"
+      },
+      "sha256": "2bcfa896b1855992e9e9d1da9a99c9a3790e689e2b0b372399af9bd096461516",
+      "localFile": "2bcfa896b1855992e9e9d1da9a99c9a3790e689e2b0b372399af9bd096461516.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slender_whale-like_liqu#3",
+      "sampleId": "3e44c0f6-76e0-477a-ba3e-57852f2708d9",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/90499fde-44d0-44e5-8b84-775ea4fb9943_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, whale-like rising and falling tone with a buzzy, electronic texture",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "1432c29aaf91d4c2e696ad82918a1f0bc287f4f573acb7ba449c11f6e5004b59",
+      "localFile": "1432c29aaf91d4c2e696ad82918a1f0bc287f4f573acb7ba449c11f6e5004b59.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_wash_of_submerged_#2",
+      "sampleId": "cde7be6a-34e1-49ca-ac54-0f33e20e8306",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/789cdf86-ede8-455d-afab-04d07a1b2590_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A low, bubbling and rushing water sound with subtle high-frequency crackles, consistent with a hydrophone recording of water movement",
+        "verdict": "pass"
+      },
+      "sha256": "2918cd7c5ef8b8f9b868e307db8a55f7dbb71e8d0e85d68eaf62e32caefb5eef",
+      "localFile": "2918cd7c5ef8b8f9b868e307db8a55f7dbb71e8d0e85d68eaf62e32caefb5eef.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_wash_of_submerged_#3",
+      "sampleId": "bf08e1eb-4c16-4f98-9944-105fb5e885f4",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/b5160de9-4a8a-4d03-ae88-f1805cde1770_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A close, dry hydrophone recording of bubbling water and submerged pressure shifts, with no room acoustics or baked-in reverb.",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "f12d6a7e95aaec45d55de64ca9a484fd98e96f25b6cbfdb2025f677715b7038c",
+      "localFile": "f12d6a7e95aaec45d55de64ca9a484fd98e96f25b6cbfdb2025f677715b7038c.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_gelatinous_capsul#2",
+      "sampleId": "1a17818d-1942-49d3-9144-53cdd5e1ec0e",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/acd0c934-6e1a-4558-96ef-fbaab0b3e299_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a wet, squelchy stirring sound with a bubbly, gelatinous texture",
+        "verdict": "pass"
+      },
+      "sha256": "748851b3d30e9994779704f251563ab68aeb65970a2be6bd8cc353b7b545d732",
+      "localFile": "748851b3d30e9994779704f251563ab68aeb65970a2be6bd8cc353b7b545d732.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_gelatinous_capsul#3",
+      "sampleId": "34baa2cd-b7da-437e-be77-018f9fb2ce7f",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/0f6700e0-c8c3-4b0b-9031-a99c212b42c2_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a small object being stirred or swirled in water with gentle squelching sounds",
+        "verdict": "pass"
+      },
+      "sha256": "cb8f29886bc34ad81540c5a89d1c12837fdabae80d05f7d20a0df1858a188a70",
+      "localFile": "cb8f29886bc34ad81540c5a89d1c12837fdabae80d05f7d20a0df1858a188a70.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_liquid_droplet_re#2",
+      "sampleId": "2f73199c-1334-49d3-99b8-b48feebbfa5c",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/a78acebb-f6f3-41bf-ae1b-2222ebf7fede_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a series of small, dry, synthetic liquid droplet sounds with an upward pitch glide",
+        "verdict": "pass"
+      },
+      "sha256": "53bdd430a8b45c7836eaf8488db325fa14fbe669def64e084880da69ca4353b3",
+      "localFile": "53bdd430a8b45c7836eaf8488db325fa14fbe669def64e084880da69ca4353b3.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_liquid_droplet_re#3",
+      "sampleId": "55fefc5b-ddc4-46a8-8f10-ffb35889dbc8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/65b03c5b-66b3-4193-b66a-51e1675c497d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A series of small, wet liquid droplet sounds with a slight upward pitch glide and a rounded, elastic tone",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "4fbeb93d4a7dc114c70545fc859c2bd8f839c7f2dd02f76d507157dd66c32484",
+      "localFile": "4fbeb93d4a7dc114c70545fc859c2bd8f839c7f2dd02f76d507157dd66c32484.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_release_of_underw#2",
+      "sampleId": "7a6c8e95-8ee1-43a9-9750-87d1971794f4",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4c35d57b-aeac-42b5-a6aa-95b65f035858_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a single small release of underwater bubbles with a rounded liquid burble",
+        "verdict": "pass"
+      },
+      "sha256": "308ec00dd08b58f5c5349cd4a43360c9c7e9002fd25c2ba52140e7cc2e792885",
+      "localFile": "308ec00dd08b58f5c5349cd4a43360c9c7e9002fd25c2ba52140e7cc2e792885.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_release_of_underw#3",
+      "sampleId": "a1f6a7e3-dc19-4a2b-b342-2b55c5c35c46",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/34035fe7-baa0-4124-990e-517d22683ee5_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single, close-up underwater bubble release with a rounded liquid burble",
+        "verdict": "pass"
+      },
+      "sha256": "5463cf5e0c51d00a18deab80bf6d2d98a29603db24ca30c431dd72dfd72ccd23",
+      "localFile": "5463cf5e0c51d00a18deab80bf6d2d98a29603db24ca30c431dd72dfd72ccd23.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_underwater_bubble#2",
+      "sampleId": "2c0c32e5-d094-414e-b81c-e13c2c0f4fb8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/de4f2b50-3ced-4d7e-ae0e-af967ed79db1_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A series of small, wet underwater bubbling and squelching sounds",
+        "verdict": "pass"
+      },
+      "sha256": "5628139d6878201c0853795b8eac1a449aff894c573d88ac9775e1f97a0f01c7",
+      "localFile": "5628139d6878201c0853795b8eac1a449aff894c573d88ac9775e1f97a0f01c7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_small_underwater_bubble#3",
+      "sampleId": "be95329e-5977-407a-9395-af6753043ef8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/3ac24bfd-a5d8-4aea-9d91-30fb6bc4e5d7_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a single small underwater bubble blup with a descending pitch",
+        "verdict": "pass"
+      },
+      "sha256": "366973e0a4593233c9b06154054f4e333e1f45bd18c8b35134cba9ecf9aac645",
+      "localFile": "366973e0a4593233c9b06154054f4e333e1f45bd18c8b35134cba9ecf9aac645.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_smooth_liquid_membrane_#2",
+      "sampleId": "51095de0-5ff7-406a-ae75-f57b8e6c4cc8",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/e8ba8832-5916-4015-9c07-2a42c9013a27_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low synthetic tonal swell with a subtle vibrating texture",
+        "verdict": "pass"
+      },
+      "sha256": "c1f67c8b03d1e47551a28ce6cead4086a9b2240ac11668d405bf724450f4da06",
+      "localFile": "c1f67c8b03d1e47551a28ce6cead4086a9b2240ac11668d405bf724450f4da06.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_smooth_liquid_membrane_#3",
+      "sampleId": "a8362c54-e270-4727-8ddd-7046e381a282",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/dfdfbd8d-b07d-464e-9834-3151572872f6_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low, smooth, tonal swell rising gently with a liquid-like texture",
+        "verdict": "pass"
+      },
+      "sha256": "d5013b2896cca7b0948946c8fd9154061f11752ec6decce4f85733c2ef1cc5d3",
+      "localFile": "d5013b2896cca7b0948946c8fd9154061f11752ec6decce4f85733c2ef1cc5d3.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_submerged_bronze_bell_s#2",
+      "sampleId": "5056bee8-81c0-4fac-b831-efe67ea16f04",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/f26626cf-def7-4118-8781-aac58ee37d13_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single high-pitched metallic chime or bell strike with a long decay",
+        "verdict": "pass"
+      },
+      "sha256": "cf83050da8eac75b33528b62647a7305c10c263f8153cd5f3df679276ca351e2",
+      "localFile": "cf83050da8eac75b33528b62647a7305c10c263f8153cd5f3df679276ca351e2.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_submerged_bronze_bell_s#3",
+      "sampleId": "f69a8e90-f3be-41de-aca3-12a3d0485b25",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/bc9db960-8778-47fd-b540-27f7e98f93fc_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A single resonant bell strike with a long, clean decay",
+        "verdict": "pass"
+      },
+      "sha256": "f8653f348f45cd1274bd1b6072d5e7bcb368d6e0d03fa59b075857cfb1757fe6",
+      "localFile": "f8653f348f45cd1274bd1b6072d5e7bcb368d6e0d03fa59b075857cfb1757fe6.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_tiny_underwater_bubble_#2",
+      "sampleId": "3aac1e38-a294-4c03-b66d-5aeb481e09f7",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/61c072d1-099a-48da-948f-4a157bdfb752_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a single tiny underwater bubble blip with a low liquid resonance",
+        "verdict": "pass"
+      },
+      "sha256": "773d0f028997005ec42feaa4784dd3ab8dd8ee1dd01f5b5cd7c351a81e54ad68",
+      "localFile": "773d0f028997005ec42feaa4784dd3ab8dd8ee1dd01f5b5cd7c351a81e54ad68.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_tiny_underwater_bubble_#3",
+      "sampleId": "2372930e-f5d0-4867-bf83-3934e18bde77",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/6468feb1-b36e-430e-997e-c1e8f768845e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A series of tiny, dry underwater bubble blips with a rounded, low liquid resonance",
+        "verdict": "pass"
+      },
+      "sha256": "6db5ffc850d32fd2f37f2587110d5a375abb949f1b7b9c5ef01a5262471d4723",
+      "localFile": "6db5ffc850d32fd2f37f2587110d5a375abb949f1b7b9c5ef01a5262471d4723.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_warm_liquid_harmonic_sw#2",
+      "sampleId": "e53967be-209c-4a65-938a-eea52673b4ad",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/98518080-1d51-4686-9ccc-dfe820a058e6_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a synthetic, warbling vocal-like tone gliding up and down",
+        "verdict": "pass"
+      },
+      "sha256": "dc86fd8ed762081acb7309921365b2bcdc6718d440eddc7dd9ce865fb47d3ed5",
+      "localFile": "dc86fd8ed762081acb7309921365b2bcdc6718d440eddc7dd9ce865fb47d3ed5.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_warm_liquid_harmonic_sw#3",
+      "sampleId": "339bc742-3e78-4a99-8feb-dbf98094889d",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/380773b7-91cc-433c-af3a-25bb2b5b9b16_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, resonant whistle-like sweep gliding up and down",
+        "verdict": "pass"
+      },
+      "sha256": "004d7f66c3d06424f540aca17f6955bd358a9182a7f770af0d6ce59d43169d27",
+      "localFile": "004d7f66c3d06424f540aca17f6955bd358a9182a7f770af0d6ce59d43169d27.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_water_eddy_relaxing_aft#2",
+      "sampleId": "dc3153bb-cc91-4eae-b471-d24631036122",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/85e16745-10be-4268-ac5d-02568ba67232_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a gentle, bubbling water sound with smooth, rounded fluid movement and no room acoustics",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "d433f8c32f798f354d76b0aac15e27d7c8f858b4a2bcc678bf93adfc359043a3",
+      "localFile": "d433f8c32f798f354d76b0aac15e27d7c8f858b4a2bcc678bf93adfc359043a3.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_water_eddy_relaxing_aft#3",
+      "sampleId": "1d9ec320-7daa-47f8-9109-24f9358930e4",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/3580d2dd-5f45-47da-b896-a411465897b9_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A gentle water swirl or eddy with soft bubbling and fluid movement",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "3ae7479683749b7cbc3f566c1ff8137e2909a041082d5884bfe15ca332031b65",
+      "localFile": "3ae7479683749b7cbc3f566c1ff8137e2909a041082d5884bfe15ca332031b65.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_cluster_of_bubbles_relea#2",
+      "sampleId": "e86387a3-2fa6-4d37-bdb5-7fe75c0f67cb",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/40d24229-7891-4333-a496-27a690fad669_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a small cluster of liquid bubbles popping and burbling close up",
+        "verdict": "pass"
+      },
+      "sha256": "44c80e696aadeb866c4979c738707b95f82c3a19e1906838a1ad663f8d79d946",
+      "localFile": "44c80e696aadeb866c4979c738707b95f82c3a19e1906838a1ad663f8d79d946.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_cluster_of_bubbles_relea#3",
+      "sampleId": "855cc68d-fea9-411f-a160-e781a66d5834",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/a0aa0929-1d54-43eb-8f5b-c467616fb1a3_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "small bubbles burbling in water",
+        "verdict": "pass"
+      },
+      "sha256": "1f6072a073d8d745fe0c69bde2e2029c945eb97c8365ba55f8855e10cf3925e0",
+      "localFile": "1f6072a073d8d745fe0c69bde2e2029c945eb97c8365ba55f8855e10cf3925e0.audio"
+    },
+    {
+      "clipPath": "Audio/generation/smooth_bowed_glass_harmonics_w_1",
+      "sampleId": "9c07a087-71da-4847-b1a0-bef59a142271",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/e28d8950-77e3-40e9-8a7b-980c69cc2a9f_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "smooth bowed glass harmonics with a wavering, resonant tone",
+        "verdict": "pass"
+      },
+      "sha256": "77935b381ab835248d32f2d093d4dda6078bad4174d819aa5f230e3c7fa60217",
+      "localFile": "77935b381ab835248d32f2d093d4dda6078bad4174d819aa5f230e3c7fa60217.audio"
+    },
+    {
+      "clipPath": "Audio/generation/smooth_bowed_glass_harmonics_w_2",
+      "sampleId": "0a206947-59f7-4c33-bd32-0a67edbcf098",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/165e370d-f10a-4def-b622-987f1ed8ecc5_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "sustained bowed glass harmonics with slight wavering",
+        "verdict": "pass"
+      },
+      "sha256": "1ecae63d16caa2ba5eabe1c6fcbdb6a7a65c7d75806a96921de64c9bf500e4be",
+      "localFile": "1ecae63d16caa2ba5eabe1c6fcbdb6a7a65c7d75806a96921de64c9bf500e4be.audio"
+    },
+    {
+      "clipPath": "Audio/generation/submerged_slow_water_current,__1",
+      "sampleId": "eb68c847-e540-460e-a523-cd4d3290507a",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/971d505f-b00a-46be-acc6-3b5802f6761b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "submerged bubbling and slow water current",
+        "verdict": "pass"
+      },
+      "sha256": "ee5af9adfb4627f707b3787c921f20af2c51608adc79e5d744daa1aa9e590fbe",
+      "localFile": "ee5af9adfb4627f707b3787c921f20af2c51608adc79e5d744daa1aa9e590fbe.audio"
+    },
+    {
+      "clipPath": "Audio/generation/submerged_slow_water_current,__2",
+      "sampleId": "340cf238-2f73-4367-b875-c719bd777414",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/f7e6d73e-a1eb-40f1-961a-c6477086a3bd_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "submerged water bubbling and low pressure surges",
+        "verdict": "pass"
+      },
+      "sha256": "5b9d583fee2f8c1edac0bddc9c97c4279b04248b85e5e91d444778a9995117f7",
+      "localFile": "5b9d583fee2f8c1edac0bddc9c97c4279b04248b85e5e91d444778a9995117f7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_1#2",
+      "sampleId": "b705c15c-cd49-4fa2-ba81-b75ce0f7b2a7",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/5870f1f6-4826-4b00-bd6b-218e72622c39_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or kelp rubbing and squelching with gentle friction",
+        "verdict": "pass"
+      },
+      "sha256": "d68862af46383b42c3ba18cc49552ca84a7c871d5c6de7a0e9b0d3a1b1a6919a",
+      "localFile": "d68862af46383b42c3ba18cc49552ca84a7c871d5c6de7a0e9b0d3a1b1a6919a.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_1#3",
+      "sampleId": "6f433b87-c4c6-4fcf-8f31-31eae58a1e62",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/9686e3f7-6174-4aee-bc26-c7baeea9c078_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed rubbing and squishing together with gentle friction",
+        "verdict": "pass"
+      },
+      "sha256": "8835cf5cc39f81704cd962cdd6060d147f20f91f6a5226610e6bc23075ab18d8",
+      "localFile": "8835cf5cc39f81704cd962cdd6060d147f20f91f6a5226610e6bc23075ab18d8.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_1#4",
+      "sampleId": "bff375f0-47ac-48e3-9509-e5b05bacdb2c",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2624ce57-7e27-49fd-af91-2bcee22d6e7e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rustling of leaves or seaweed",
+        "verdict": "pass"
+      },
+      "sha256": "99a0faaac600e95d8c197cc1c65d0f6e4105ae966fcf91a60c202a23b81b7a65",
+      "localFile": "99a0faaac600e95d8c197cc1c65d0f6e4105ae966fcf91a60c202a23b81b7a65.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_2#2",
+      "sampleId": "ec267967-b23a-44da-8c34-491505d055a2",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/d2ec2307-7683-41df-92eb-8b964e0eab1b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rubbing sounds of leaves or seaweed",
+        "verdict": "pass"
+      },
+      "sha256": "0f3067a0fe9a7af2fe7ef44c481577472e5627aeff1fb3fb652c81297cd98b79",
+      "localFile": "0f3067a0fe9a7af2fe7ef44c481577472e5627aeff1fb3fb652c81297cd98b79.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_2#3",
+      "sampleId": "b7f64dbe-7030-4b34-b304-13b3cbc0b859",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/fc8d4e74-613c-4cbc-8f63-4642168f304d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed rubbing and squishing together",
+        "verdict": "pass"
+      },
+      "sha256": "4ab01b2110182629f704fb03645b17c6953c114d9a7549ffc2a3eaf8e2de26c7",
+      "localFile": "4ab01b2110182629f704fb03645b17c6953c114d9a7549ffc2a3eaf8e2de26c7.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_2#4",
+      "sampleId": "5e44dce8-3ad4-427d-abda-ba18cce65821",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/bd33983f-c090-490e-a881-9ca44160e2a3_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rubbing sounds of foliage or kelp",
+        "verdict": "pass"
+      },
+      "sha256": "3d3e80a5c6420334ced42da41a2a201612602fa3e92303e4b1b0a56a8a932bd2",
+      "localFile": "3d3e80a5c6420334ced42da41a2a201612602fa3e92303e4b1b0a56a8a932bd2.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_3#2",
+      "sampleId": "4a756011-d55f-47c5-a00d-a4e5ab0c2285",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/e29f8628-914c-4c29-832a-25c9b4583540_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or seaweed being squished and rubbed together",
+        "verdict": "pass"
+      },
+      "sha256": "4f8c9ad873167d0c6856d153f81d63cc627e83ccacc3aec172b0779a93c95773",
+      "localFile": "4f8c9ad873167d0c6856d153f81d63cc627e83ccacc3aec172b0779a93c95773.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_3#3",
+      "sampleId": "dd4b08cd-b8c2-4fd8-a5fc-f02480396c78",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/a98c5a86-d73f-4761-8ad2-fd7ef9490adb_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and bubbling water sounds with soft friction",
+        "verdict": "pass"
+      },
+      "sha256": "8bf3e165430147a5cb5421810ee931664d6346117683aabee58a522b5ac3a0ad",
+      "localFile": "8bf3e165430147a5cb5421810ee931664d6346117683aabee58a522b5ac3a0ad.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_3#4",
+      "sampleId": "5ee0bcbe-0fb5-47e0-92c5-a427989c65bc",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/15d686e0-30de-4e19-90a8-b237bc50b58d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rubbing sounds, like seaweed or wet leaves being manipulated",
+        "verdict": "pass"
+      },
+      "sha256": "9b92bbcddf0750f4514b66342e3d59de547835d2905abc84ec5ea9a6c4bc22cc",
+      "localFile": "9b92bbcddf0750f4514b66342e3d59de547835d2905abc84ec5ea9a6c4bc22cc.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_4#2",
+      "sampleId": "2de45851-1d2e-4902-9e7a-3c0c5b9fdc5a",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/b5f2dcf9-25c6-4984-a00e-1898327c768d_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rubbing sounds of waterlogged leaves or seaweed",
+        "verdict": "pass"
+      },
+      "sha256": "deb5ad7131c99a69a27bd39c64cd58575f3ed494455ee54fce8c1fb42dc83799",
+      "localFile": "deb5ad7131c99a69a27bd39c64cd58575f3ed494455ee54fce8c1fb42dc83799.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_4#3",
+      "sampleId": "3b4f88c2-8b5a-49f0-a909-7febc83b27fe",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/edb4fedc-7bbf-479b-9a16-19393c9f8e82_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet squelching and rubbing sounds of leaves or kelp",
+        "verdict": "pass"
+      },
+      "sha256": "c7ed0b579942eb8744c1f03fcb73f6c0140063107e93a53eb830be7ef3cba017",
+      "localFile": "c7ed0b579942eb8744c1f03fcb73f6c0140063107e93a53eb830be7ef3cba017.audio"
+    },
+    {
+      "clipPath": "Audio/generation/long_waterlogged_kelp_leaves_r_4#4",
+      "sampleId": "0cf54d5d-3281-4b26-8520-ed1eb9b5cc43",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/6e1c3dc7-cf40-41f3-8ad7-635b08b23a6c_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "wet leaves or kelp rubbing together with squelching and squeaking sounds",
+        "verdict": "pass"
+      },
+      "sha256": "5660e211f90a5a03cd9db9241174c39c6685cfbddafafedbdb7e0e16cc90ca74",
+      "localFile": "5660e211f90a5a03cd9db9241174c39c6685cfbddafafedbdb7e0e16cc90ca74.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_loose_cluster_of_tiny_g#3",
+      "sampleId": "fca82dc6-94e7-4967-b780-2577a545ad38",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2ba33cb4-f2a2-4286-b1df-79f4f103b12e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "high-pitched glassy singing tones with a rubbing texture",
+        "verdict": "pass"
+      },
+      "sha256": "ffb2d57257b9a97060a35aad4fb255d7f093ba958d235883be02bd19b0e65e6b",
+      "localFile": "ffb2d57257b9a97060a35aad4fb255d7f093ba958d235883be02bd19b0e65e6b.audio"
+    },
+    {
+      "clipPath": "Audio/generation/small_elastic_water_membrane_r",
+      "sampleId": "3afaa9f1-8522-4b74-a8ae-fe5a5509b38e",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/4163a44f-0971-4110-9998-3a4f64da6f44_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A synthetic, breathy, whistling drone with subtle pitch fluctuations and a slightly metallic, resonant texture.",
+        "verdict": "pass"
+      },
+      "sha256": "989d9abf41a3264f5cf3eed6d37287be67a715d348deaa6dd7967eee62d0386e",
+      "localFile": "989d9abf41a3264f5cf3eed6d37287be67a715d348deaa6dd7967eee62d0386e.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_underwater_current#2",
+      "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/19bb9cd2-56c0-435a-b2bd-cffa19bbca9b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low-frequency rumbling and bubbling sound, resembling underwater movement or wind on a microphone",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+      "localFile": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_immense_liquid_membrane#3",
+      "sampleId": "cb6efe4a-8336-4943-9106-0c1ebc25d54b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/60f01254-e30c-4459-a21d-66724472da8e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A close-up squelching, bubbling, or liquid popping sound",
+        "verdict": "pass"
+      },
+      "sha256": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0",
+      "localFile": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_immense_liquid_membrane#2",
+      "sampleId": "f829afe4-fa7d-423a-98c2-c224a78969ad",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/f1a7f9e9-c734-4b91-8a8a-55cc31876cdc_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A close-up squelching, wet, and crackling sound followed by a low, airy hum",
+        "verdict": "pass"
+      },
+      "sha256": "82ba231957d9555b83895bceedfa57f42a2b438652e8ce5e07a01ec701d1fc3f",
+      "localFile": "82ba231957d9555b83895bceedfa57f42a2b438652e8ce5e07a01ec701d1fc3f.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_underwater_current",
+      "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/19bb9cd2-56c0-435a-b2bd-cffa19bbca9b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low-frequency rumbling and bubbling sound, resembling underwater movement or wind on a microphone",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+      "localFile": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_slow_underwater_current#3",
+      "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/19bb9cd2-56c0-435a-b2bd-cffa19bbca9b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low-frequency rumbling and bubbling sound, resembling underwater movement or wind on a microphone",
+        "verdict": "pass",
+        "regenerated": true
+      },
+      "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+      "localFile": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio"
+    },
+    {
+      "clipPath": "Audio/generation/single_immense_liquid_membrane",
+      "sampleId": "cb6efe4a-8336-4943-9106-0c1ebc25d54b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/60f01254-e30c-4459-a21d-66724472da8e_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "A close-up squelching, bubbling, or liquid popping sound",
+        "verdict": "pass"
+      },
+      "sha256": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0",
+      "localFile": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0.audio"
+    },
+    {
+      "clipPath": "Audio/generation/sustained_wordless_alto_singin",
+      "sampleId": "a3a05547-c04b-4df5-b0b7-4ee6b901ef2b",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/43ca5820-85cf-408b-b6a5-0243eb53d06b_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "sustained wordless alto singing on D with slow modulation",
+        "verdict": "pass"
+      },
+      "sha256": "caa802d3936d875f1703a2bea7fea8e06a368f91406e3326c7acb9a137fdf75e",
+      "localFile": "caa802d3936d875f1703a2bea7fea8e06a368f91406e3326c7acb9a137fdf75e.audio"
+    },
+    {
+      "clipPath": "Audio/generation/low_hollow_fluid_resonance_fro",
+      "sampleId": "d9e654a5-53a7-498e-bcf5-3796b6d1f1b9",
+      "source": "generated",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/45060458-4fd2-4dc1-b352-01cf22268731/2b49ac6f-31d8-42f5-9a44-ff6ea3cd145c_gen.mp3",
+      "license": null,
+      "attribution": null,
+      "qa": {
+        "heard": "a low, hollow, fluid-like drone with organic pitch fluctuations",
+        "verdict": "pass"
+      },
+      "sha256": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d",
+      "localFile": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d.audio"
+    },
+    {
+      "clipPath": "Audio/community/rain-light-concrete-steady",
+      "sampleId": "17b456e3-7ecf-4a4f-b9c5-4803a6d6be9d",
+      "source": "library",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/224dd0d1-6078-4b2a-8b93-9bac5d893896/240a2d39-bcbc-411a-98d5-5d5837fda712_rain-session-11sec-2006",
+      "license": "CC0",
+      "attribution": "vibe_crc (Freesound)",
+      "qa": {
+        "heard": "A steady, light rain falling on wet concrete with small, distinct drops creating a continuous texture.",
+        "verdict": "pass"
+      },
+      "sha256": "a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f",
+      "localFile": "a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f.audio"
+    },
+    {
+      "clipPath": "Audio/community/deep-open-ocean-water-movement",
+      "sampleId": "2c26da47-e225-4762-869d-3ff9facbc3a6",
+      "source": "library",
+      "url": "https://nfcuwfkfctfpdrwkgvtm.supabase.co/storage/v1/object/public/community-samples/4adb6021-fe03-43ac-8f6c-e1d0a73575ed/80529da2-35ff-4d9f-8da3-bd910f7113f8_gen.mp3",
+      "license": "Generated (ElevenLabs, via Satie)",
+      "attribution": null,
+      "qa": {
+        "heard": "Steady, close-up sloshing and bubbling of water with a low-frequency rumble.",
+        "verdict": "pass"
+      },
+      "sha256": "b9fd9eac7f88f7e09c5e2bb5562aba65f9235337bb2a6003d85481e6e64693c7",
+      "localFile": "b9fd9eac7f88f7e09c5e2bb5562aba65f9235337bb2a6003d85481e6e64693c7.audio"
+    }
+  ],
+  "integrity": "Run the vendor script to pin downloaded bytes and make playback independent of asset URLs."
+}

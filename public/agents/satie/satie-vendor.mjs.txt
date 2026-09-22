@@ -1,0 +1,42 @@
+import { readFile, writeFile, mkdir, realpath } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { resolve, relative } from 'node:path';
+const root = fileURLToPath(new URL('../public/satie/', import.meta.url));
+const lock = JSON.parse(await readFile(resolve(root, 'assets.lock.json'), 'utf8'));
+const samples = {};
+await mkdir(resolve(root, 'samples'), { recursive: true });
+for (const asset of lock.assets) {
+  let bytes;
+  if (asset.localFile && /^[a-f0-9]{64}\.audio$/.test(asset.localFile)) {
+    bytes = await readFile(resolve(root, 'samples', asset.localFile));
+  } else if (asset.source === 'provided' && !/^[a-z][a-z0-9+.-]*:/i.test(asset.url)) {
+    const publicRoot = await realpath(resolve(root, '..'));
+    const path = await realpath(asset.url.startsWith('/') ? resolve(publicRoot, asset.url.slice(1)) : resolve(root, asset.url));
+    const inside = relative(publicRoot, path);
+    if (inside === '..' || inside.startsWith('../')) throw new Error('Provided asset must be inside public/: ' + asset.clipPath);
+    bytes = await readFile(path);
+  } else {
+    const url = new URL(asset.url);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') throw new Error('Expected an HTTP asset URL: ' + asset.clipPath);
+    const response = await fetch(url, { signal: AbortSignal.timeout(60000) });
+    if (!response.ok) throw new Error('Asset HTTP ' + response.status + ': ' + asset.clipPath);
+    const reader = response.body.getReader();
+    const chunks = []; let size = 0;
+    try { for (;;) { const part = await reader.read(); if (part.done) break; size += part.value.length;
+      if (size > 64 * 1024 * 1024) throw new Error('Asset exceeds 64 MiB: ' + asset.clipPath); chunks.push(part.value); }
+    } finally { await reader.cancel(); }
+    bytes = Buffer.concat(chunks);
+  }
+  if (bytes.length > 64 * 1024 * 1024) throw new Error('Asset exceeds 64 MiB: ' + asset.clipPath);
+  const sha256 = createHash('sha256').update(bytes).digest('hex');
+  if (asset.sha256 && asset.sha256 !== sha256) throw new Error('Asset checksum changed: ' + asset.clipPath);
+  const filename = sha256 + '.audio';
+  await writeFile(resolve(root, 'samples', filename), bytes);
+  asset.sha256 = sha256; asset.localFile = filename;
+  samples[asset.clipPath] = { url: './samples/' + filename, sha256, sampleId: asset.sampleId };
+}
+// Leave the working manifest intact if any download failed.
+await writeFile(resolve(root, 'assets.lock.json'), JSON.stringify(lock, null, 2) + '\n');
+await writeFile(resolve(root, 'samples.json'), JSON.stringify(samples, null, 2) + '\n');
+console.log('Satie: vendored ' + lock.assets.length + ' assets.');

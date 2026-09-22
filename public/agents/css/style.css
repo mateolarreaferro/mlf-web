@@ -1,0 +1,329 @@
+/*
+  The same hand as mateolarreaferro.com: one sans family, soft corners,
+  whitespace instead of rules, small lowercase grey labels. Dark only.
+  No borders, no mono, no uppercase.
+*/
+
+:root {
+  /* One mood: deep water. The world is light in the dark, so there is no day. */
+  --paper: #0a1015;
+  --ink: #dbe6ea;
+  --faint: #8a9ba3;
+  --soft: rgb(219 230 234 / 0.08);
+  --sheet: rgb(10 16 21 / 0.72);
+  --accent: #7ab7d4;
+  --shadow: 0 18px 60px rgb(0 0 0 / 0.55);
+  --room: var(--ink);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* A serif with some air in it for anything that is a name or a title (and
+     for everything written in the water); a quiet sans for the interface. */
+  --display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --text: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; margin: 0; }
+[hidden] { display: none !important; }
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.003em;
+  -webkit-font-smoothing: antialiased;
+}
+
+#world {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  outline: none;
+  transition: opacity 1.2s var(--ease), filter 1.2s var(--ease);
+}
+:root[data-reading] #world { opacity: 0.48; filter: saturate(0.7); }
+
+.label { font-size: 0.875rem; color: var(--faint); text-transform: lowercase; }
+
+a { color: inherit; text-decoration-color: var(--soft); text-underline-offset: 3px; transition: color 0.3s; }
+a:hover { color: var(--accent); }
+
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 12px; }
+
+.pill {
+  min-height: 2.5rem;
+  padding: 0 1.05rem;
+  border-radius: 999px;
+  background: var(--sheet);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 0.875rem;
+  text-transform: lowercase;
+  transition: transform 0.35s var(--ease), background 0.3s, color 0.3s;
+}
+.pill:hover { transform: translateY(-1px); color: var(--accent); }
+.pill:active { transform: scale(0.96); }
+.pill.round { width: 2.5rem; padding: 0; display: grid; place-items: center; }
+.pill.solid { background: var(--ink); color: var(--paper); }
+.pill.solid:hover { color: var(--paper); }
+.pill:disabled { cursor: default; color: var(--faint); }
+#sound-button { min-width: 6.1rem; }
+#sound-button[aria-pressed="true"]::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: #7ab7d4;
+  box-shadow: 0 0 9px rgb(122 183 212 / 0.35);
+  vertical-align: middle;
+}
+
+
+/* ---------- the interface over the world ---------- */
+
+.hud.top {
+  position: fixed;
+  inset: 0 0 auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: max(1.25rem, env(safe-area-inset-top)) 1.5rem 0;
+  padding-bottom: 2.8rem;
+  background: linear-gradient(rgb(5 9 15 / 0.68), transparent);
+  transition: opacity 0.6s;
+  pointer-events: none;
+}
+.hud.top > * { pointer-events: auto; }
+.who h1 { font-family: var(--display); font-style: italic; font-size: 2rem; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; }
+.who { min-width: 0; }
+.who .label { margin-top: 0.4rem; text-wrap: balance; }
+.tools { display: flex; flex-shrink: 0; gap: 0.5rem; }
+
+.menu {
+  position: fixed;
+  top: 4.5rem;
+  right: 1.5rem;
+  width: min(21rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 6.5rem);
+  overflow: auto;
+  padding: 0.5rem;
+  border-radius: 24px;
+  background: var(--sheet);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  animation: rise 0.45s var(--ease);
+}
+.menu ol { list-style: none; padding: 0; }
+.menu button {
+  display: grid;
+  grid-template-columns: 0.6rem 5.6rem 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 16px;
+  text-align: left;
+  transition: background 0.3s;
+}
+.menu button:hover, .menu button[aria-current] { background: var(--soft); }
+.menu .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--room); }
+.menu .title { font-family: var(--display); font-size: 1.1rem; line-height: 1.2; }
+.menu button[data-status="soon"] .dot { background: var(--soft); }
+.menu button[data-status="soon"] .title { color: var(--faint); }
+.menu button:disabled { cursor: default; }
+
+.here {
+  position: fixed;
+  left: 50%;
+  bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 7.2rem); /* it sits on the legend */
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  max-width: calc(100vw - 2rem);
+  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  border-radius: 999px;
+  background: var(--sheet);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+  animation: rise 0.5s var(--ease);
+}
+.here .label { color: var(--room); white-space: nowrap; }
+:root[data-mood="dark"] .here .label { filter: brightness(1.35); }
+.here > p:nth-child(2) { font-family: var(--display); font-size: 1.2rem; min-height: 2.5rem; display: flex; align-items: center; padding-right: 0.75rem; }
+
+/* The controls, in the corner: keycaps that light as you press them. */
+.legend {
+  position: fixed;
+  left: 50%;
+  translate: -50% 0;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 22px;
+  background: var(--sheet);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--faint);
+  font-size: 0.8125rem;
+  pointer-events: none;
+  transition: opacity 0.6s;
+}
+.legend .keys { display: grid; grid-template-columns: repeat(3, 1.6rem); gap: 0.22rem; }
+.legend kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  border-radius: 8px;
+  background: var(--soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.75rem;
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+.legend kbd.wide { padding: 0 0.55rem; }
+.legend kbd[data-on] { background: var(--ink); color: var(--paper); transform: translateY(1px); }
+.legend dl { display: grid; gap: 0.3rem; }
+.legend dl > div { display: flex; align-items: center; gap: 0.5rem; min-height: 1.6rem; }
+.legend dt { display: flex; align-items: center; gap: 0.22rem; color: var(--ink); }
+.legend .mouse dt { gap: 0.4rem; }
+.legend .touch { display: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (pointer: coarse) {
+  .legend > :not(.touch) { display: none; }
+  .legend .touch { display: block; }
+  .here { bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 4rem); }
+}
+@media (max-width: 52rem) and (pointer: fine) { .legend .mouse { display: none; } }
+
+/* ---------- the reading panel ---------- */
+
+.panel {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  width: min(42rem, calc(100vw - 2rem));
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 28px;
+  background: linear-gradient(155deg, #101e25, var(--paper) 45%);
+  box-shadow: var(--shadow);
+  outline: none;
+  animation: slide 0.6s var(--ease);
+}
+.panel-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1rem 1rem 2.25rem;
+  background: linear-gradient(var(--paper) 60%, transparent);
+}
+.panel-bar .label { color: var(--room); }
+:root[data-mood="dark"] .panel-bar .label { filter: brightness(1.35); }
+.panel-bar .pill { background: var(--soft); backdrop-filter: none; }
+
+:root[data-reading] .hud.top, :root[data-reading] .here, :root[data-reading] .legend { opacity: 0.0; pointer-events: none; }
+@media (min-width: 72rem) {
+  :root[data-reading] .hud.top { opacity: 1; }
+  :root[data-reading] .hud.top .tools { visibility: hidden; }
+}
+
+.prose { padding: 0.5rem 2.25rem 4rem; }
+.prose > * + * { margin-top: 1rem; }
+.prose h1 { font-family: var(--display); font-size: 2.4rem; font-weight: 400; line-height: 1.08; letter-spacing: -0.01em; }
+.prose h2 { margin-top: 3rem; font-size: 0.875rem; font-weight: 400; color: var(--faint); text-transform: lowercase; }
+.prose h3 { margin-top: 1.75rem; font-family: var(--display); font-size: 1.35rem; font-weight: 400; }
+.prose .lede { font-size: 1.0625rem; color: var(--faint); }
+.prose ul, .prose ol { padding-left: 1.2rem; }
+.prose li + li { margin-top: 0.35rem; }
+.prose code { font-family: inherit; padding: 0.1em 0.45em; border-radius: 8px; background: var(--soft); }
+.prose pre { padding: 1rem 1.25rem; border-radius: 18px; background: var(--soft); overflow: auto; font-size: 0.8125rem; line-height: 1.55; }
+.prose pre code { padding: 0; background: none; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+.prose img, .prose video, .prose iframe { display: block; width: 100%; border: 0; border-radius: 20px; }
+.prose iframe { aspect-ratio: 16 / 9; }
+.prose figcaption { margin-top: 0.5rem; font-size: 0.875rem; color: var(--faint); }
+
+/* What is still to be written. Delete the class (or the block) as it fills in. */
+.prose .todo { padding: 0.9rem 1.1rem; border-radius: 16px; background: var(--soft); color: var(--faint); }
+.prose .todo::before { content: "to write · "; color: var(--room); }
+:root[data-mood="dark"] .prose .todo::before { filter: brightness(1.35); }
+
+/* A place being held for a picture, a sketch or a recording. */
+.prose .slot {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: var(--soft);
+  color: var(--faint);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.prose .ideas { display: grid; gap: 1rem; margin-top: 1.5rem; }
+.prose .idea { padding: 1.5rem; border-radius: 24px; background: var(--soft); }
+.prose .idea > * + * { margin-top: 0.8rem; }
+.prose .idea h3 { margin-top: 0; }
+.prose h3 .todo { padding: 0.15rem 0.6rem; font-weight: 400; font-size: 0.875rem; }
+.prose h3 .todo::before { content: none; }
+.prose .idea .slot { background: var(--paper); }
+.prose dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1rem; }
+.prose dt { font-size: 0.875rem; color: var(--faint); padding-top: 0.08rem; }
+.prose dd { margin: 0; }
+
+/* ---------- variants ---------- */
+
+/* embedded in a card: the building and nothing else */
+:root[data-embed] .hud, :root[data-embed] .here, :root[data-embed] .legend, :root[data-embed] .menu { display: none; }
+:root[data-embed] #world { pointer-events: none; }
+
+/* no WebGL: the rooms list is the site */
+:root[data-flat] #world, :root[data-flat] .legend, :root[data-flat] #menu-button { display: none; }
+:root[data-flat] .menu { position: static; margin: 6rem auto 0; box-shadow: none; animation: none; }
+.flat-note { position: fixed; inset: auto 0 2rem; text-align: center; color: var(--faint); padding: 0 1rem; }
+
+@media (max-width: 40rem) {
+  .hud.top { padding-inline: 1rem; }
+  .who .label { font-size: 0.75rem; max-width: 13rem; }
+  .tools { gap: 0.3rem; }
+  .tools .pill { padding-inline: 0.8rem; }
+  #sound-button { min-width: 5.5rem; }
+  .here { gap: 0.55rem; width: max-content; }
+  .here > p:nth-child(2) { font-size: 1.05rem; line-height: 1.15; }
+  .legend .touch { text-align: center; text-wrap: balance; }
+  .menu { right: 1rem; }
+  .panel { inset: auto 0 0 0; width: 100%; height: 88dvh; border-radius: 28px 28px 0 0; animation-name: lift; }
+  .panel-bar { padding-left: 1.5rem; }
+  .prose { padding-inline: 1.5rem; }
+}
+
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
+@keyframes slide { from { opacity: 0; translate: 40px 0; } }
+@keyframes lift { from { opacity: 0; translate: 0 40px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

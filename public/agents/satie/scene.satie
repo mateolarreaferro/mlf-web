@@ -1,0 +1,772 @@
+# We are under water, inside one vast, slow creature: a jellyf — the developer's layout, as fixtures
+world the sleeping jellyfish
+  seed 1
+  size 40
+  terrain relief 0 roughness 0
+  ground water weight 1
+  fixture column rising bubble column size 5x21.1x5 material water porous 1 at 0,0
+  fixture pod_week01 pod membrane size 5.4x5.4x5.4 material water porous 1 at 2.91,7.99
+  fixture pod_final the bell of the jellyfish size 11.2x7.28x11.2 material water porous 1 at 0,0
+  fixture attractor_week01 strange attractor (lorenz) size 1.9x1.9x1.9 material water porous 1 at 2.91,7.99
+  fixture bell_voice_1 strange attractor (halvorsen) size 1.7x1.7x1.7 material water porous 1 at -2.6,-0.3
+  fixture bell_voice_2 strange attractor (rossler) size 1.7x1.7x1.7 material water porous 1 at 0,-0.3
+  fixture bell_voice_3 strange attractor (dadras) size 1.7x1.7x1.7 material water porous 1 at 2.6,-0.3
+  weather rain 0 wind 0 fog 0
+  time 10:00 season summer temp 18
+
+level_reference 52
+
+gen water_pressure
+    prompt submerged slow water current, broad low fluid pressure surges with smooth upper harmonics, irregular continuous flow, no impacts, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen pod_singing
+    prompt sustained wordless singing tone, rounded vowel, two closely detuned pitches beating slowly and irregularly, gentle organic pitch modulation, smooth continuous delivery, dry, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen bell_singing
+    prompt sustained wordless alto singing on D, rounded vowel with warm harmonic overtones, slow irregular organic modulation, no syllables or attacks, dry, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+2 * loop water_pressure
+    source_id deep_water_pressure
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 42to44
+    volume follow ascent 0to1 1to0.7
+    pitch follow ascent 0to1 0.65to1.05
+    reverb wet 0.5 size 1 damping 0.9
+    filter lowpass cutoff 600
+    visual none
+
+# The six unplaced life gestures occupy separate slots in a 360-second cycle.
+loop whale-song-underwater every 360
+    source_id remote_call
+    radius 15
+    zone water
+    place 0 12 -260
+    move static
+    spl 100
+    start 100
+    duration 16
+    reverb wet 0.4 size 1 damping 0.95
+    filter lowpass cutoff 550
+    visual sphere
+
+loop gen continuous rising stream of small underwater bubbles, rounded liquid gurgles with irregular overlapping releases, gentle flow without sharp pops, close dry recording, seamless ambience loop, consistent texture
+    source_id column_bubbles
+    line
+    radius 0.65
+    zone water
+    at column
+    spl 55
+    reverb wet 0.35 size 0.9 damping 0.9
+    filter lowpass cutoff 1200
+    visual sphere
+
+loop pod_singing
+    source_id week01_singing
+    persistent
+    radius 1.2
+    zone water
+    at attractor_week01
+    spl 72
+    reverb wet 0.4 size 0.95 damping 0.9
+    filter lowpass cutoff 2200
+    occlusion follow distance 3to12 0to0.35
+    visual sphere
+
+oneshot gen small cluster of bubbles released into water, rounded liquid burbles gently dwindling, close dry recording every 18to35
+    source_id week01_bubbles
+    radius 0.4
+    zone water
+    at attractor_week01
+    spl 43
+    start 12
+    cooldown 12
+    reverb wet 0.4 size 0.9 damping 0.9
+    filter lowpass cutoff 1100
+    variants 3
+    visual sphere
+
+loop bell_singing
+    source_id bell_singer_1
+    persistent
+    randomstart
+    radius 2
+    zone water
+    at bell_voice_1
+    spl 71
+    pitch 1
+    reverb wet 0.55 size 1 damping 0.9
+    filter lowpass cutoff 2200
+    occlusion follow distance 6to22 0to0.25
+    visual sphere
+
+loop bell_singing
+    source_id bell_singer_2
+    persistent
+    randomstart
+    radius 2
+    zone water
+    at bell_voice_2
+    spl 71
+    pitch 1.2
+    reverb wet 0.55 size 1 damping 0.9
+    filter lowpass cutoff 2200
+    occlusion follow distance 6to22 0to0.25
+    visual sphere
+
+loop bell_singing
+    source_id bell_singer_3
+    persistent
+    randomstart
+    radius 2
+    zone water
+    at bell_voice_3
+    spl 71
+    pitch 1.5
+    reverb wet 0.55 size 1 damping 0.9
+    filter lowpass cutoff 2200
+    occlusion follow distance 6to22 0to0.25
+    visual sphere
+
+loop gen water flowing smoothly around a submerged swimming body, gentle irregular fluid rush without splashes or strokes, close dry recording, seamless ambience loop, consistent texture
+    source_id swimming_water
+    zone water
+    attach listener
+    spl 44
+    volume follow speed 0to2 0to1
+    reverb wet 0.35 size 0.65 damping 0.95
+    filter lowpass cutoff 850
+    visual none
+
+on pod_enter gen single smooth liquid membrane deformation, rounded low tonal swell rising gently, no impact, close dry recording
+    source_id membrane_enter
+    radius 2
+    spl 55
+    cooldown 1.5
+    reverb wet 0.55 size 0.9 damping 0.9
+    filter lowpass cutoff 1400
+    variants 3
+    visual sphere
+
+on pod_leave gen single smooth liquid membrane deformation, rounded low tonal swell falling gently and releasing, no impact, close dry recording
+    source_id membrane_leave
+    radius 2
+    spl 53
+    cooldown 1.5
+    reverb wet 0.55 size 0.9 damping 0.9
+    filter lowpass cutoff 1200
+    variants 3
+    visual sphere
+
+on page_open gen single submerged bronze bell struck gently with a padded mallet, rounded low fundamental and sustained harmonic decay, no sharp attack, close dry recording
+    source_id page_open_bell
+    zone reading strict
+    attach listener
+    spl 51
+    cooldown 1
+    within 2
+    reverb wet 0.65 size 1 damping 0.93
+    filter lowpass cutoff 1000
+    variants 3
+    visual none
+
+on page_close gen single small release of underwater bubbles, rounded liquid burble dwindling smoothly, close dry recording
+    source_id page_close_bubbles
+    attach listener
+    spl 44
+    cooldown 0.6
+    within 2
+    reverb wet 0.4 size 0.8 damping 0.9
+    filter lowpass cutoff 1100
+    variants 3
+    visual none
+
+on ui_hover gen single tiny underwater bubble blip, rounded low liquid resonance, close dry recording
+    source_id hover_bubble
+    attach listener
+    spl 29
+    cooldown 0.2
+    within 2
+    reverb wet 0.15 size 0.5 damping 0.95
+    filter lowpass cutoff 850
+    variants 3
+    visual none
+
+on ui_press gen single small underwater bubble blup, rounded liquid resonance with a gently descending pitch, close dry recording
+    source_id press_bubble
+    attach listener
+    spl 33
+    cooldown 0.25
+    within 2
+    reverb wet 0.2 size 0.6 damping 0.95
+    filter lowpass cutoff 950
+    variants 3
+    visual none
+
+gen seabed_sifting
+    prompt fine waterlogged sand grains sliding and settling in slow irregular sheets, gentle granular friction without clicks, close hydrophone recording, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen bell_light_shimmer
+    prompt smooth bowed glass harmonics wavering in overlapping irregular phrases, rounded sustained tones without strikes, dry close recording, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen outer_water_resonance
+    prompt low hollow fluid resonance from slowly deforming water cavities, continuous rounded drone with irregular organic pitch sag, no pulses or impacts, dry close recording, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen sleeping_bud_a
+    prompt small elastic water membrane resonating with a breathy vowel-like murmur, unstable sustained pitch slipping slowly around one note, irregular gentle tension changes, no syllables or pulses, dry close recording, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+gen sleeping_bud_b
+    prompt small gelatinous water capsule resonating with a breathy rounded murmur, sustained tone bending and loosening irregularly around one note, smooth organic delivery without attacks, dry close recording, seamless ambience loop, consistent texture
+    duration 29
+    loopable
+
+gen warm_water_harmonics
+    prompt sustained rounded liquid harmonics in a low open fifth, smooth irregular interweaving overtones from a resonating water membrane, no attacks or pulses, dry close recording, seamless ambience loop, consistent texture
+    duration 30
+    loopable
+
+2 * loop seabed_sifting
+    source_id seabed_grains
+    randomstart
+    bed
+    zone water
+    move static
+    spl follow swell 0to1 33to35
+    volume follow ascent 0to0.2 1to0
+    reverb wet 0.45 size 0.95 damping 0.95
+    filter lowpass cutoff 700
+    visual none
+
+2 * loop bell_light_shimmer
+    source_id upper_water_shimmer
+    randomstart
+    bed
+    zone water
+    move static
+    spl follow swell 0to1 32to35
+    volume follow ascent 0.7to1 0to1
+    reverb wet 0.65 size 1 damping 0.93
+    filter lowpass cutoff 1800
+    visual none
+
+2 * loop outer_water_resonance
+    source_id outer_water_hollow
+    randomstart
+    bed
+    zone water
+    move static
+    spl follow swell 0to1 35to38
+    volume follow far 0.35to1 0to1
+    pitch follow far 0to1 0.85to0.55
+    reverb wet 0.6 size 1 damping 0.97
+    filter lowpass cutoff 420
+    visual none
+
+oneshot gen single slender whale-like liquid call, sustained rising questioning vowel with a slow wavering release, smooth onset without clicks, dry close recording every 360
+    source_id life_question
+    bed
+    zone water
+    move static
+    spl 35
+    start 145
+    duration 12
+    reverb wet 0.65 size 1 damping 0.95
+    filter lowpass cutoff 900
+    variants 3
+    visual none
+
+oneshot gen single enormous gelatinous body flexing, low rounded organic groan with slowly bending subharmonics, smooth pressure rise and release without impact, dry close recording every 360
+    source_id creature_flex
+    bed
+    zone water
+    move static
+    spl 42
+    start 190
+    duration 15
+    reverb wet 0.6 size 1 damping 0.98
+    filter lowpass cutoff 240
+    variants 3
+    visual none
+
+oneshot gen single cohesive school of tiny swimming organisms stirring water, overlapping delicate fin friction forming one gentle fluid rush, no splashes or sharp clicks, dry close hydrophone recording every 360
+    source_id small_school
+    field
+    zone water
+    place overhead far high wide
+    move static
+    spl 35
+    start 235
+    duration 11
+    reverb wet 0.55 size 1 damping 0.95
+    filter lowpass cutoff 1050
+    variants 3
+    visual sphere
+
+oneshot gen single slow underwater current gust, broad fluid pressure building gradually then loosening into smooth eddies, no impacts or bubbles, dry close hydrophone recording every 360
+    source_id passing_current
+    bed
+    zone water
+    move static
+    spl 37
+    start 280
+    duration 14
+    reverb wet 0.55 size 1 damping 0.96
+    filter lowpass cutoff 650
+    variants 3
+    visual none
+
+oneshot gen single loose cluster of tiny glass fragments gently rubbing in water, rounded glassy singing glissandi overlapping irregularly without clinks or sharp attacks, dry close recording every 360
+    source_id released_light_shards
+    bed
+    zone water
+    move static
+    spl 32
+    start 325
+    duration 10
+    reverb wet 0.65 size 1 damping 0.95
+    filter lowpass cutoff 1400
+    variants 3
+    visual none
+
+loop gen long gelatinous strands dragging and brushing through water, slow overlapping fibrous friction with irregular tension releases, gentle motion without taps, dry close hydrophone recording, seamless ambience loop, consistent texture
+    source_id column_strands
+    randomstart
+    line
+    radius 1.2
+    zone water
+    at column
+    spl follow swell 0to1 42to45
+    volume follow distance 2to7 1to0
+    reverb wet 0.5 size 1 damping 0.95
+    filter lowpass cutoff 750
+    visual sphere
+
+loop gen fine submerged tendrils brushing against each other, delicate fibrous swishes with slow irregular bending, no snaps or scraping edges, dry close hydrophone recording, seamless ambience loop, consistent texture
+    source_id week01_tendril_swish
+    randomstart
+    radius 0.8
+    zone water
+    at tendrils_week01
+    spl follow swell 0to1 37to40
+    volume follow distance 0.8to3 1to0
+    reverb wet 0.45 size 0.85 damping 0.95
+    filter lowpass cutoff 1000
+    visual sphere
+
+loop gen thin elastic jelly membrane slowly stretching and relaxing in water, irregular rounded skin friction and fluid tension, gentle sustained deformation without a regular cycle, dry close recording, seamless ambience loop, consistent texture
+    source_id week01_membrane_skin
+    randomstart
+    radius 2.7
+    zone water
+    at pod_week01
+    spl follow swell 0to1 33to36
+    volume follow distance 0.2to1.2 1to0
+    reverb wet 0.45 size 0.9 damping 0.96
+    filter lowpass cutoff 650
+    visual sphere
+
+loop gen frilled gelatinous membrane rippling in water, overlapping folds fluttering slowly in an irregular rolling sequence, smooth wet friction without rattles, dry close recording, seamless ambience loop, consistent texture
+    source_id bell_frill_ripple
+    randomstart
+    ring 5.5
+    radius 0.35
+    zone water
+    at bell_rim
+    spl follow swell 0to1 39to42
+    volume follow distance 1to4 1to0
+    reverb wet 0.55 size 1 damping 0.96
+    filter lowpass cutoff 800
+    visual sphere
+
+loop gen huge elastic jelly dome slowly filling and relaxing under water pressure, long irregular rounded membrane groans and fluid tension releases, no regular pulse or impacts, dry close recording, seamless ambience loop, consistent texture
+    source_id bell_dome_breath
+    randomstart
+    radius 5.6
+    zone water
+    at pod_final
+    spl follow swell 0to1 41to44
+    volume follow distance 1to5 1to0
+    reverb wet 0.65 size 1 damping 0.97
+    filter lowpass cutoff 450
+    visual sphere
+
+loop sleeping_bud_a
+    source_id bud_week02_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week02
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 0.75
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1000
+    visual sphere
+
+loop sleeping_bud_b
+    source_id bud_week03_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week03
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 0.84375
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1000
+    visual sphere
+
+loop sleeping_bud_a
+    source_id bud_week04_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week04
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 0.9375
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1050
+    visual sphere
+
+loop sleeping_bud_b
+    source_id bud_week06_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week06
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1050
+    visual sphere
+
+loop sleeping_bud_a
+    source_id bud_week07_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week07
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.125
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1100
+    visual sphere
+
+loop sleeping_bud_b
+    source_id bud_week09_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week09
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.25
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1100
+    visual sphere
+
+loop sleeping_bud_a
+    source_id bud_week10_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week10
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.40625
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1150
+    visual sphere
+
+loop sleeping_bud_b
+    source_id bud_week11_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week11
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.5
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1150
+    visual sphere
+
+loop sleeping_bud_a
+    source_id bud_week12_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week12
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.6875
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1200
+    visual sphere
+
+loop sleeping_bud_b
+    source_id bud_week13_murmur
+    randomstart
+    radius 0.45
+    zone water
+    at bud_week13
+    spl 42
+    volume follow distance 2to6 1to0
+    pitch 1.875
+    reverb wet 0.45 size 0.9 damping 0.94
+    filter lowpass cutoff 1200
+    visual sphere
+
+4 * loop gen long waterlogged kelp leaves rubbing and bending slowly, supple wet leaf friction with rounded irregular creaks, no crackling or snaps, dry close hydrophone recording, seamless ambience loop, consistent texture
+    source_id kelp_leaf_friction
+    randomstart
+    radius 1.4
+    zone water
+    at kelp
+    spl follow swell 0to1 35to39
+    volume follow distance 1to4 1to0
+    pitch 0.85to1.12
+    reverb wet 0.45 size 0.9 damping 0.95
+    filter lowpass cutoff 800
+    variants 4
+    visual sphere
+
+loop gen thin glass filament singing a continuous rounded harmonic tone, irregular slow pitch wavering without attacks or rhythmic tremolo, dry close recording, seamless ambience loop, consistent texture
+    source_id sign_glass_hum
+    randomstart
+    radius 0.5
+    zone water
+    at sign
+    spl 32
+    volume follow distance 0.8to3 1to0
+    reverb wet 0.6 size 0.9 damping 0.95
+    filter lowpass cutoff 1600
+    visual sphere
+
+loop gen small bubbles streaming gently through water, smooth overlapping liquid burbles with rounded releases and no sharp pops, dry close hydrophone recording, seamless ambience loop, consistent texture
+    source_id ascending_bubbles
+    randomstart
+    zone water
+    attach listener
+    spl 38
+    volume follow vertical 0.1to1 0to1
+    reverb wet 0.4 size 0.85 damping 0.95
+    filter lowpass cutoff 1150
+    visual none
+
+loop gen water pressure compressing a flexible fluid cavity, smooth continuous low resonance bending downward irregularly, no impacts or pulses, dry close recording, seamless ambience loop, consistent texture
+    source_id descending_pressure
+    randomstart
+    zone water
+    attach listener
+    spl 40
+    volume follow vertical -0.1to-1 0to1
+    reverb wet 0.45 size 1 damping 0.98
+    filter lowpass cutoff 350
+    visual none
+
+loop warm_water_harmonics
+    source_id attractor_water_warmth
+    randomstart
+    zone water
+    attach listener
+    spl follow swell 0to1 32to35
+    volume follow warmth 0.2to1 0to1
+    reverb wet 0.65 size 1 damping 0.94
+    filter lowpass cutoff 1150
+    visual none
+
+on bell_enter gen single immense liquid membrane opening into a warm rounded harmonic bloom, gradual overlapping organic tones expanding then resting, gentle slow onset without impact, dry close recording
+    source_id bell_arrival_bloom
+    radius 5.6
+    spl 60
+    duration 12
+    cooldown 8
+    reverb wet 0.7 size 1 damping 0.94
+    filter lowpass cutoff 1650
+    variants 3
+    visual sphere
+
+on bell_leave gen single broad gelatinous membrane releasing its tension, warm rounded harmonics sinking slowly into a low liquid exhalation, no impact or pulse, dry close recording
+    source_id bell_departure_release
+    radius 5.6
+    spl 53
+    duration 9
+    cooldown 6
+    reverb wet 0.65 size 1 damping 0.96
+    filter lowpass cutoff 1000
+    variants 3
+    visual sphere
+
+on bud_stir gen single small gelatinous capsule stirring in water, breathy vowel-like flutter with a slipping rounded pitch and gentle irregular release, no click, dry close recording
+    source_id sleeping_bud_stir
+    radius 0.45
+    spl 45
+    cooldown 7
+    reverb wet 0.5 size 0.9 damping 0.94
+    filter lowpass cutoff 1200
+    variants 3
+    visual sphere
+
+on attractor_pass gen single warm liquid harmonic sweep, rounded singing overtones gliding upward then folding into a smooth low tone, gentle onset without strike, dry close recording
+    source_id attractor_brush_sweep
+    radius 1
+    spl 55
+    cooldown 5
+    reverb wet 0.6 size 1 damping 0.92
+    filter lowpass cutoff 1900
+    variants 3
+    visual sphere
+
+on glide_start gen single drawn-in underwater whoosh, smooth water displacement gathering slowly into a rounded low rush, no splash or impact, dry close hydrophone recording
+    source_id glide_draw
+    attach listener
+    spl 47
+    cooldown 2
+    within 2
+    reverb wet 0.5 size 1 damping 0.96
+    filter lowpass cutoff 950
+    variants 3
+    visual none
+
+on glide_end gen single water eddy relaxing after displacement, rounded fluid rush loosening gradually into small smooth swirls, no splashes or clicks, dry close hydrophone recording
+    source_id glide_settle
+    attach listener
+    spl 43
+    cooldown 2
+    within 2
+    reverb wet 0.5 size 0.9 damping 0.96
+    filter lowpass cutoff 800
+    variants 3
+    visual none
+
+on sprint gen single short push of water, rounded low fluid surge with a smooth onset and trailing eddy, no impact or splash, dry close hydrophone recording
+    source_id swimming_push
+    attach listener
+    spl 49
+    cooldown 1
+    within 2
+    reverb wet 0.4 size 0.85 damping 0.95
+    filter lowpass cutoff 1000
+    variants 3
+    visual none
+
+on seabed_touch gen single puff of fine wet sand lifting into water, gentle granular rolling friction spreading and settling smoothly, no crunch or impact, dry close hydrophone recording
+    source_id sand_lift
+    radius 0.7
+    spl 44
+    cooldown 2
+    reverb wet 0.45 size 0.85 damping 0.96
+    filter lowpass cutoff 750
+    variants 3
+    visual sphere
+
+on ceiling_touch gen single flexible jelly membrane pressed gently under water, rounded low pressure bulge and elastic release, no knock or pop, dry close recording
+    source_id upper_membrane_press
+    radius 1
+    spl 46
+    cooldown 2
+    reverb wet 0.55 size 1 damping 0.97
+    filter lowpass cutoff 550
+    variants 3
+    visual sphere
+
+on edge_touch gen single hollow liquid cavity compressing then relaxing, low rounded descending resonance with a smooth onset, no impact or alarm tone, dry close recording
+    source_id water_edge_refusal
+    radius 1.5
+    spl 46
+    cooldown 3
+    reverb wet 0.65 size 1 damping 0.98
+    filter lowpass cutoff 400
+    variants 3
+    visual sphere
+
+on menu_open gen single small liquid droplet resonance gliding upward, rounded elastic tone with a smooth release and no sharp pop, dry close recording
+    source_id menu_rise
+    attach listener
+    spl 36
+    cooldown 0.5
+    within 2
+    reverb wet 0.4 size 0.8 damping 0.94
+    filter lowpass cutoff 1200
+    variants 3
+    visual none
+
+on menu_close gen single small liquid droplet resonance gliding downward, rounded elastic tone loosening gently without a sharp pop, dry close recording
+    source_id menu_fall
+    attach listener
+    spl 34
+    cooldown 0.5
+    within 2
+    reverb wet 0.4 size 0.8 damping 0.95
+    filter lowpass cutoff 1000
+    variants 3
+    visual none
+
+on sound_on gen single slow wash of submerged water pressure, smooth fluid rush opening gradually into rounded low harmonics then settling, no impact or splash, dry close hydrophone recording
+    source_id water_arriving
+    attach listener
+    spl 47
+    duration 9
+    cooldown 12
+    within 2
+    reverb wet 0.65 size 1 damping 0.96
+    filter lowpass cutoff 1000
+    variants 3
+    visual none
+
+# Surface rain is heard at half speed, filtered through the water above.
+loop community/rain-light-concrete-steady
+    source_id submerged_surface_rain
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 31to33
+    volume follow ascent 0to1 0.35to0.8
+    pitch 0.5
+    filter lowpass cutoff 850
+    reverb wet 0.25 size 1 damping 0.96
+    visual none
+
+loop community/deep-open-ocean-water-movement
+    source_id open_ocean_ambience
+    bed
+    randomstart
+    zone water
+    move static
+    spl 36
+    filter lowpass cutoff 700
+    reverb wet 0.1 size 1 damping 0.96
+    visual none
+
+loop outer_water_resonance
+    source_id deep_body_drone
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 30to33
+    pitch 0.55
+    filter lowpass cutoff 210
+    reverb wet 0.45 size 1 damping 0.98
+    visual none

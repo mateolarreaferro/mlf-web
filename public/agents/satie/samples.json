@@ -1,0 +1,562 @@
+{
+  "Audio/generation/continuous_rising_stream_of_sm": {
+    "url": "./samples/2d815666b757f6211b531d9b4ce94feb12ea377fde11d03c87db646507ca897a.audio",
+    "sha256": "2d815666b757f6211b531d9b4ce94feb12ea377fde11d03c87db646507ca897a",
+    "sampleId": "01b2d818-9141-4a9d-acce-59688118c476"
+  },
+  "Audio/generation/fine_submerged_tendrils_brushi": {
+    "url": "./samples/b95fd297775b80f5a3c4a752e0a4a9b5207f4615d2ec5a87557750a32d94bc84.audio",
+    "sha256": "b95fd297775b80f5a3c4a752e0a4a9b5207f4615d2ec5a87557750a32d94bc84",
+    "sampleId": "35a6ef46-36f5-49fa-84e3-bf16547c3fa9"
+  },
+  "Audio/generation/huge_elastic_jelly_dome_slowly": {
+    "url": "./samples/22ed601c13df79347761c8d05f3693f66bf539722859f7bc58c494bbac1045f5.audio",
+    "sha256": "22ed601c13df79347761c8d05f3693f66bf539722859f7bc58c494bbac1045f5",
+    "sampleId": "0b8c9863-312e-4f59-a7c0-4f76fbafc09b"
+  },
+  "Audio/generation/frilled_gelatinous_membrane_ri": {
+    "url": "./samples/87e170129e3f32f52ab0e9332e27bf179334d470eb3c15240cb101f9dc06ee53.audio",
+    "sha256": "87e170129e3f32f52ab0e9332e27bf179334d470eb3c15240cb101f9dc06ee53",
+    "sampleId": "abdbaa65-4357-4871-b166-8ead15205c7f"
+  },
+  "Audio/generation/single_broad_gelatinous_membra": {
+    "url": "./samples/906a5212ab00860937badd5f636dd81e399e21b74970e504bee61ae4b89f750c.audio",
+    "sha256": "906a5212ab00860937badd5f636dd81e399e21b74970e504bee61ae4b89f750c",
+    "sampleId": "5b7f1843-e718-4bc1-8794-44e3dd2652c4"
+  },
+  "Audio/generation/single_cohesive_school_of_tiny": {
+    "url": "./samples/c6a971c254ae66c229ce6cec715e9129d23d30b80556df311534e6e063e54c4a.audio",
+    "sha256": "c6a971c254ae66c229ce6cec715e9129d23d30b80556df311534e6e063e54c4a",
+    "sampleId": "08feac9b-bb1e-4f15-87eb-2c327afdc17b"
+  },
+  "Audio/generation/single_drawn-in_underwater_who": {
+    "url": "./samples/731c48d3be9bc1655caab95570b7c5a01082262dc07b180cc1cabd4d1ad66143.audio",
+    "sha256": "731c48d3be9bc1655caab95570b7c5a01082262dc07b180cc1cabd4d1ad66143",
+    "sampleId": "99952ee5-befa-4b89-bd93-8da2c4f11e00"
+  },
+  "Audio/generation/long_gelatinous_strands_draggi": {
+    "url": "./samples/621d965224d191f31138105c460304572a705ea95a7e2e2d2cc03e0b0d528530.audio",
+    "sha256": "621d965224d191f31138105c460304572a705ea95a7e2e2d2cc03e0b0d528530",
+    "sampleId": "5e472944-fcf6-4da0-90bf-cea144c9713d"
+  },
+  "Audio/generation/single_flexible_jelly_membrane": {
+    "url": "./samples/cbde46e46318a35bbbd9119014b1e26f360c08a23379e581d09cd2cec283b0eb.audio",
+    "sha256": "cbde46e46318a35bbbd9119014b1e26f360c08a23379e581d09cd2cec283b0eb",
+    "sampleId": "5fea916d-99c0-40fa-9824-42b32742f09e"
+  },
+  "Audio/generation/single_hollow_liquid_cavity_co": {
+    "url": "./samples/7b272b551774d4680f9a7b88a6b765686a5dc02808d62531c45a98e8cc6e5770.audio",
+    "sha256": "7b272b551774d4680f9a7b88a6b765686a5dc02808d62531c45a98e8cc6e5770",
+    "sampleId": "49fd6f2e-0705-4607-bbba-94c7b0dc1ad1"
+  },
+  "Audio/generation/single_puff_of_fine_wet_sand_l": {
+    "url": "./samples/b546c660cdfa0402545a322824b6bcb0a77dd4f4dcac0b6f10cd2b0d27880ce2.audio",
+    "sha256": "b546c660cdfa0402545a322824b6bcb0a77dd4f4dcac0b6f10cd2b0d27880ce2",
+    "sampleId": "450ae690-f9ab-493a-8a04-7f09fb0cac2e"
+  },
+  "Audio/generation/single_enormous_gelatinous_bod": {
+    "url": "./samples/fa0cc0cd2571f015862e0ff62b9d5e01cd34d401d9f0cf8ec773fef9be86b53b.audio",
+    "sha256": "fa0cc0cd2571f015862e0ff62b9d5e01cd34d401d9f0cf8ec773fef9be86b53b",
+    "sampleId": "1c37b321-65f7-45fc-a212-8f7f74440a0b"
+  },
+  "Audio/generation/single_loose_cluster_of_tiny_g": {
+    "url": "./samples/3be46ee56e9b5f4aee4ce7d43d100c84248811441d16d02bd38a122f1526ace5.audio",
+    "sha256": "3be46ee56e9b5f4aee4ce7d43d100c84248811441d16d02bd38a122f1526ace5",
+    "sampleId": "68fdf72e-ec37-4355-901d-bd508ad018b6"
+  },
+  "Audio/generation/single_short_push_of_water,_ro": {
+    "url": "./samples/9a5f602b536fea4427784051ed8d9eacd7557aafba78178014da93aeaaaf1268.audio",
+    "sha256": "9a5f602b536fea4427784051ed8d9eacd7557aafba78178014da93aeaaaf1268",
+    "sampleId": "6ff470d0-d900-40a9-bf42-35ac5844a91d"
+  },
+  "Audio/generation/single_small_gelatinous_capsul": {
+    "url": "./samples/f6a02c0c3a4273d796f7eb455d350df9fbada585edf71787c4c3f1f216597d3d.audio",
+    "sha256": "f6a02c0c3a4273d796f7eb455d350df9fbada585edf71787c4c3f1f216597d3d",
+    "sampleId": "852afda7-5902-4462-86c7-72571b844e82"
+  },
+  "Audio/generation/single_slow_wash_of_submerged_": {
+    "url": "./samples/81b2403731e480f37778ab2d80dccaeeb08066b510dd99cd6f1589be55ea52f7.audio",
+    "sha256": "81b2403731e480f37778ab2d80dccaeeb08066b510dd99cd6f1589be55ea52f7",
+    "sampleId": "3d005574-8fed-4971-9b01-cf45ca21394c"
+  },
+  "Audio/generation/single_slender_whale-like_liqu": {
+    "url": "./samples/d94faae4e72a5497e0b3e48f035d3f85aca3732df0e05b28c3bbd1048e35246f.audio",
+    "sha256": "d94faae4e72a5497e0b3e48f035d3f85aca3732df0e05b28c3bbd1048e35246f",
+    "sampleId": "5a0c16a3-17ad-4040-b3cf-d1067dc27a58"
+  },
+  "Audio/generation/single_small_liquid_droplet_re": {
+    "url": "./samples/e3b9f73280d27f89cbaf8cbc31acbbe75e08e88b0fdb224b72eca2a114772399.audio",
+    "sha256": "e3b9f73280d27f89cbaf8cbc31acbbe75e08e88b0fdb224b72eca2a114772399",
+    "sampleId": "363d410b-6536-4203-a34a-d9f41511bcf7"
+  },
+  "Audio/generation/single_small_release_of_underw": {
+    "url": "./samples/1de5f405f86c426411cf7b5038065d34c31ec5d4f478e63a2dea33c036bd29ca.audio",
+    "sha256": "1de5f405f86c426411cf7b5038065d34c31ec5d4f478e63a2dea33c036bd29ca",
+    "sampleId": "bc8046a0-8e24-4d4a-a94c-4e2b5a3c3d53"
+  },
+  "Audio/generation/single_small_underwater_bubble": {
+    "url": "./samples/3971db62363e63a6c56385f6cbd655ece1885566f058e969a58bca065a840705.audio",
+    "sha256": "3971db62363e63a6c56385f6cbd655ece1885566f058e969a58bca065a840705",
+    "sampleId": "06cbd3b5-d757-414c-b699-1edc7dfd9a37"
+  },
+  "Audio/generation/single_smooth_liquid_membrane_": {
+    "url": "./samples/052be90a74cd0be6f5119310087dd68e5fb72f6746e3c636c0b5c214538cf3ad.audio",
+    "sha256": "052be90a74cd0be6f5119310087dd68e5fb72f6746e3c636c0b5c214538cf3ad",
+    "sampleId": "a449cbc9-912c-4956-8798-886fed09edd5"
+  },
+  "Audio/generation/single_submerged_bronze_bell_s": {
+    "url": "./samples/ccd72f8ff401aaafe836586fde0e8fc3299db94e000a98ecc252137d3cc0e6d7.audio",
+    "sha256": "ccd72f8ff401aaafe836586fde0e8fc3299db94e000a98ecc252137d3cc0e6d7",
+    "sampleId": "197e20fe-4546-43f7-9899-6015d211bb2c"
+  },
+  "Audio/generation/single_tiny_underwater_bubble_": {
+    "url": "./samples/0f16437c5771bd5121d7f920116b501a44018f646433a70b7f9601a6edd74e22.audio",
+    "sha256": "0f16437c5771bd5121d7f920116b501a44018f646433a70b7f9601a6edd74e22",
+    "sampleId": "17805a12-0c2f-4afc-8d77-7e8d5b57f408"
+  },
+  "Audio/generation/single_warm_liquid_harmonic_sw": {
+    "url": "./samples/4300408850dea767e178a186745d56e30f1eef1c8f1efdf61af31e183bc4842c.audio",
+    "sha256": "4300408850dea767e178a186745d56e30f1eef1c8f1efdf61af31e183bc4842c",
+    "sampleId": "cd0ad86d-8548-47a1-89db-759b9c6cd89f"
+  },
+  "Audio/generation/single_water_eddy_relaxing_aft": {
+    "url": "./samples/8c280d8c14e579fb285e15d639a07be26e6715a76da91b69d43a5e2a1310e28c.audio",
+    "sha256": "8c280d8c14e579fb285e15d639a07be26e6715a76da91b69d43a5e2a1310e28c",
+    "sampleId": "f7893492-aa86-4705-b2fd-537a46946613"
+  },
+  "Audio/generation/small_cluster_of_bubbles_relea": {
+    "url": "./samples/d901c30fba30e35c0cc28a28084333ad9ecd5702b1429dffd3e32f0c6893e1ff.audio",
+    "sha256": "d901c30fba30e35c0cc28a28084333ad9ecd5702b1429dffd3e32f0c6893e1ff",
+    "sampleId": "708d3bda-afc5-41ff-b453-764dfbd76104"
+  },
+  "Audio/generation/small_gelatinous_water_capsule": {
+    "url": "./samples/464ff14598a3b41a5705d8fa9d179b3735a3a1afc9f3d58a04a23ad706f9f498.audio",
+    "sha256": "464ff14598a3b41a5705d8fa9d179b3735a3a1afc9f3d58a04a23ad706f9f498",
+    "sampleId": "e822025d-9c9f-4566-a0d4-f1f5571d7a4b"
+  },
+  "Audio/generation/small_bubbles_streaming_gently": {
+    "url": "./samples/517093716bfe182284fe68f9ea19180193283232515f609afaaabe06e135afbd.audio",
+    "sha256": "517093716bfe182284fe68f9ea19180193283232515f609afaaabe06e135afbd",
+    "sampleId": "024f83a8-0177-43ab-a184-e1892d66f3c8"
+  },
+  "Audio/generation/sustained_rounded_liquid_harmo": {
+    "url": "./samples/976aa35658cc0f6d6ee12490166a617bed639af74d92929d5409f22a25ef643e.audio",
+    "sha256": "976aa35658cc0f6d6ee12490166a617bed639af74d92929d5409f22a25ef643e",
+    "sampleId": "f8c12795-b91f-40a4-b188-3f5cac69a071"
+  },
+  "Audio/whale-song-underwater": {
+    "url": "./samples/375441feebc3a009296feda154707d455772702efaae5765c54d915de9ae0824.audio",
+    "sha256": "375441feebc3a009296feda154707d455772702efaae5765c54d915de9ae0824",
+    "sampleId": "13b46fdd-4826-4a94-9900-67c515a1ec64"
+  },
+  "Audio/generation/sustained_wordless_singing_ton": {
+    "url": "./samples/1b0af31aefe3a9bf91f04920012c0548f4a457cb5a0edcd94448c3b2df50502f.audio",
+    "sha256": "1b0af31aefe3a9bf91f04920012c0548f4a457cb5a0edcd94448c3b2df50502f",
+    "sampleId": "a10c7467-1bd8-46f4-8d04-df2d4822228d"
+  },
+  "Audio/generation/thin_elastic_jelly_membrane_sl": {
+    "url": "./samples/89987149e80818d1fb3d423467ba9c88a3a9774623d2801c58b239e3acd035d7.audio",
+    "sha256": "89987149e80818d1fb3d423467ba9c88a3a9774623d2801c58b239e3acd035d7",
+    "sampleId": "f79f97af-ff12-4d52-9a2b-39db45933a22"
+  },
+  "Audio/generation/thin_glass_filament_singing_a_": {
+    "url": "./samples/122197cf7d2b4a388c507baf3e727515021d41f156d2f5891e3ef14bab94125f.audio",
+    "sha256": "122197cf7d2b4a388c507baf3e727515021d41f156d2f5891e3ef14bab94125f",
+    "sampleId": "adfb0840-9fa2-45e5-8d90-8845cbe06025"
+  },
+  "Audio/generation/water_flowing_smoothly_around_": {
+    "url": "./samples/b0d27a603f5b4a85f06879009fedc3cc25366b017c8c751b448bcbdfffe4f359.audio",
+    "sha256": "b0d27a603f5b4a85f06879009fedc3cc25366b017c8c751b448bcbdfffe4f359",
+    "sampleId": "82511f93-c9f0-4c83-9583-b1ab47956051"
+  },
+  "Audio/generation/water_pressure_compressing_a_f": {
+    "url": "./samples/1cd303258876c8420961f171276818d2308f92cd94620155ce00d08ea08624ca.audio",
+    "sha256": "1cd303258876c8420961f171276818d2308f92cd94620155ce00d08ea08624ca",
+    "sampleId": "14ba9d0d-b005-4363-90e2-690012adedbc"
+  },
+  "Audio/generation/fine_waterlogged_sand_grains_s_1": {
+    "url": "./samples/48e3756931845065104aae5b8f5debfd1fd739e2cbb7e3d40504797027800364.audio",
+    "sha256": "48e3756931845065104aae5b8f5debfd1fd739e2cbb7e3d40504797027800364",
+    "sampleId": "df5876a4-f5c3-4178-9370-7583e5ff40f3"
+  },
+  "Audio/generation/fine_waterlogged_sand_grains_s_2": {
+    "url": "./samples/5db27c32bdbf3e0ccec19105e56b8e096caccf61399c3dff1ca4493a960e8ec0.audio",
+    "sha256": "5db27c32bdbf3e0ccec19105e56b8e096caccf61399c3dff1ca4493a960e8ec0",
+    "sampleId": "f9c51170-c607-4acc-8e5e-6b8e6be82c6d"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_3": {
+    "url": "./samples/148f3de11efd596307874a61fb15a777e8fdcd13a7bc81c6e0e7d159318fbbc7.audio",
+    "sha256": "148f3de11efd596307874a61fb15a777e8fdcd13a7bc81c6e0e7d159318fbbc7",
+    "sampleId": "348c77f1-23ce-4f1e-82de-f3f72c3f600d"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_1": {
+    "url": "./samples/4fc196b6b412d2a3c2d56a22b748213c7fa93eafca2daa0f323ff8c50cbec627.audio",
+    "sha256": "4fc196b6b412d2a3c2d56a22b748213c7fa93eafca2daa0f323ff8c50cbec627",
+    "sampleId": "3e2d7edc-4a87-4fc2-8bf9-bba963cddf33"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_2": {
+    "url": "./samples/55feb7f54ea936038cf9944f5ce78f61af61fc44dbea75861e4ec45dee73364e.audio",
+    "sha256": "55feb7f54ea936038cf9944f5ce78f61af61fc44dbea75861e4ec45dee73364e",
+    "sampleId": "911d42b7-977b-437b-baf3-3d3c0cd26afa"
+  },
+  "Audio/generation/single_broad_gelatinous_membra#3": {
+    "url": "./samples/ea91a59ab2ed0036685f4e90c42a36b7468f88497c6150c301c83959cb1c09ee.audio",
+    "sha256": "ea91a59ab2ed0036685f4e90c42a36b7468f88497c6150c301c83959cb1c09ee",
+    "sampleId": "fec5a6dc-cc0e-4902-b854-518f802162d1"
+  },
+  "Audio/generation/single_broad_gelatinous_membra#2": {
+    "url": "./samples/a17aa87573256b45a4d33893cd804ca4e1bebe4aa1fb1814b1c4263883fa1118.audio",
+    "sha256": "a17aa87573256b45a4d33893cd804ca4e1bebe4aa1fb1814b1c4263883fa1118",
+    "sampleId": "40ffe3d1-c0ae-4393-9826-ff881de44bc5"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_4": {
+    "url": "./samples/017167f11be7263546972a624bcc804dc67dd33b83f7bfac3db19365a3d2b1af.audio",
+    "sha256": "017167f11be7263546972a624bcc804dc67dd33b83f7bfac3db19365a3d2b1af",
+    "sampleId": "b1ed1a45-a471-47df-a55c-0102ea7b9b18"
+  },
+  "Audio/generation/low_hollow_fluid_resonance_fro_1": {
+    "url": "./samples/93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d.audio",
+    "sha256": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d",
+    "sampleId": "d9e654a5-53a7-498e-bcf5-3796b6d1f1b9"
+  },
+  "Audio/generation/low_hollow_fluid_resonance_fro_2": {
+    "url": "./samples/61ed586687f49c33a80c7a4782b23d467e8a278db4644a00e41e9656ef330b08.audio",
+    "sha256": "61ed586687f49c33a80c7a4782b23d467e8a278db4644a00e41e9656ef330b08",
+    "sampleId": "9a69dc59-3601-4b95-922e-c089115289cb"
+  },
+  "Audio/generation/single_drawn-in_underwater_who#2": {
+    "url": "./samples/e214e1b6f9602e374e210030532f2c72a622e0f5209826b25cac4cfe92c0f780.audio",
+    "sha256": "e214e1b6f9602e374e210030532f2c72a622e0f5209826b25cac4cfe92c0f780",
+    "sampleId": "63b785a5-d47e-4b88-9cae-83d1f2d87670"
+  },
+  "Audio/generation/single_drawn-in_underwater_who#3": {
+    "url": "./samples/d5e92ff66c4ba3fc99cf25ffa42a3b8a910a1491d2c89b9fe8ca0610000df020.audio",
+    "sha256": "d5e92ff66c4ba3fc99cf25ffa42a3b8a910a1491d2c89b9fe8ca0610000df020",
+    "sampleId": "1722a143-ec5d-41ef-b93e-6516052a31a0"
+  },
+  "Audio/generation/single_cohesive_school_of_tiny#2": {
+    "url": "./samples/cc6ca9f16c2366fe0c9c16028173d03d3f5f337d6a0cb12cbab76fce1ee73ca4.audio",
+    "sha256": "cc6ca9f16c2366fe0c9c16028173d03d3f5f337d6a0cb12cbab76fce1ee73ca4",
+    "sampleId": "97f92a65-1c00-48f4-9552-b522cffa781d"
+  },
+  "Audio/generation/single_cohesive_school_of_tiny#3": {
+    "url": "./samples/901ff132483fc5237cfffb6fa8760bf865068e6d7d7b1e4d2d9785722ac25ae1.audio",
+    "sha256": "901ff132483fc5237cfffb6fa8760bf865068e6d7d7b1e4d2d9785722ac25ae1",
+    "sampleId": "280c4365-9f95-40dc-a47b-5719a15b0519"
+  },
+  "Audio/generation/single_enormous_gelatinous_bod#2": {
+    "url": "./samples/bfad2e26e8bfe46029ddaec0603b34bd9e6373a508ed5f2c096bd1ea73a708c1.audio",
+    "sha256": "bfad2e26e8bfe46029ddaec0603b34bd9e6373a508ed5f2c096bd1ea73a708c1",
+    "sampleId": "000c8a3d-4940-45bf-ae9a-4e6c899606f3"
+  },
+  "Audio/generation/single_flexible_jelly_membrane#3": {
+    "url": "./samples/80847be0206112d750c129efdfaabc86f15adbd02c554fdbda37bc5ad7555615.audio",
+    "sha256": "80847be0206112d750c129efdfaabc86f15adbd02c554fdbda37bc5ad7555615",
+    "sampleId": "7526ab61-8c35-42ee-b34b-03f0d5f6b255"
+  },
+  "Audio/generation/single_flexible_jelly_membrane#2": {
+    "url": "./samples/7685310734c298d9cf4596859d66ed881c3f5e790bd2ba488c5f66a9c5f06a71.audio",
+    "sha256": "7685310734c298d9cf4596859d66ed881c3f5e790bd2ba488c5f66a9c5f06a71",
+    "sampleId": "011e1c78-010c-423d-b481-d4d042ba31dc"
+  },
+  "Audio/generation/single_enormous_gelatinous_bod#3": {
+    "url": "./samples/d071cf3ae9ff8db321599b0eb707259165069bd99d4700b4597429535073368a.audio",
+    "sha256": "d071cf3ae9ff8db321599b0eb707259165069bd99d4700b4597429535073368a",
+    "sampleId": "61de78cc-bc76-47c9-b7f6-9550b6c05530"
+  },
+  "Audio/generation/single_hollow_liquid_cavity_co#2": {
+    "url": "./samples/33128d80fa5cf83d58af70357069a86e3fbe3212c4a5ecf441289277c8d31b03.audio",
+    "sha256": "33128d80fa5cf83d58af70357069a86e3fbe3212c4a5ecf441289277c8d31b03",
+    "sampleId": "a13f3be9-cac3-438c-b9e1-2df1a9d54782"
+  },
+  "Audio/generation/single_hollow_liquid_cavity_co#3": {
+    "url": "./samples/afb421c3d0d57f86945b4090911e4a1e28aad91cc24c37a0f5dcd497ed74a9a4.audio",
+    "sha256": "afb421c3d0d57f86945b4090911e4a1e28aad91cc24c37a0f5dcd497ed74a9a4",
+    "sampleId": "116a3061-697f-4c7d-b0d7-9373c8193fc8"
+  },
+  "Audio/generation/single_puff_of_fine_wet_sand_l#3": {
+    "url": "./samples/602f280b5b978a1249da784232c4e76199ee8fea5d7f835c05e9e8eb37f210c5.audio",
+    "sha256": "602f280b5b978a1249da784232c4e76199ee8fea5d7f835c05e9e8eb37f210c5",
+    "sampleId": "7f5d461d-c9c1-4bf9-99fd-5ed18113a58b"
+  },
+  "Audio/generation/single_puff_of_fine_wet_sand_l#2": {
+    "url": "./samples/9df6f11a9513d2360b6f18f87a541f4949ca01cdf841a790d4c709f572f88c82.audio",
+    "sha256": "9df6f11a9513d2360b6f18f87a541f4949ca01cdf841a790d4c709f572f88c82",
+    "sampleId": "5ef471bc-7df0-4c9e-ab7d-bef8711e71b1"
+  },
+  "Audio/generation/single_loose_cluster_of_tiny_g#2": {
+    "url": "./samples/91d7bcd769bcb0a82dfdbcd4c1a2d7dc6da92027f122be536439c02e11ab502a.audio",
+    "sha256": "91d7bcd769bcb0a82dfdbcd4c1a2d7dc6da92027f122be536439c02e11ab502a",
+    "sampleId": "d88ba9de-d4b9-4472-985e-f9248d136347"
+  },
+  "Audio/generation/single_short_push_of_water,_ro#2": {
+    "url": "./samples/466086ef187ee8bb195f1e7a73fae31048a748c6f647e6d51aa75249dff7ed7c.audio",
+    "sha256": "466086ef187ee8bb195f1e7a73fae31048a748c6f647e6d51aa75249dff7ed7c",
+    "sampleId": "c62bfaac-39b5-422d-95cb-59b53eff074d"
+  },
+  "Audio/generation/single_short_push_of_water,_ro#3": {
+    "url": "./samples/9291161697a1db3081e259afd434190259cdfeb4a97ba8c81d1e887695dd5d6c.audio",
+    "sha256": "9291161697a1db3081e259afd434190259cdfeb4a97ba8c81d1e887695dd5d6c",
+    "sampleId": "4ea07cc1-d43a-48a0-9e41-2358f5d0797e"
+  },
+  "Audio/generation/single_slow_wash_of_submerged_#2": {
+    "url": "./samples/2918cd7c5ef8b8f9b868e307db8a55f7dbb71e8d0e85d68eaf62e32caefb5eef.audio",
+    "sha256": "2918cd7c5ef8b8f9b868e307db8a55f7dbb71e8d0e85d68eaf62e32caefb5eef",
+    "sampleId": "cde7be6a-34e1-49ca-ac54-0f33e20e8306"
+  },
+  "Audio/generation/single_slender_whale-like_liqu#2": {
+    "url": "./samples/2bcfa896b1855992e9e9d1da9a99c9a3790e689e2b0b372399af9bd096461516.audio",
+    "sha256": "2bcfa896b1855992e9e9d1da9a99c9a3790e689e2b0b372399af9bd096461516",
+    "sampleId": "3f58f654-4f79-41e2-9280-451d29646ed2"
+  },
+  "Audio/generation/single_slow_wash_of_submerged_#3": {
+    "url": "./samples/f12d6a7e95aaec45d55de64ca9a484fd98e96f25b6cbfdb2025f677715b7038c.audio",
+    "sha256": "f12d6a7e95aaec45d55de64ca9a484fd98e96f25b6cbfdb2025f677715b7038c",
+    "sampleId": "bf08e1eb-4c16-4f98-9944-105fb5e885f4"
+  },
+  "Audio/generation/single_slender_whale-like_liqu#3": {
+    "url": "./samples/1432c29aaf91d4c2e696ad82918a1f0bc287f4f573acb7ba449c11f6e5004b59.audio",
+    "sha256": "1432c29aaf91d4c2e696ad82918a1f0bc287f4f573acb7ba449c11f6e5004b59",
+    "sampleId": "3e44c0f6-76e0-477a-ba3e-57852f2708d9"
+  },
+  "Audio/generation/single_small_gelatinous_capsul#2": {
+    "url": "./samples/748851b3d30e9994779704f251563ab68aeb65970a2be6bd8cc353b7b545d732.audio",
+    "sha256": "748851b3d30e9994779704f251563ab68aeb65970a2be6bd8cc353b7b545d732",
+    "sampleId": "1a17818d-1942-49d3-9144-53cdd5e1ec0e"
+  },
+  "Audio/generation/single_small_gelatinous_capsul#3": {
+    "url": "./samples/cb8f29886bc34ad81540c5a89d1c12837fdabae80d05f7d20a0df1858a188a70.audio",
+    "sha256": "cb8f29886bc34ad81540c5a89d1c12837fdabae80d05f7d20a0df1858a188a70",
+    "sampleId": "34baa2cd-b7da-437e-be77-018f9fb2ce7f"
+  },
+  "Audio/generation/single_small_liquid_droplet_re#2": {
+    "url": "./samples/53bdd430a8b45c7836eaf8488db325fa14fbe669def64e084880da69ca4353b3.audio",
+    "sha256": "53bdd430a8b45c7836eaf8488db325fa14fbe669def64e084880da69ca4353b3",
+    "sampleId": "2f73199c-1334-49d3-99b8-b48feebbfa5c"
+  },
+  "Audio/generation/single_small_release_of_underw#3": {
+    "url": "./samples/5463cf5e0c51d00a18deab80bf6d2d98a29603db24ca30c431dd72dfd72ccd23.audio",
+    "sha256": "5463cf5e0c51d00a18deab80bf6d2d98a29603db24ca30c431dd72dfd72ccd23",
+    "sampleId": "a1f6a7e3-dc19-4a2b-b342-2b55c5c35c46"
+  },
+  "Audio/generation/single_small_liquid_droplet_re#3": {
+    "url": "./samples/4fbeb93d4a7dc114c70545fc859c2bd8f839c7f2dd02f76d507157dd66c32484.audio",
+    "sha256": "4fbeb93d4a7dc114c70545fc859c2bd8f839c7f2dd02f76d507157dd66c32484",
+    "sampleId": "55fefc5b-ddc4-46a8-8f10-ffb35889dbc8"
+  },
+  "Audio/generation/single_small_release_of_underw#2": {
+    "url": "./samples/308ec00dd08b58f5c5349cd4a43360c9c7e9002fd25c2ba52140e7cc2e792885.audio",
+    "sha256": "308ec00dd08b58f5c5349cd4a43360c9c7e9002fd25c2ba52140e7cc2e792885",
+    "sampleId": "7a6c8e95-8ee1-43a9-9750-87d1971794f4"
+  },
+  "Audio/generation/single_small_underwater_bubble#3": {
+    "url": "./samples/366973e0a4593233c9b06154054f4e333e1f45bd18c8b35134cba9ecf9aac645.audio",
+    "sha256": "366973e0a4593233c9b06154054f4e333e1f45bd18c8b35134cba9ecf9aac645",
+    "sampleId": "be95329e-5977-407a-9395-af6753043ef8"
+  },
+  "Audio/generation/single_small_underwater_bubble#2": {
+    "url": "./samples/5628139d6878201c0853795b8eac1a449aff894c573d88ac9775e1f97a0f01c7.audio",
+    "sha256": "5628139d6878201c0853795b8eac1a449aff894c573d88ac9775e1f97a0f01c7",
+    "sampleId": "2c0c32e5-d094-414e-b81c-e13c2c0f4fb8"
+  },
+  "Audio/generation/single_smooth_liquid_membrane_#2": {
+    "url": "./samples/c1f67c8b03d1e47551a28ce6cead4086a9b2240ac11668d405bf724450f4da06.audio",
+    "sha256": "c1f67c8b03d1e47551a28ce6cead4086a9b2240ac11668d405bf724450f4da06",
+    "sampleId": "51095de0-5ff7-406a-ae75-f57b8e6c4cc8"
+  },
+  "Audio/generation/single_submerged_bronze_bell_s#2": {
+    "url": "./samples/cf83050da8eac75b33528b62647a7305c10c263f8153cd5f3df679276ca351e2.audio",
+    "sha256": "cf83050da8eac75b33528b62647a7305c10c263f8153cd5f3df679276ca351e2",
+    "sampleId": "5056bee8-81c0-4fac-b831-efe67ea16f04"
+  },
+  "Audio/generation/single_smooth_liquid_membrane_#3": {
+    "url": "./samples/d5013b2896cca7b0948946c8fd9154061f11752ec6decce4f85733c2ef1cc5d3.audio",
+    "sha256": "d5013b2896cca7b0948946c8fd9154061f11752ec6decce4f85733c2ef1cc5d3",
+    "sampleId": "a8362c54-e270-4727-8ddd-7046e381a282"
+  },
+  "Audio/generation/single_submerged_bronze_bell_s#3": {
+    "url": "./samples/f8653f348f45cd1274bd1b6072d5e7bcb368d6e0d03fa59b075857cfb1757fe6.audio",
+    "sha256": "f8653f348f45cd1274bd1b6072d5e7bcb368d6e0d03fa59b075857cfb1757fe6",
+    "sampleId": "f69a8e90-f3be-41de-aca3-12a3d0485b25"
+  },
+  "Audio/generation/single_tiny_underwater_bubble_#2": {
+    "url": "./samples/773d0f028997005ec42feaa4784dd3ab8dd8ee1dd01f5b5cd7c351a81e54ad68.audio",
+    "sha256": "773d0f028997005ec42feaa4784dd3ab8dd8ee1dd01f5b5cd7c351a81e54ad68",
+    "sampleId": "3aac1e38-a294-4c03-b66d-5aeb481e09f7"
+  },
+  "Audio/generation/single_tiny_underwater_bubble_#3": {
+    "url": "./samples/6db5ffc850d32fd2f37f2587110d5a375abb949f1b7b9c5ef01a5262471d4723.audio",
+    "sha256": "6db5ffc850d32fd2f37f2587110d5a375abb949f1b7b9c5ef01a5262471d4723",
+    "sampleId": "2372930e-f5d0-4867-bf83-3934e18bde77"
+  },
+  "Audio/generation/single_warm_liquid_harmonic_sw#2": {
+    "url": "./samples/dc86fd8ed762081acb7309921365b2bcdc6718d440eddc7dd9ce865fb47d3ed5.audio",
+    "sha256": "dc86fd8ed762081acb7309921365b2bcdc6718d440eddc7dd9ce865fb47d3ed5",
+    "sampleId": "e53967be-209c-4a65-938a-eea52673b4ad"
+  },
+  "Audio/generation/single_warm_liquid_harmonic_sw#3": {
+    "url": "./samples/004d7f66c3d06424f540aca17f6955bd358a9182a7f770af0d6ce59d43169d27.audio",
+    "sha256": "004d7f66c3d06424f540aca17f6955bd358a9182a7f770af0d6ce59d43169d27",
+    "sampleId": "339bc742-3e78-4a99-8feb-dbf98094889d"
+  },
+  "Audio/generation/single_water_eddy_relaxing_aft#2": {
+    "url": "./samples/d433f8c32f798f354d76b0aac15e27d7c8f858b4a2bcc678bf93adfc359043a3.audio",
+    "sha256": "d433f8c32f798f354d76b0aac15e27d7c8f858b4a2bcc678bf93adfc359043a3",
+    "sampleId": "dc3153bb-cc91-4eae-b471-d24631036122"
+  },
+  "Audio/generation/single_water_eddy_relaxing_aft#3": {
+    "url": "./samples/3ae7479683749b7cbc3f566c1ff8137e2909a041082d5884bfe15ca332031b65.audio",
+    "sha256": "3ae7479683749b7cbc3f566c1ff8137e2909a041082d5884bfe15ca332031b65",
+    "sampleId": "1d9ec320-7daa-47f8-9109-24f9358930e4"
+  },
+  "Audio/generation/small_cluster_of_bubbles_relea#2": {
+    "url": "./samples/44c80e696aadeb866c4979c738707b95f82c3a19e1906838a1ad663f8d79d946.audio",
+    "sha256": "44c80e696aadeb866c4979c738707b95f82c3a19e1906838a1ad663f8d79d946",
+    "sampleId": "e86387a3-2fa6-4d37-bdb5-7fe75c0f67cb"
+  },
+  "Audio/generation/small_cluster_of_bubbles_relea#3": {
+    "url": "./samples/1f6072a073d8d745fe0c69bde2e2029c945eb97c8365ba55f8855e10cf3925e0.audio",
+    "sha256": "1f6072a073d8d745fe0c69bde2e2029c945eb97c8365ba55f8855e10cf3925e0",
+    "sampleId": "855cc68d-fea9-411f-a160-e781a66d5834"
+  },
+  "Audio/generation/smooth_bowed_glass_harmonics_w_1": {
+    "url": "./samples/77935b381ab835248d32f2d093d4dda6078bad4174d819aa5f230e3c7fa60217.audio",
+    "sha256": "77935b381ab835248d32f2d093d4dda6078bad4174d819aa5f230e3c7fa60217",
+    "sampleId": "9c07a087-71da-4847-b1a0-bef59a142271"
+  },
+  "Audio/generation/smooth_bowed_glass_harmonics_w_2": {
+    "url": "./samples/1ecae63d16caa2ba5eabe1c6fcbdb6a7a65c7d75806a96921de64c9bf500e4be.audio",
+    "sha256": "1ecae63d16caa2ba5eabe1c6fcbdb6a7a65c7d75806a96921de64c9bf500e4be",
+    "sampleId": "0a206947-59f7-4c33-bd32-0a67edbcf098"
+  },
+  "Audio/generation/submerged_slow_water_current,__1": {
+    "url": "./samples/ee5af9adfb4627f707b3787c921f20af2c51608adc79e5d744daa1aa9e590fbe.audio",
+    "sha256": "ee5af9adfb4627f707b3787c921f20af2c51608adc79e5d744daa1aa9e590fbe",
+    "sampleId": "eb68c847-e540-460e-a523-cd4d3290507a"
+  },
+  "Audio/generation/submerged_slow_water_current,__2": {
+    "url": "./samples/5b9d583fee2f8c1edac0bddc9c97c4279b04248b85e5e91d444778a9995117f7.audio",
+    "sha256": "5b9d583fee2f8c1edac0bddc9c97c4279b04248b85e5e91d444778a9995117f7",
+    "sampleId": "340cf238-2f73-4367-b875-c719bd777414"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_1#2": {
+    "url": "./samples/d68862af46383b42c3ba18cc49552ca84a7c871d5c6de7a0e9b0d3a1b1a6919a.audio",
+    "sha256": "d68862af46383b42c3ba18cc49552ca84a7c871d5c6de7a0e9b0d3a1b1a6919a",
+    "sampleId": "b705c15c-cd49-4fa2-ba81-b75ce0f7b2a7"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_1#3": {
+    "url": "./samples/8835cf5cc39f81704cd962cdd6060d147f20f91f6a5226610e6bc23075ab18d8.audio",
+    "sha256": "8835cf5cc39f81704cd962cdd6060d147f20f91f6a5226610e6bc23075ab18d8",
+    "sampleId": "6f433b87-c4c6-4fcf-8f31-31eae58a1e62"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_1#4": {
+    "url": "./samples/99a0faaac600e95d8c197cc1c65d0f6e4105ae966fcf91a60c202a23b81b7a65.audio",
+    "sha256": "99a0faaac600e95d8c197cc1c65d0f6e4105ae966fcf91a60c202a23b81b7a65",
+    "sampleId": "bff375f0-47ac-48e3-9509-e5b05bacdb2c"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_2#2": {
+    "url": "./samples/0f3067a0fe9a7af2fe7ef44c481577472e5627aeff1fb3fb652c81297cd98b79.audio",
+    "sha256": "0f3067a0fe9a7af2fe7ef44c481577472e5627aeff1fb3fb652c81297cd98b79",
+    "sampleId": "ec267967-b23a-44da-8c34-491505d055a2"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_2#3": {
+    "url": "./samples/4ab01b2110182629f704fb03645b17c6953c114d9a7549ffc2a3eaf8e2de26c7.audio",
+    "sha256": "4ab01b2110182629f704fb03645b17c6953c114d9a7549ffc2a3eaf8e2de26c7",
+    "sampleId": "b7f64dbe-7030-4b34-b304-13b3cbc0b859"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_2#4": {
+    "url": "./samples/3d3e80a5c6420334ced42da41a2a201612602fa3e92303e4b1b0a56a8a932bd2.audio",
+    "sha256": "3d3e80a5c6420334ced42da41a2a201612602fa3e92303e4b1b0a56a8a932bd2",
+    "sampleId": "5e44dce8-3ad4-427d-abda-ba18cce65821"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_3#2": {
+    "url": "./samples/4f8c9ad873167d0c6856d153f81d63cc627e83ccacc3aec172b0779a93c95773.audio",
+    "sha256": "4f8c9ad873167d0c6856d153f81d63cc627e83ccacc3aec172b0779a93c95773",
+    "sampleId": "4a756011-d55f-47c5-a00d-a4e5ab0c2285"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_3#3": {
+    "url": "./samples/8bf3e165430147a5cb5421810ee931664d6346117683aabee58a522b5ac3a0ad.audio",
+    "sha256": "8bf3e165430147a5cb5421810ee931664d6346117683aabee58a522b5ac3a0ad",
+    "sampleId": "dd4b08cd-b8c2-4fd8-a5fc-f02480396c78"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_4#2": {
+    "url": "./samples/deb5ad7131c99a69a27bd39c64cd58575f3ed494455ee54fce8c1fb42dc83799.audio",
+    "sha256": "deb5ad7131c99a69a27bd39c64cd58575f3ed494455ee54fce8c1fb42dc83799",
+    "sampleId": "2de45851-1d2e-4902-9e7a-3c0c5b9fdc5a"
+  },
+  "Audio/generation/single_loose_cluster_of_tiny_g#3": {
+    "url": "./samples/ffb2d57257b9a97060a35aad4fb255d7f093ba958d235883be02bd19b0e65e6b.audio",
+    "sha256": "ffb2d57257b9a97060a35aad4fb255d7f093ba958d235883be02bd19b0e65e6b",
+    "sampleId": "fca82dc6-94e7-4967-b780-2577a545ad38"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_3#4": {
+    "url": "./samples/9b92bbcddf0750f4514b66342e3d59de547835d2905abc84ec5ea9a6c4bc22cc.audio",
+    "sha256": "9b92bbcddf0750f4514b66342e3d59de547835d2905abc84ec5ea9a6c4bc22cc",
+    "sampleId": "5ee0bcbe-0fb5-47e0-92c5-a427989c65bc"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_4#3": {
+    "url": "./samples/c7ed0b579942eb8744c1f03fcb73f6c0140063107e93a53eb830be7ef3cba017.audio",
+    "sha256": "c7ed0b579942eb8744c1f03fcb73f6c0140063107e93a53eb830be7ef3cba017",
+    "sampleId": "3b4f88c2-8b5a-49f0-a909-7febc83b27fe"
+  },
+  "Audio/generation/long_waterlogged_kelp_leaves_r_4#4": {
+    "url": "./samples/5660e211f90a5a03cd9db9241174c39c6685cfbddafafedbdb7e0e16cc90ca74.audio",
+    "sha256": "5660e211f90a5a03cd9db9241174c39c6685cfbddafafedbdb7e0e16cc90ca74",
+    "sampleId": "0cf54d5d-3281-4b26-8520-ed1eb9b5cc43"
+  },
+  "Audio/generation/single_slow_underwater_current#2": {
+    "url": "./samples/43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio",
+    "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+    "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6"
+  },
+  "Audio/generation/small_elastic_water_membrane_r": {
+    "url": "./samples/989d9abf41a3264f5cf3eed6d37287be67a715d348deaa6dd7967eee62d0386e.audio",
+    "sha256": "989d9abf41a3264f5cf3eed6d37287be67a715d348deaa6dd7967eee62d0386e",
+    "sampleId": "3afaa9f1-8522-4b74-a8ae-fe5a5509b38e"
+  },
+  "Audio/generation/single_immense_liquid_membrane#3": {
+    "url": "./samples/5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0.audio",
+    "sha256": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0",
+    "sampleId": "cb6efe4a-8336-4943-9106-0c1ebc25d54b"
+  },
+  "Audio/generation/single_immense_liquid_membrane#2": {
+    "url": "./samples/82ba231957d9555b83895bceedfa57f42a2b438652e8ce5e07a01ec701d1fc3f.audio",
+    "sha256": "82ba231957d9555b83895bceedfa57f42a2b438652e8ce5e07a01ec701d1fc3f",
+    "sampleId": "f829afe4-fa7d-423a-98c2-c224a78969ad"
+  },
+  "Audio/generation/single_slow_underwater_current": {
+    "url": "./samples/43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio",
+    "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+    "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6"
+  },
+  "Audio/generation/single_slow_underwater_current#3": {
+    "url": "./samples/43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79.audio",
+    "sha256": "43db5aeca965f009001afe9bdbf2d6089b0b9a7b2e288997f73b43c2d7366e79",
+    "sampleId": "5194cfd9-5987-4dae-b9ff-f345ea560bf6"
+  },
+  "Audio/generation/single_immense_liquid_membrane": {
+    "url": "./samples/5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0.audio",
+    "sha256": "5bab7f7d5aad077f372139aa556f84da949474b75e17b09b97b7ae9d5fa707f0",
+    "sampleId": "cb6efe4a-8336-4943-9106-0c1ebc25d54b"
+  },
+  "Audio/generation/low_hollow_fluid_resonance_fro": {
+    "url": "./samples/93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d.audio",
+    "sha256": "93c90941ddb184fb16665d49d52a211cf1ee05fc1c81c1b6606283c0fde2b15d",
+    "sampleId": "d9e654a5-53a7-498e-bcf5-3796b6d1f1b9"
+  },
+  "Audio/generation/sustained_wordless_alto_singin": {
+    "url": "./samples/caa802d3936d875f1703a2bea7fea8e06a368f91406e3326c7acb9a137fdf75e.audio",
+    "sha256": "caa802d3936d875f1703a2bea7fea8e06a368f91406e3326c7acb9a137fdf75e",
+    "sampleId": "a3a05547-c04b-4df5-b0b7-4ee6b901ef2b"
+  },
+  "Audio/community/deep-open-ocean-water-movement": {
+    "url": "./samples/b9fd9eac7f88f7e09c5e2bb5562aba65f9235337bb2a6003d85481e6e64693c7.audio",
+    "sha256": "b9fd9eac7f88f7e09c5e2bb5562aba65f9235337bb2a6003d85481e6e64693c7",
+    "sampleId": "2c26da47-e225-4762-869d-3ff9facbc3a6"
+  },
+  "Audio/community/rain-light-concrete-steady": {
+    "url": "./samples/a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f.audio",
+    "sha256": "a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f",
+    "sampleId": "17b456e3-7ecf-4a4f-b9c5-4803a6d6be9d"
+  }
+}
