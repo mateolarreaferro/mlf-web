@@ -14,6 +14,7 @@ import { buildWorld } from "./world.js";
 import { createWalker } from "./walker.js";
 import { createSound, soundManifest } from "./sound.js";
 import { layout } from "./rooms.js";
+import { createEditor } from "./editor.js";
 
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
@@ -29,6 +30,7 @@ if (embed) root.dataset.embed = "";
 let world = null;
 let renderer = null;
 let walker = null;
+let editor = null;
 const sound = createSound();
 
 const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 220);
@@ -56,6 +58,11 @@ async function start() {
   walker = createWalker(camera, canvas, world, { onPress, reducedMotion });
   window.agentsWorld = { world, walker, sound, soundManifest: () => soundManifest(world) };
   if (!embed) sound.attach(world, walker); // the card on the main site stays silent
+  if (!embed) {
+    editor = createEditor(world, sound);
+    window.agentsWorld.controls = editor.controls;
+    $("edit-button").disabled = false;
+  }
 
   // If the font arrived after the labels were drawn, draw them again.
   document.fonts.ready.then(() => world.redraw());
@@ -217,16 +224,20 @@ function closeMenu() {
 }
 
 $("menu-button").addEventListener("click", () => {
+  if (editor?.open) editor.close();
   const open = $("menu").hidden;
   $("menu").hidden = !open;
   sound.event(open ? "menu.open" : "menu.close");
   $("menu-button").setAttribute("aria-expanded", String(open));
 });
 
+$("edit-button").addEventListener("click", closeMenu);
+
 $("here-read").addEventListener("click", () => world.rooms.find((r) => r.id === region)?.open && openPanel(region));
 
 // Sound starts with your first press anywhere, and this button turns it off and on.
 const soundButton = $("sound-button");
+let soundButtonGesture = false;
 const SOUND_LABEL = { loading: "sound loading", starting: "sound starting", ready: "play sound", on: "sound on", off: "sound off", unavailable: "sound unavailable" };
 sound.onChange((now) => {
   soundButton.textContent = SOUND_LABEL[now];
@@ -236,11 +247,22 @@ sound.onChange((now) => {
 });
 soundButton.addEventListener("click", (e) => {
   e.stopPropagation();
+  // Brave can resolve scene.start() before dispatching the synthesized click
+  // that follows pointerdown. That click must not be mistaken for a second
+  // press, or it immediately toggles the scene back off.
+  if (soundButtonGesture) { soundButtonGesture = false; return; }
   // A pointer click should return Space to swimming. Keyboard activation
   // keeps focus so the button remains usable with Tab, Enter and Space.
   if (e.detail > 0) soundButton.blur();
   if (sound.state === "ready" || sound.state === "loading" || sound.state === "starting") sound.start();
   else sound.toggle();
+});
+soundButton.addEventListener("pointerdown", (e) => {
+  e.stopPropagation();
+  if (sound.state === "ready") {
+    soundButtonGesture = true;
+    sound.start();
+  }
 });
 // Match Satie's field-study integration: a gesture resumes the loaded scene.
 // The sound button owns its own click so one press cannot start then immediately mute.
@@ -254,6 +276,7 @@ document.addEventListener("click", (e) => e.target.closest?.("button, a") && sou
 let returnFocus = null;
 
 async function openPanel(id) {
+  if (editor?.open) editor.close();
   const room = world?.rooms.find((r) => r.id === id);
   const panel = $("panel");
   const body = $("panel-body");
@@ -297,7 +320,7 @@ addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closePanel();
     closeMenu();
-  } else if (e.key === "Enter" && $("panel").hidden && !e.target.closest?.("button, a")) {
+  } else if (e.key === "Enter" && $("panel").hidden && !e.target.closest?.("button, a, input, textarea, select, summary")) {
     const room = world?.rooms.find((r) => r.id === region);
     if (room?.open) openPanel(room.id);
   }
