@@ -1,12 +1,13 @@
 <h1>shape the world</h1>
-<p class="lede">Describe a change to this scene’s look or sound. The agent moves the same controls you do.</p>
+<p class="lede">A local agent changes this scene’s look and sound through its controls. Here’s a working run.</p>
 
 <figure>
-  <video controls playsinline preload="none" poster="media/week01/scene-agent.png" aria-label="Local agent demo">
+  <video controls playsinline preload="metadata" poster="media/week01/scene-agent.png" aria-label="Local agent demo">
+    <source src="media/week01/demo.mp4" type="video/mp4">
     <source src="media/week01/demo.webm" type="video/webm">
-    <a href="media/week01/demo.webm">Watch the demo</a>.
+    <a href="media/week01/demo.mp4">Watch the demo</a>.
   </video>
-  <figcaption>Motion to 0.4, rain to 0.3, voices unchanged. A real local run; 44 seconds, silent.</figcaption>
+  <figcaption>Motion to 0.4, rain to 0.3, voices unchanged. 44 seconds, silent. <a href="media/week01/demo.mp4" target="_blank" rel="noopener">Open video</a>.</figcaption>
 </figure>
 
 <h2>how it works</h2>
@@ -14,10 +15,7 @@
 <pre><code>observe → decide → act → observe again</code></pre>
 <p>Actions: inspect, set, undo, done, stop. Completion needs a fresh observation and a separate model check. The limit is 12 turns.</p>
 
-<h2>run it</h2>
-<pre><code>ollama pull qwen2.5:3b
-python3 weekly_builds/week01/server.py</code></pre>
-<p>Open <a href="http://127.0.0.1:8766/">the local scene</a>, press <strong>shape</strong>, and enable sound. Manual controls work here too.</p>
+<p>The agent runs on my laptop. Press <strong>shape</strong> to try the manual controls here.</p>
 
 <h2>what happened</h2>
 <p>Exact settings worked. Vague requests caused extra edits; muted audio requests hit the limit. Next: improve constraint handling.</p>

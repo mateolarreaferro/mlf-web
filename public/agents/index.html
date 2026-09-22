@@ -81,17 +81,17 @@
 
     <aside id="scene-editor" class="scene-editor" hidden aria-label="controls">
       <div class="editor-heading"><div><p class="label">scene</p><h2>controls</h2></div><div class="editor-heading-actions"><button id="sound-button" class="pill" aria-pressed="false">sound</button><button id="editor-close" class="pill" aria-label="close scene controls">close</button></div></div>
-      <form id="agent-form">
+      <form id="agent-form" hidden>
         <label for="agent-goal" class="sr">describe a scene change</label>
         <textarea id="agent-goal" rows="2" maxlength="1200" placeholder="Motion speed 0.4, rain 0.3. Keep the voices." required></textarea>
         <div class="editor-actions"><button id="agent-submit" class="pill solid" type="submit" disabled>reshape</button><button id="agent-stop" class="pill" type="button" hidden>stop</button><span id="agent-connection" class="editor-note">local agent</span></div>
       </form>
-      <div id="agent-setup" class="editor-note"><p><code>python3 weekly_builds/week01/server.py</code><br><a href="http://127.0.0.1:8766/">Open local agent</a></p><button id="agent-connect" class="pill">reconnect</button></div>
+      <div id="agent-setup" class="editor-note" hidden><p><code>python3 weekly_builds/week01/server.py</code><br><a href="http://127.0.0.1:8766/">Open local agent</a></p><button id="agent-connect" class="pill">reconnect</button></div>
       <p id="editor-status" class="editor-status" role="status" aria-live="polite"></p>
       <div id="scene-fields"></div>
       <div class="editor-actions"><button id="scene-undo" class="pill" disabled>undo</button><button id="scene-reset" class="pill">reset</button></div>
       <details class="editor-presets"><summary>saved scenes</summary><label for="scene-presets" class="sr">saved scenes</label><select id="scene-presets"></select><div class="editor-actions"><label for="scene-name" class="sr">scene name</label><input id="scene-name" maxlength="48" placeholder="name this scene"><button id="scene-save" class="pill">save</button></div></details>
-      <details id="agent-trace"><summary>agent activity</summary><ol id="agent-log"></ol><button id="agent-export" class="pill" disabled>download run</button></details>
+      <details id="agent-trace" hidden><summary>agent activity</summary><ol id="agent-log"></ol><button id="agent-export" class="pill" disabled>download run</button></details>
     </aside>
 
     <aside id="panel" class="panel" role="dialog" aria-modal="true" hidden aria-labelledby="panel-label" tabindex="-1">

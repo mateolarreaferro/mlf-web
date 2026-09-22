@@ -4,6 +4,9 @@ export function createEditor(world, sound) {
   const controls = createSceneControls(world, sound);
   const $ = id => document.getElementById(id);
   const panel = $('scene-editor'), toggle = $('edit-button'), fields = new Map();
+  const localAgent = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+  $('agent-form').hidden = !localAgent;
+  $('agent-trace').hidden = !localAgent;
   let run = null, bridge = false, seen = 0, lastAction = null, stopped = false, transcript = null;
   const presetsKey = 'agents-scene-presets-v1';
   let presets = {};
@@ -91,7 +94,7 @@ export function createEditor(world, sound) {
     return result;
   };
   async function connect() {
-    if (run) return;
+    if (run || !localAgent) return;
     bridge = false;
     if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
       try { const result = await api('status'); bridge = result.ready; $('agent-connection').textContent = bridge ? `${result.model} · running locally` : result.message; }

@@ -446,6 +446,8 @@ export function buildWorld({ density = 1 } = {}) {
   const labels = [];
   const lettering = [];
   const birds = [];
+  const whales = [];
+  const drones = [];
 
   const N = (n) => Math.max(1, Math.round(n * density));
   const main = cloud();
@@ -708,24 +710,59 @@ export function buildWorld({ density = 1 } = {}) {
   }, 17, 25);
   sign.position.set(-3.6, 5.8, 9.5);
 
-  // Small aquatic birds: translucent manta-like silhouettes that bank through
-  // the water on independent paths, giving the scene a living counter-rhythm.
+  // Small aquatic birds are made from the same shards as the rest of the
+  // world. Their wings are loose, asymmetrical traces rather than solid mesh.
   {
     const rnd = seeded('aquatic-birds');
-    const wingGeometry = new THREE.BufferGeometry();
-    wingGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
-      0, 0, 0, -0.95, 0.05, -0.22, -0.28, 0.02, 0.12,
-      0, 0, 0, 0.95, 0.05, -0.22, 0.28, 0.02, 0.12,
-    ], 3));
     for (let i = 0; i < 6; i++) {
-      const bird = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 5), new THREE.MeshBasicMaterial({ color: '#bfe6d8', transparent: true, opacity: 0.82, blending: THREE.AdditiveBlending, depthWrite: false }));
-      const wings = new THREE.Mesh(wingGeometry, new THREE.MeshBasicMaterial({ color: i % 2 ? '#7ab7d4' : '#dbe6ea', transparent: true, opacity: 0.42, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
-      bird.add(body, wings);
-      bird.scale.setScalar(0.75 + rnd() * 0.65);
+      const bag = cloud();
+      for (let k = 0; k < 75; k++) {
+        const t = k / 74, span = (t * 2 - 1) * 0.95;
+        const wing = Math.abs(span) * 0.22 + 0.03 * rnd();
+        bag.add(t * 0.55 - 0.28, Math.sin(t * Math.PI) * 0.11 + (rnd() - 0.5) * 0.04, span * 0.8 + wing, { kind: KIND.drift, tint: i % 2 ? ciliary : cools[2], amt: 0.75, size: 0.035, alpha: 0.8, loose: 0.08, reach: 0.8 }, rnd);
+      }
+      const bird = bag.build(glow);
       bird.position.set((rnd() - 0.5) * 22, 3.5 + rnd() * 14, (rnd() - 0.5) * 22);
       bird.userData = { phase: rnd() * 6.28, speed: 0.35 + rnd() * 0.3, height: bird.position.y, bank: rnd() * 6.28 };
       scene.add(bird); birds.push(bird);
+    }
+  }
+
+  // Whales are distant, slow constellations: a body, a tail fan and two fins,
+  // never a filled illustration. They read as passing presences in the fog.
+  {
+    const rnd = seeded('whales');
+    for (let i = 0; i < 5; i++) {
+      const bag = cloud();
+      for (let k = 0; k < 180; k++) {
+        const a = rnd() * Math.PI * 2, b = Math.acos(rnd() * 2 - 1);
+        const x = Math.cos(a) * Math.sin(b) * 1.9, y = Math.cos(b) * 0.52, z = Math.sin(a) * Math.sin(b) * 0.58;
+        bag.add(x, y, z, { kind: KIND.drift, tint: i % 2 ? ciliary : cools[1], amt: 0.62, size: 0.045, alpha: 0.48, loose: 0.16, reach: 1.5 }, rnd);
+      }
+      for (const side of [-1, 1]) for (let k = 0; k < 42; k++) {
+        const t = k / 41;
+        bag.add(-1.65 - t * 0.7, Math.sin(t * Math.PI) * 0.2, side * (0.18 + t * 0.55), { kind: KIND.drift, tint: ciliary, amt: 0.72, size: 0.04, alpha: 0.5, loose: 0.1, reach: 1 }, rnd);
+      }
+      const whale = bag.build(glow);
+      whale.position.set((rnd() - 0.5) * 38, 5 + rnd() * 12, (rnd() - 0.5) * 38);
+      whale.userData = { phase: rnd() * 6.28, speed: 0.08 + rnd() * 0.08, height: whale.position.y, bank: rnd() * 6.28 };
+      scene.add(whale); whales.push(whale);
+    }
+  }
+
+  // Dense drone fields: quiet swarms of shards that drift between the pods.
+  {
+    const rnd = seeded('dense-drones');
+    for (let i = 0; i < 4; i++) {
+      const bag = cloud();
+      for (let k = 0; k < 420; k++) {
+        const a = rnd() * 6.28, r = Math.sqrt(rnd()) * 4.5;
+        bag.add(Math.cos(a) * r, (rnd() - 0.5) * 3.5, Math.sin(a) * r, { kind: KIND.drift, tint: i % 2 ? cools[0] : ciliary, amt: 0.45, size: 0.022, alpha: 0.22, loose: 0.55, reach: 2.8 }, rnd);
+      }
+      const drone = bag.build(glow);
+      drone.position.set((rnd() - 0.5) * 28, 2 + rnd() * 16, (rnd() - 0.5) * 28);
+      drone.userData = { phase: rnd() * 6.28, speed: 0.12 + rnd() * 0.1 };
+      scene.add(drone); drones.push(drone);
     }
   }
 
@@ -852,9 +889,13 @@ export function buildWorld({ density = 1 } = {}) {
       const a = snow() * 6.28, r = Math.sqrt(snow()) * DIM.world;
       main.add(Math.cos(a) * r, snow() * (plan.bell.y + 5), Math.sin(a) * r, { size: 0.023, alpha: 0.26, loose: 0.3, reach: 3 }, snow);
     }
-    for (let i = 0; i < N(1600); i++) {
+    for (let i = 0; i < N(5200); i++) {
       const a = snow() * 6.28, r = snow() ** 2 * 3.2;
       main.add(Math.cos(a) * r, snow() * SURFACE, Math.sin(a) * r, { size: 0.03, alpha: 0.4, loose: 0, rise: 0.2 + snow() * 0.6 }, snow);
+    }
+    for (let i = 0; i < N(1800); i++) {
+      const a = snow() * 6.28, r = Math.sqrt(snow()) * 9;
+      main.add(Math.cos(a) * r, 0.8 + snow() * 12, Math.sin(a) * r, { tint: ciliary, amt: 0.5, size: 0.018, alpha: 0.26, loose: 0.15, rise: 0.12 + snow() * 0.32 }, snow);
     }
   }
 
@@ -946,6 +987,24 @@ export function buildWorld({ density = 1 } = {}) {
       bird.visible = settings['life.birds'] > 0.01;
       bird.scale.setScalar((0.75 + settings['life.birds'] * 0.65) * (0.85 + 0.15 * Math.sin(t * 2.1)));
       if (Math.hypot(bird.position.x, bird.position.z) > DIM.world - 2) { bird.position.x *= 0.92; bird.position.z *= 0.92; }
+    }
+    for (const whale of whales) {
+      const u = whale.userData;
+      const t = time * u.speed + u.phase;
+      whale.position.x += dt * u.speed * 0.55;
+      whale.position.z += Math.sin(t * 0.7 + u.bank) * dt * 0.12;
+      whale.position.y = u.height + Math.sin(t * 0.42) * 0.22;
+      whale.rotation.y = Math.sin(t * 0.7 + u.bank) * 0.22;
+      whale.rotation.z = Math.sin(t * 0.35) * 0.08;
+      if (whale.position.x > DIM.world + 8) whale.position.x = -DIM.world - 8;
+    }
+    for (const drone of drones) {
+      const u = drone.userData;
+      const t = time * u.speed + u.phase;
+      drone.position.x += Math.cos(t * 0.53) * dt * 0.2;
+      drone.position.z += Math.sin(t * 0.47) * dt * 0.2;
+      drone.position.y += Math.sin(t * 0.31) * dt * 0.04;
+      drone.rotation.y += dt * 0.03;
     }
   }
 
