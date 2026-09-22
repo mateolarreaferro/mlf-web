@@ -327,3 +327,58 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* A small instrument beside the scene. Opening it keeps the world alive. */
+.scene-editor {
+  position: fixed; top: 5.6rem; right: 1.5rem; z-index: 4;
+  width: min(23rem, calc(100vw - 2rem)); max-height: calc(100dvh - 7rem);
+  overflow: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  padding: 1.4rem; border-radius: 26px; background: rgb(9 18 24 / 0.92);
+  backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); box-shadow: var(--shadow);
+  animation: rise 0.35s var(--ease); font-size: 0.875rem;
+}
+.editor-heading { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; }
+.editor-heading-actions { display: flex; align-items: center; gap: 0.35rem; }
+.editor-heading .label { font-size: 0.7rem; }
+.editor-heading h2 { font: italic 2rem/1.15 var(--display); margin-top: 0.25rem; }
+.editor-heading .pill { padding-inline: 0.8rem; }
+.editor-intro { color: var(--faint); margin: 0.8rem 0 1.1rem; line-height: 1.5; }
+.scene-editor textarea, .scene-editor select, .scene-editor input:not([type="range"]):not([type="color"]) {
+  width: 100%; font: inherit; color: var(--ink); background: var(--soft);
+  border: 0; border-radius: 12px; padding: 0.7rem 0.8rem;
+}
+.scene-editor textarea { resize: vertical; min-height: 5rem; max-height: 12rem; display: block; }
+.scene-editor textarea::placeholder, .scene-editor input::placeholder { color: var(--faint); }
+.editor-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.65rem; }
+.editor-actions > input { min-width: 0; }
+.editor-actions .editor-note { font-size: 0.7rem; line-height: 1.4; }
+.editor-note { color: var(--faint); font-size: 0.78rem; line-height: 1.6; }
+#agent-setup { margin-top: 0.8rem; }
+#agent-setup code { font: inherit; color: var(--ink); overflow-wrap: anywhere; }
+#agent-setup .pill { margin-top: 0.5rem; }
+.editor-status { color: #add5c2; font-size: 0.78rem; line-height: 1.5; margin: 0.85rem 0; min-height: 2.3em; }
+.scene-editor details { padding: 0.65rem 0; }
+.scene-editor summary { cursor: pointer; color: var(--ink); padding-block: 0.3rem; }
+.scene-control { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.25rem 0.6rem; margin-top: 0.7rem; }
+.scene-control label { color: var(--faint); }
+.scene-control output { font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.scene-control input[type="range"] { grid-column: 1 / -1; width: 100%; height: 1.6rem; accent-color: #add5c2; cursor: pointer; }
+.scene-control input[type="color"] { grid-column: 1 / -1; width: 100%; height: 1.7rem; padding: 0; border: 0; background: none; cursor: pointer; border-radius: 8px; }
+.scene-control input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+.scene-control input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 8px; }
+.scene-control input:disabled { opacity: 0.3; cursor: default; }
+.scene-control:has(input:disabled) label, .scene-control:has(input:disabled) output { opacity: 0.5; }
+#editor-sound-note { margin-top: 0.7rem; }
+#agent-log { padding-left: 1.15rem; margin: 0.5rem 0 0.8rem; max-height: 17rem; overflow: auto; }
+#agent-log li { font-size: 0.76rem; color: var(--faint); padding-bottom: 0.6rem; overflow-wrap: anywhere; white-space: pre-line; }
+#agent-log li[data-kind="model"], #agent-log li[data-kind="finish"] { color: var(--ink); }
+:root[data-embed] .scene-editor, :root[data-flat] #edit-button { display: none; }
+:root[data-editing] .legend { opacity: 0.3; }
+@media (max-width: 40rem) {
+  .hud.top { flex-wrap: wrap; row-gap: 0.6rem; }
+  .who .label { max-width: none; }
+  .tools { margin-left: auto; }
+  .scene-editor { inset: auto 0.6rem 0.6rem; width: auto; max-height: 68dvh; border-radius: 24px; padding: 1.15rem; }
+  .scene-editor textarea, .scene-editor input:not([type="range"]):not([type="color"]), .scene-editor select { font-size: 16px; }
+  :root[data-editing] .here, :root[data-editing] .legend { visibility: hidden; }
+}

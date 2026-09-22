@@ -144,6 +144,7 @@ export function createWalker(camera, canvas, world, { onPress, reducedMotion }) 
   ]);
 
   window.addEventListener("keydown", (e) => {
+    if (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
     if (e.code.startsWith("Shift")) keys.add("Shift");
     if (!enabled || e.metaKey || e.ctrlKey || e.altKey || !MOVE_KEYS.has(e.code)) return;
     // a focused button keeps the arrows for itself

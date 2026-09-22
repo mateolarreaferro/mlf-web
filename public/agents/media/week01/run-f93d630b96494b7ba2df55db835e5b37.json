@@ -1,0 +1,2607 @@
+{
+  "id": "f93d630b96494b7ba2df55db835e5b37",
+  "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+  "model": "qwen2.5:3b",
+  "status": "blocked",
+  "summary": "motion speed already set to 0.4",
+  "events": [
+    {
+      "kind": "model",
+      "text": "ACTION: SET motion.speed 0.4",
+      "at": 1790046514.4668632,
+      "step": 1
+    },
+    {
+      "kind": "observation",
+      "text": "Observed runtime state.",
+      "at": 1790046514.868352,
+      "action": {
+        "kind": "SET",
+        "parameter": "motion.speed",
+        "value": 0.4
+      },
+      "result": {
+        "id": 1,
+        "ok": true,
+        "observation": {
+          "revision": 15,
+          "values": {
+            "visual.water": "#05090f",
+            "visual.creature": "#8fb4d6",
+            "motion.speed": 0.4,
+            "motion.breathing": 1,
+            "visual.brightness": 1,
+            "visual.fog": 40,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 1,
+            "audio.rain": 1
+          },
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "group": "picture",
+              "type": "color",
+              "default": "#05090f",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "group": "picture",
+              "type": "color",
+              "default": "#8fb4d6",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "group": "picture",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "group": "picture",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "default": 40,
+              "unit": " m",
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "group": "movement",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "group": "movement",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            }
+          ],
+          "sound": "on",
+          "reducedMotion": false,
+          "history": [
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "agent"
+            }
+          ],
+          "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: SET audio.rain 0.3",
+      "at": 1790046517.1713102,
+      "step": 2
+    },
+    {
+      "kind": "observation",
+      "text": "Observed runtime state.",
+      "at": 1790046517.583385,
+      "action": {
+        "kind": "SET",
+        "parameter": "audio.rain",
+        "value": 0.3
+      },
+      "result": {
+        "id": 2,
+        "ok": true,
+        "observation": {
+          "revision": 16,
+          "values": {
+            "visual.water": "#05090f",
+            "visual.creature": "#8fb4d6",
+            "motion.speed": 0.4,
+            "motion.breathing": 1,
+            "visual.brightness": 1,
+            "visual.fog": 40,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 1,
+            "audio.rain": 0.3
+          },
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "group": "picture",
+              "type": "color",
+              "default": "#05090f",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "group": "picture",
+              "type": "color",
+              "default": "#8fb4d6",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "group": "picture",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "group": "picture",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "default": 40,
+              "unit": " m",
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "group": "movement",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "group": "movement",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            }
+          ],
+          "sound": "on",
+          "reducedMotion": false,
+          "history": [
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "agent"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 0.3
+              },
+              "actor": "agent"
+            }
+          ],
+          "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: DONE",
+      "at": 1790046519.738483,
+      "step": 3
+    },
+    {
+      "kind": "error",
+      "text": "DONE rejected: use INSPECT after your last edit first.",
+      "at": 1790046519.7385018
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: INSPECT",
+      "at": 1790046522.3559391,
+      "step": 4
+    },
+    {
+      "kind": "observation",
+      "text": "Observed runtime state.",
+      "at": 1790046522.754445,
+      "action": {
+        "kind": "INSPECT"
+      },
+      "result": {
+        "id": 3,
+        "ok": true,
+        "observation": {
+          "revision": 16,
+          "values": {
+            "visual.water": "#05090f",
+            "visual.creature": "#8fb4d6",
+            "motion.speed": 0.4,
+            "motion.breathing": 1,
+            "visual.brightness": 1,
+            "visual.fog": 40,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 1,
+            "audio.rain": 0.3
+          },
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "group": "picture",
+              "type": "color",
+              "default": "#05090f",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "group": "picture",
+              "type": "color",
+              "default": "#8fb4d6",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "group": "picture",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "group": "picture",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "default": 40,
+              "unit": " m",
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "group": "movement",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "group": "movement",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            }
+          ],
+          "sound": "on",
+          "reducedMotion": false,
+          "history": [
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "agent"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 0.3
+              },
+              "actor": "agent"
+            }
+          ],
+          "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: SET motion.speed 0.4",
+      "at": 1790046525.520086,
+      "step": 5
+    },
+    {
+      "kind": "observation",
+      "text": "Observed runtime state.",
+      "at": 1790046525.933704,
+      "action": {
+        "kind": "SET",
+        "parameter": "motion.speed",
+        "value": 0.4
+      },
+      "result": {
+        "id": 4,
+        "ok": true,
+        "observation": {
+          "revision": 16,
+          "values": {
+            "visual.water": "#05090f",
+            "visual.creature": "#8fb4d6",
+            "motion.speed": 0.4,
+            "motion.breathing": 1,
+            "visual.brightness": 1,
+            "visual.fog": 40,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 1,
+            "audio.rain": 0.3
+          },
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "group": "picture",
+              "type": "color",
+              "default": "#05090f",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "group": "picture",
+              "type": "color",
+              "default": "#8fb4d6",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "group": "picture",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "group": "picture",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "default": 40,
+              "unit": " m",
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "group": "movement",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "group": "movement",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            }
+          ],
+          "sound": "on",
+          "reducedMotion": false,
+          "history": [
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "agent"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 0.3
+              },
+              "actor": "agent"
+            }
+          ],
+          "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: SET audio.rain 0.3",
+      "at": 1790046529.162226,
+      "step": 6
+    },
+    {
+      "kind": "observation",
+      "text": "Observed runtime state.",
+      "at": 1790046529.674539,
+      "action": {
+        "kind": "SET",
+        "parameter": "audio.rain",
+        "value": 0.3
+      },
+      "result": {
+        "id": 5,
+        "ok": true,
+        "observation": {
+          "revision": 16,
+          "values": {
+            "visual.water": "#05090f",
+            "visual.creature": "#8fb4d6",
+            "motion.speed": 0.4,
+            "motion.breathing": 1,
+            "visual.brightness": 1,
+            "visual.fog": 40,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 1,
+            "audio.rain": 0.3
+          },
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "group": "picture",
+              "type": "color",
+              "default": "#05090f",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "group": "picture",
+              "type": "color",
+              "default": "#8fb4d6",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "group": "picture",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "group": "picture",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "default": 40,
+              "unit": " m",
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "group": "movement",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "group": "movement",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "group": "sound",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "default": 1,
+              "unit": "\u00d7",
+              "available": true
+            }
+          ],
+          "sound": "on",
+          "reducedMotion": false,
+          "history": [
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#142c38",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.6,
+                "motion.breathing": 1,
+                "visual.brightness": 0.55,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 0.25,
+                "audio.rain": 0.45
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "you"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 1,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "actor": "agent"
+            },
+            {
+              "before": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 1
+              },
+              "after": {
+                "visual.water": "#05090f",
+                "visual.creature": "#8fb4d6",
+                "motion.speed": 0.4,
+                "motion.breathing": 1,
+                "visual.brightness": 1,
+                "visual.fog": 40,
+                "audio.ambience": 1,
+                "audio.voices": 1,
+                "audio.drone": 1,
+                "audio.rain": 0.3
+              },
+              "actor": "agent"
+            }
+          ],
+          "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: DONE",
+      "at": 1790046532.8369548,
+      "step": 7
+    },
+    {
+      "kind": "check",
+      "text": "Independent goal check: NO VERDICT: NO",
+      "at": 1790046534.539628
+    },
+    {
+      "kind": "error",
+      "text": "DONE rejected: the separate goal check disagreed or gave no valid verdict. NO VERDICT: NO Revise, or STOP if unavailable.",
+      "at": 1790046534.9129531
+    },
+    {
+      "kind": "model",
+      "text": "ACTION: STOP motion speed already set to 0.4",
+      "at": 1790046552.5881732,
+      "step": 8
+    },
+    {
+      "kind": "finish",
+      "text": "motion speed already set to 0.4",
+      "at": 1790046552.588201
+    }
+  ],
+  "action": null,
+  "messages": [
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nOBSERVATION: {\"revision\": 14, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 1, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 1}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"visual.water\": {\"before\": \"#142c38\", \"after\": \"#05090f\"}, \"motion.speed\": {\"before\": 0.6, \"after\": 1}, \"visual.brightness\": {\"before\": 0.55, \"after\": 1}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 1, \"after\": 0.25}}}, {\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: SET motion.speed 0.4"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: Observed runtime state.\nOBSERVATION: {\"revision\": 15, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 1}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 1, \"after\": 0.25}}}, {\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: SET audio.rain 0.3"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: Observed runtime state.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: DONE"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: DONE rejected: use INSPECT after your last edit first.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: INSPECT"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: Observed runtime state.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: SET motion.speed 0.4"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: Observed runtime state.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: SET audio.rain 0.3"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: Observed runtime state.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: DONE"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.\nRESULT: DONE rejected: the separate goal check disagreed or gave no valid verdict. NO VERDICT: NO Revise, or STOP if unavailable.\nOBSERVATION: {\"revision\": 16, \"values\": {\"visual.water\": \"#05090f\", \"visual.creature\": \"#8fb4d6\", \"motion.speed\": 0.4, \"motion.breathing\": 1, \"visual.brightness\": 1, \"visual.fog\": 40, \"audio.ambience\": 1, \"audio.voices\": 1, \"audio.drone\": 1, \"audio.rain\": 0.3}, \"controls\": [{\"id\": \"visual.water\", \"label\": \"water color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.creature\", \"label\": \"creature color\", \"type\": \"color\", \"available\": true}, {\"id\": \"visual.brightness\", \"label\": \"brightness\", \"min\": 0.2, \"max\": 1.8, \"step\": 0.05, \"available\": true}, {\"id\": \"visual.fog\", \"label\": \"view distance\", \"min\": 18, \"max\": 65, \"step\": 1, \"available\": true}, {\"id\": \"motion.speed\", \"label\": \"motion speed\", \"min\": 0, \"max\": 2, \"step\": 0.05, \"available\": true}, {\"id\": \"motion.breathing\", \"label\": \"breathing intensity\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.ambience\", \"label\": \"water & surroundings\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.voices\", \"label\": \"singing voices\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.drone\", \"label\": \"low drone\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}, {\"id\": \"audio.rain\", \"label\": \"rain\", \"min\": 0, \"max\": 1, \"step\": 0.05, \"available\": true}], \"sound\": \"on\", \"reducedMotion\": false, \"recent_edits\": [{\"actor\": \"you\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.45}}}, {\"actor\": \"you\", \"changes\": {\"audio.drone\": {\"before\": 0.25, \"after\": 1}, \"audio.rain\": {\"before\": 0.45, \"after\": 1}}}, {\"actor\": \"agent\", \"changes\": {\"motion.speed\": {\"before\": 1, \"after\": 0.4}}}, {\"actor\": \"agent\", \"changes\": {\"audio.rain\": {\"before\": 1, \"after\": 0.3}}}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "ACTION: STOP motion speed already set to 0.4"
+    }
+  ],
+  "initial": {
+    "revision": 14,
+    "values": {
+      "visual.water": "#05090f",
+      "visual.creature": "#8fb4d6",
+      "motion.speed": 1,
+      "motion.breathing": 1,
+      "visual.brightness": 1,
+      "visual.fog": 40,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 1,
+      "audio.rain": 1
+    },
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "group": "picture",
+        "type": "color",
+        "default": "#05090f",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "group": "picture",
+        "type": "color",
+        "default": "#8fb4d6",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "group": "picture",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "group": "picture",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "default": 40,
+        "unit": " m",
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "group": "movement",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      }
+    ],
+    "sound": "on",
+    "reducedMotion": false,
+    "history": [
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.6,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.6,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 0.45
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 0.45
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      }
+    ],
+    "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+  },
+  "final": {
+    "revision": 16,
+    "values": {
+      "visual.water": "#05090f",
+      "visual.creature": "#8fb4d6",
+      "motion.speed": 0.4,
+      "motion.breathing": 1,
+      "visual.brightness": 1,
+      "visual.fog": 40,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 1,
+      "audio.rain": 0.3
+    },
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "group": "picture",
+        "type": "color",
+        "default": "#05090f",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "group": "picture",
+        "type": "color",
+        "default": "#8fb4d6",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "group": "picture",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "group": "picture",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "default": 40,
+        "unit": " m",
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "group": "movement",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "\u00d7",
+        "available": true
+      }
+    ],
+    "sound": "on",
+    "reducedMotion": false,
+    "history": [
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.6,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#142c38",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.6,
+          "motion.breathing": 1,
+          "visual.brightness": 0.55,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 0.45
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.25,
+          "audio.rain": 0.45
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "you"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 1,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "actor": "agent"
+      },
+      {
+        "before": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#05090f",
+          "visual.creature": "#8fb4d6",
+          "motion.speed": 0.4,
+          "motion.breathing": 1,
+          "visual.brightness": 1,
+          "visual.fog": 40,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 0.3
+        },
+        "actor": "agent"
+      }
+    ],
+    "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+  },
+  "model_calls": 9
+}

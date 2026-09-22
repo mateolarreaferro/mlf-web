@@ -53,13 +53,13 @@ export const TEXT = '"Instrument Sans", system-ui, -apple-system, "Segoe UI", sa
 
 export const WATER = {
   ink: "#dbe6ea", faint: "#8a9ba3", // the page's lettering
-  deep: "#05090f", shallow: "#0a1e24", // the water, at the bed and toward the bell
-  pointDeep: "#8fb4d6", pointShallow: "#bfe6d8", // the creature, likewise
+  deep: "#232323", shallow: "#0a1e24", // the water, at the bed and toward the bell
+  pointDeep: "#0433ff", pointShallow: "#bfe6d8", // the creature, likewise
   teal: "#43AA8B", blue: "#1f6a94", foam: "#eafcff",
 };
 
 const FOG_NEAR = 9;
-const FOG_FAR = 40;
+const FOG_FAR = 18;
 const MAX_STONES = 16;
 const TRAIL = 6;
 
@@ -422,7 +422,7 @@ export function buildWorld({ density = 1 } = {}) {
   const uniforms = {
     uTime: { value: 0 }, uScale: { value: 700 }, uMax: { value: 80 },
     uOpacity: { value: 0.95 }, uSurface: { value: SURFACE }, uWobble: { value: 0.5 },
-    uSwell: { value: 0.5 }, uBrightness: { value: 1 },
+    uSwell: { value: 0.5 }, uBrightness: { value: 1.8 },
     uFogNear: { value: FOG_NEAR }, uFogFar: { value: FOG_FAR },
     uInk: { value: new THREE.Color(WATER.pointDeep) }, uTeal: { value: new THREE.Color(WATER.teal) },
     uBlue: { value: new THREE.Color(WATER.blue) }, uFoam: { value: new THREE.Color(WATER.foam) },
@@ -445,6 +445,7 @@ export function buildWorld({ density = 1 } = {}) {
   const stones = [];
   const labels = [];
   const lettering = [];
+  const birds = [];
 
   const N = (n) => Math.max(1, Math.round(n * density));
   const main = cloud();
@@ -707,6 +708,27 @@ export function buildWorld({ density = 1 } = {}) {
   }, 17, 25);
   sign.position.set(-3.6, 5.8, 9.5);
 
+  // Small aquatic birds: translucent manta-like silhouettes that bank through
+  // the water on independent paths, giving the scene a living counter-rhythm.
+  {
+    const rnd = seeded('aquatic-birds');
+    const wingGeometry = new THREE.BufferGeometry();
+    wingGeometry.setAttribute('position', new THREE.Float32BufferAttribute([
+      0, 0, 0, -0.95, 0.05, -0.22, -0.28, 0.02, 0.12,
+      0, 0, 0, 0.95, 0.05, -0.22, 0.28, 0.02, 0.12,
+    ], 3));
+    for (let i = 0; i < 6; i++) {
+      const bird = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 5), new THREE.MeshBasicMaterial({ color: '#bfe6d8', transparent: true, opacity: 0.82, blending: THREE.AdditiveBlending, depthWrite: false }));
+      const wings = new THREE.Mesh(wingGeometry, new THREE.MeshBasicMaterial({ color: i % 2 ? '#7ab7d4' : '#dbe6ea', transparent: true, opacity: 0.42, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+      bird.add(body, wings);
+      bird.scale.setScalar(0.75 + rnd() * 0.65);
+      bird.position.set((rnd() - 0.5) * 22, 3.5 + rnd() * 14, (rnd() - 0.5) * 22);
+      bird.userData = { phase: rnd() * 6.28, speed: 0.35 + rnd() * 0.3, height: bird.position.y, bank: rnd() * 6.28 };
+      scene.add(bird); birds.push(bird);
+    }
+  }
+
   /* ---------- the pods ---------- */
 
   const rooms = plan.rooms.map((room) => {
@@ -849,10 +871,11 @@ export function buildWorld({ density = 1 } = {}) {
   let head = 0;
   const deep = new THREE.Color(WATER.deep), shallow = new THREE.Color(WATER.shallow);
   const inkDeep = new THREE.Color(WATER.pointDeep), inkShallow = new THREE.Color(WATER.pointShallow);
-  const settings = { 'visual.water': WATER.deep, 'visual.creature': WATER.pointDeep, 'motion.speed': 1, 'motion.breathing': 1 };
+  const settings = { 'visual.water': '#232323', 'visual.creature': '#0433ff', 'motion.speed': 0.05, 'motion.breathing': 0.6, 'motion.current': 0.7, 'life.birds': 0.75, 'visual.sparkle': 1 };
 
   function setControl(id, value) {
     if (id === 'visual.brightness') uniforms.uBrightness.value = value;
+    else if (id === 'visual.sparkle') settings[id] = value;
     else if (id === 'visual.fog') scene.fog.far = uniforms.uFogFar.value = value;
     else if (id === 'visual.water') {
       settings[id] = value; deep.set(value);
@@ -912,6 +935,18 @@ export function buildWorld({ density = 1 } = {}) {
       mesh.visible = m.opacity > 0.01;
       mesh.quaternion.copy(camera.quaternion); // words turn to face you
     }
+    for (const bird of birds) {
+      const u = bird.userData;
+      const t = time * u.speed + u.phase;
+      bird.position.x += Math.cos(t * 0.83 + u.bank) * dt * 0.18 * settings['motion.current'];
+      bird.position.z += Math.sin(t * 0.71 + u.bank) * dt * 0.18 * settings['motion.current'];
+      bird.position.y = u.height + Math.sin(t * 0.9) * 0.45;
+      bird.rotation.y = Math.atan2(Math.sin(t * 0.71 + u.bank), Math.cos(t * 0.83 + u.bank));
+      bird.rotation.z = Math.sin(t * 1.7) * 0.18;
+      bird.visible = settings['life.birds'] > 0.01;
+      bird.scale.setScalar((0.75 + settings['life.birds'] * 0.65) * (0.85 + 0.15 * Math.sin(t * 2.1)));
+      if (Math.hypot(bird.position.x, bird.position.z) > DIM.world - 2) { bird.position.x *= 0.92; bird.position.z *= 0.92; }
+    }
   }
 
   /* Shards are sized in metres; this is what turns metres into pixels. */
@@ -924,7 +959,7 @@ export function buildWorld({ density = 1 } = {}) {
   redraw();
 
   return {
-    scene, rooms, plan, clickable, floors, stones, kelp, sign, ground, ceiling: SURFACE - 2,
+    scene, rooms, plan, clickable, floors, stones, kelp, sign, birds, ground, ceiling: SURFACE - 2,
     get swell() { return swell; },
     get points() { return main.count + stones.reduce((n, s) => n + s.points.geometry.attributes.seed.count, 0); },
     redraw, setViewport, update, setControl, controlValues,

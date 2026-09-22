@@ -1,0 +1,125 @@
+{
+  "recorded_at_utc": "2026-09-22T04:09:38.361531+00:00",
+  "model": "qwen2.5:3b",
+  "inference": "local Ollama on the laptop",
+  "prototype_runs": [
+    {
+      "status": "blocked",
+      "model_calls": 7,
+      "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+      "summary": "The previous goals conflicted with the current state.",
+      "transcript": "run-822ae3a70ab948ca94064f9d7044a9e8.json",
+      "protocol": "early ACTION-line prototype"
+    },
+    {
+      "status": "limit",
+      "model_calls": 12,
+      "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+      "summary": "Stopped at the 12-step limit; the goal is not verified.",
+      "transcript": "run-6a9f2183265e4f2180e5401e07ef55a5.json",
+      "protocol": "early ACTION-line prototype"
+    },
+    {
+      "status": "blocked",
+      "model_calls": 9,
+      "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+      "summary": "motion speed already set to 0.4",
+      "transcript": "run-f93d630b96494b7ba2df55db835e5b37.json",
+      "protocol": "early ACTION-line prototype"
+    },
+    {
+      "status": "limit",
+      "model_calls": 12,
+      "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+      "summary": "Stopped at the 12-step limit; the goal is not verified.",
+      "transcript": "run-495b5bc776824406819098755ddeac15.json",
+      "protocol": "early ACTION-line prototype"
+    },
+    {
+      "status": "complete",
+      "model_calls": 6,
+      "goal": "Set motion speed to 0.4 and rain to 0.3. Keep singing voices at 1.",
+      "summary": "Changes verified in the scene. Look and listen to judge the result.",
+      "transcript": "run-b9327c1db1474ee18a9d1a0b18bf0f07.json",
+      "protocol": "JSON action"
+    }
+  ],
+  "controller_tests": {
+    "command": "python3 -m unittest discover -s weekly_builds/week01",
+    "note": "Scripted model fixtures; these are not LLM trials.",
+    "passed": 12
+  },
+  "browser_checks": {
+    "viewports": [
+      "1440x960",
+      "390x844"
+    ],
+    "controls": "passed",
+    "actual_drone_amplitude_ratios": [
+      0.24684215285614572,
+      0.25
+    ],
+    "voice_trim": 1,
+    "javascript_errors": [],
+    "audio_interruption": "automatic resume preserved the same source",
+    "mute_restart": "retained the chosen mix levels",
+    "final_actual_drone_amplitude_ratios": [
+      0.25,
+      0.25
+    ]
+  },
+  "notes": [
+    "Operational verification is not an aesthetic judgment.",
+    "These are individual development trials, not an estimated model success rate."
+  ],
+  "subjective-run": {
+    "status": "limit",
+    "goal": "Make the motion much slower and the rain softer. Keep the singing voices unchanged.",
+    "summary": "Stopped at the 12-step limit; the goal is not verified.",
+    "model_calls": 14,
+    "transcript": "subjective-run.json"
+  },
+  "unavailable-run": {
+    "status": "limit",
+    "goal": "Set rain to 0.4.",
+    "summary": "Stopped at the 12-step limit; the goal is not verified.",
+    "model_calls": 21,
+    "transcript": "unavailable-run.json"
+  },
+  "existing_audio_regression": {
+    "status": "baseline threshold fails with and without mixer",
+    "threshold_rms": 0.005,
+    "comparison": "mixer-baseline.json",
+    "minima": [
+      {
+        "mixer": false,
+        "min_rms": 0.0037248070686713925
+      },
+      {
+        "mixer": true,
+        "min_rms": 0.003935246413178445
+      }
+    ]
+  },
+  "project_checks": {
+    "next_build": "passed",
+    "eslint": "passed",
+    "controller_tests_passed": 12,
+    "source_mirror": "matched"
+  },
+  "assignment_audit": {
+    "checked_at_utc": "2026-09-22T05:00:42.504704+00:00",
+    "notebook_objectives": "all five covered; see weekly_builds/week01/REQUIREMENTS.md",
+    "separate_assignment_rubric": "not yet verified",
+    "demo": {
+      "recording": "demo.webm",
+      "transcript": "demo-run.json",
+      "run_id": "f905f6b51b00498c9137644c8ae69d2e",
+      "status": "complete",
+      "model_calls": 6,
+      "duration_seconds": 43.84,
+      "audio": "silent screen recording; audio waveform tests recorded separately"
+    },
+    "controller_tests": 12
+  }
+}

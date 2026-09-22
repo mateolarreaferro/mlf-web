@@ -2,9 +2,9 @@
 
 Composed through Satie MCP; refined and integrated by Codex on 2026-09-21.
 
-- Revision: `6f76d835e655616c62bf9e8b40e9a1093b2e029ea8b59e6c7082cc27e5553606`
-- Script SHA-256: `687c5a1558e4d8c81b9145730aad3352b66fba0c8690327281b8b8236ca8f1f1`
-- Runtime: vendored Satie Three.js adapter 0.4.2
+- Revision: `cb1de5ff8ae2ca647f6f327f8fc01a13a972bc519f65e719d865d4a3340a73c0`
+- Script SHA-256: `8162e8e37184ae305fee9f8911652d8c5170141d27bc8d50580b6afb5e44a3f0`
+- Runtime: vendored Satie Three.js adapter (provenance in `assets.lock.json`)
 - Contract: 24 hosts, 5 signals, 19 events
 - Assets: 112 clip entries, 108 unique local recordings
 
@@ -20,11 +20,17 @@ retained. No rejected take was installed. Codex lowered the pressure and vocal
 levels, fixed the bell's pitches to 1 / 1.2 / 1.5, and added the requested
 half-speed rain, open-ocean recording and low drone using Satie assets.
 
-The fixed `level_reference` is now 52. The previous value of 70 left the
-entrance around -50 dBFS RMS in browser capture. The revised reference raises
-playback by 18 dB while preserving spatial contrast and reading attenuation;
-the same comparison route measured approximately -32 dBFS at its entrance.
-These are digital output measurements, not calibrated speaker loudness.
+The fixed `level_reference` and `mix.json` both use 60.
+
+The September 22 mix adds three lower choir voices, soft midwater bubbles, a
+slow current and a harmonic water bed, using the installed recordings. Existing
+singers and selected ambience layers have wetter reverb. All seven singers share
+the panel's voices control. New layers retain reading attenuation.
+
+`ambience-review.json` records browser checks of the six added layers, reverb,
+voice controls and output at three positions. It is signal/runtime verification,
+not a claim of human listening approval. `review.json` is the earlier Satie review
+and applies only to the script hash recorded in that file.
 
 Global positional event voices intentionally omit `within`: that property
 gates distance from the voice's *pre-event position*, not the listener. The
@@ -75,6 +81,6 @@ of uninterrupted output with a minimum RMS of 0.005. It also checks that Space
 swims after a pointer click on sound, keyboard activation retains focus, and a
 browser suspension can resume the same voices.
 
-Final automated review: `review.json` records the exact script and audition
+Earlier automated review: `review.json` records that revision’s script and audition
 hashes. All 19 events were accepted by loaded voices; the playthrough audit
 reported no issues or warnings, and Satie accepted the recorded vocal mix.

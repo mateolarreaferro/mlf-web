@@ -1,0 +1,514 @@
+{
+  "voices": [
+    {
+      "id": "water_choir_low",
+      "playing": true,
+      "wet": 0.8,
+      "pitch": 0.5,
+      "clip": "generation/sustained_wordless_alto_singin"
+    },
+    {
+      "id": "water_choir_middle",
+      "playing": true,
+      "wet": 0.8,
+      "pitch": 0.6,
+      "clip": "generation/sustained_wordless_alto_singin"
+    },
+    {
+      "id": "water_choir_high",
+      "playing": true,
+      "wet": 0.8,
+      "pitch": 0.75,
+      "clip": "generation/sustained_wordless_alto_singin"
+    },
+    {
+      "id": "slow_current_resonance",
+      "playing": true,
+      "wet": 0.65,
+      "pitch": 0.8,
+      "clip": "generation/low_hollow_fluid_resonance_fro"
+    },
+    {
+      "id": "underwater_harmonic_haze",
+      "playing": true,
+      "wet": 0.78,
+      "pitch": 0.5,
+      "clip": "generation/sustained_rounded_liquid_harmo"
+    },
+    {
+      "id": "midwater_bubbles",
+      "playing": true,
+      "wet": 0.68,
+      "pitch": 0.75,
+      "clip": "generation/continuous_rising_stream_of_sm"
+    }
+  ],
+  "existingWet": [
+    0.78,
+    0.78,
+    0.78
+  ],
+  "samples": [
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.005479086536389149,
+      "peak": 0.013683000579476357,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.004257666758902846,
+      "peak": 0.011961209587752819,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.0032763969036202654,
+      "peak": 0.009109606966376305,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.004813569864301199,
+      "peak": 0.011202102527022362,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.006179280896914899,
+      "peak": 0.0140346335247159,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.004500220755791898,
+      "peak": 0.013434650376439095,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.004505483198143767,
+      "peak": 0.012655796483159065,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        2.6,
+        17
+      ],
+      "rms": 0.005715880506277085,
+      "peak": 0.015066561289131641,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.03848871077295776,
+      "peak": 0.08364992588758469,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.04194320531556506,
+      "peak": 0.10006244480609894,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.04183407303858037,
+      "peak": 0.1164509654045105,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.04657575623250384,
+      "peak": 0.11335352063179016,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.050176365910267993,
+      "peak": 0.1233401969075203,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.03822490912049106,
+      "peak": 0.0756235420703888,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.03002379627529943,
+      "peak": 0.06827741116285324,
+      "context": "running"
+    },
+    {
+      "position": [
+        2.91,
+        3.5,
+        10
+      ],
+      "rms": 0.028468140966720738,
+      "peak": 0.05252376198768616,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.01293471979409773,
+      "peak": 0.03381972387433052,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.014317098364044671,
+      "peak": 0.03972164914011955,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.014654374485724543,
+      "peak": 0.0363650768995285,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.015801238515307625,
+      "peak": 0.036594655364751816,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.01443799029574439,
+      "peak": 0.031774550676345825,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.013700955702709846,
+      "peak": 0.03353217989206314,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.01392324760662555,
+      "peak": 0.032423149794340134,
+      "context": "running"
+    },
+    {
+      "position": [
+        0,
+        20,
+        4
+      ],
+      "rms": 0.011179846848538575,
+      "peak": 0.030597027391195297,
+      "context": "running"
+    }
+  ],
+  "voiceTrims": [
+    {
+      "source": "week01_singing",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "bell_singer_1",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "bell_singer_2",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "bell_singer_3",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "water_choir_low",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "water_choir_middle",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    },
+    {
+      "source": "water_choir_high",
+      "group": "audio.voices",
+      "gain": 0.2503959536552429
+    }
+  ],
+  "engineErrors": [],
+  "controlError": null,
+  "state": "on",
+  "diagnostics": {
+    "state": "on",
+    "muted": false,
+    "wanted": true,
+    "playing": true,
+    "starting": false,
+    "failed": false,
+    "context": "running",
+    "contextTime": 20.25360544217687,
+    "transport": true,
+    "voices": 66,
+    "levelAnchorDb": 60,
+    "outputRms": 0.009589431106482731,
+    "log": [
+      {
+        "at": 6008.699999988079,
+        "event": "scene.loaded",
+        "context": "running",
+        "voices": 0
+      },
+      {
+        "at": 6321.300000011921,
+        "event": "start.request",
+        "context": "running",
+        "playing": false,
+        "muted": false
+      },
+      {
+        "at": 6719.199999988079,
+        "event": "start.resolved",
+        "context": "running",
+        "playing": true,
+        "voices": 65
+      },
+      {
+        "at": 6911.5,
+        "event": "watchdog.sample",
+        "rms": 0,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 7811.600000023842,
+        "event": "watchdog.sample",
+        "rms": 0.005313746784746699,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 8714.699999988079,
+        "event": "watchdog.sample",
+        "rms": 0.005003540948184837,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 9614.800000011921,
+        "event": "watchdog.sample",
+        "rms": 0.00292790446228275,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 10511.300000011921,
+        "event": "watchdog.sample",
+        "rms": 0.004752023582707516,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 11413.899999976158,
+        "event": "watchdog.sample",
+        "rms": 0.006556460193832017,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 12313.800000011921,
+        "event": "watchdog.sample",
+        "rms": 0.0043495304949585116,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 13214.800000011921,
+        "event": "watchdog.sample",
+        "rms": 0.03815707813148195,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 14110.399999976158,
+        "event": "watchdog.sample",
+        "rms": 0.04356687555052089,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 15014.199999988079,
+        "event": "watchdog.sample",
+        "rms": 0.044796885683676735,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 15909.899999976158,
+        "event": "watchdog.sample",
+        "rms": 0.045466807897565,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 16812.80000001192,
+        "event": "watchdog.sample",
+        "rms": 0.04078345335130873,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 17714.30000001192,
+        "event": "watchdog.sample",
+        "rms": 0.028044045258666647,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 18613.5,
+        "event": "watchdog.sample",
+        "rms": 0.009955160089720574,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 19513.19999998808,
+        "event": "watchdog.sample",
+        "rms": 0.01172897366780398,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 20409.80000001192,
+        "event": "watchdog.sample",
+        "rms": 0.012239736880904179,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 21313.100000023842,
+        "event": "watchdog.sample",
+        "rms": 0.01534402380021779,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 22214.399999976158,
+        "event": "watchdog.sample",
+        "rms": 0.013781308860493183,
+        "context": "running",
+        "playing": true
+      },
+      {
+        "at": 23110.69999998808,
+        "event": "watchdog.sample",
+        "rms": 0.009589431106482731,
+        "context": "running",
+        "playing": true
+      }
+    ]
+  },
+  "pageErrors": [],
+  "warnings": [
+    "[.WebGL-0x12c001c6c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x12c001c6c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x12c001c6c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+    "[.WebGL-0x12c001c6c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)"
+  ],
+  "checkedAt": "2026-09-22T05:32:00.064652+00:00",
+  "scriptHash": "8162e8e37184ae305fee9f8911652d8c5170141d27bc8d50580b6afb5e44a3f0",
+  "sceneRevision": "cb1de5ff8ae2ca647f6f327f8fc01a13a972bc519f65e719d865d4a3340a73c0",
+  "method": "Chromium playback and signal measurements; existing local Satie recordings",
+  "humanListeningApproval": false
+}

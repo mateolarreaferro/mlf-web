@@ -197,7 +197,7 @@ export function createSound() {
     const id = statement.sourceId ?? '';
     if (id === 'deep_body_drone') return 'audio.drone';
     if (id === 'submerged_surface_rain') return 'audio.rain';
-    if (id === 'week01_singing' || id.startsWith('bell_singer_')) return 'audio.voices';
+    if (id === 'week01_singing' || id.startsWith('bell_singer_') || id.startsWith('water_choir_')) return 'audio.voices';
     return 'audio.ambience';
   };
   // A separate gain stage preserves Satie's existing distance, swell, SPL,
@@ -368,6 +368,7 @@ export function createSound() {
   let lastY = null;
   let vertical = 0;
   let carried = false;
+  let birdNear = false;
 
   function update(camera, dt = 0) {
     if (!audio) return;
@@ -409,11 +410,24 @@ export function createSound() {
         const d = Math.hypot(x - st.x, y - st.y, z - st.z);
         edge(st.id, d < st.radius * 1.6, d > st.radius * 3, () => fire("attractor_pass", st));
       }
+      // The flock uses the composed bud flutter as its Satie voice: each
+      // close pass is a small, spatially placed aquatic call.
+      if (world.birds?.length) {
+        let nearestBird = null, nearestDistance = Infinity;
+        for (const bird of world.birds) {
+          const d = Math.hypot(x - bird.position.x, y - bird.position.y, z - bird.position.z);
+          if (d < nearestDistance) { nearestDistance = d; nearestBird = bird; }
+        }
+        const close = nearestDistance < 2.4;
+        if (close && !birdNear && nearestBird) fire("bud_stir", nearestBird.position);
+        birdNear = close;
+      }
       if (walker) {
         if (walker.carried !== carried) fire((carried = walker.carried) ? "glide_start" : "glide_end", here);
         edge("sprint", walker.sprinting, !walker.sprinting, () => fire("sprint", here));
       }
     } catch (err) {
+      logDiagnostic("update.error", { message: String(err?.message ?? err) });
       console.warn("sound: stopped.", err);
       if (watchdog) { clearInterval(watchdog); watchdog = null; }
       audio?.dispose();

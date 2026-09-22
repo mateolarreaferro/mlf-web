@@ -40,7 +40,7 @@ gen bell_singing
     spl follow swell 0to1 42to44
     volume follow ascent 0to1 1to0.7
     pitch follow ascent 0to1 0.65to1.05
-    reverb wet 0.5 size 1 damping 0.9
+    reverb wet 0.6 size 1 damping 0.94
     filter lowpass cutoff 600
     visual none
 
@@ -65,7 +65,7 @@ loop gen continuous rising stream of small underwater bubbles, rounded liquid gu
     zone water
     at column
     spl 55
-    reverb wet 0.35 size 0.9 damping 0.9
+    reverb wet 0.58 size 1 damping 0.92
     filter lowpass cutoff 1200
     visual sphere
 
@@ -76,7 +76,7 @@ loop pod_singing
     zone water
     at attractor_week01
     spl 72
-    reverb wet 0.4 size 0.95 damping 0.9
+    reverb wet 0.72 size 1 damping 0.9
     filter lowpass cutoff 2200
     occlusion follow distance 3to12 0to0.35
     visual sphere
@@ -103,7 +103,7 @@ loop bell_singing
     at bell_voice_1
     spl 71
     pitch 1
-    reverb wet 0.55 size 1 damping 0.9
+    reverb wet 0.78 size 1 damping 0.9
     filter lowpass cutoff 2200
     occlusion follow distance 6to22 0to0.25
     visual sphere
@@ -117,7 +117,7 @@ loop bell_singing
     at bell_voice_2
     spl 71
     pitch 1.2
-    reverb wet 0.55 size 1 damping 0.9
+    reverb wet 0.78 size 1 damping 0.9
     filter lowpass cutoff 2200
     occlusion follow distance 6to22 0to0.25
     visual sphere
@@ -131,7 +131,7 @@ loop bell_singing
     at bell_voice_3
     spl 71
     pitch 1.5
-    reverb wet 0.55 size 1 damping 0.9
+    reverb wet 0.78 size 1 damping 0.9
     filter lowpass cutoff 2200
     occlusion follow distance 6to22 0to0.25
     visual sphere
@@ -745,7 +745,7 @@ loop community/rain-light-concrete-steady
     volume follow ascent 0to1 0.35to0.8
     pitch 0.5
     filter lowpass cutoff 850
-    reverb wet 0.25 size 1 damping 0.96
+    reverb wet 0.4 size 1 damping 0.96
     visual none
 
 loop community/deep-open-ocean-water-movement
@@ -756,7 +756,7 @@ loop community/deep-open-ocean-water-movement
     move static
     spl 36
     filter lowpass cutoff 700
-    reverb wet 0.1 size 1 damping 0.96
+    reverb wet 0.45 size 1 damping 0.96
     visual none
 
 loop outer_water_resonance
@@ -768,5 +768,91 @@ loop outer_water_resonance
     spl follow swell 0to1 30to33
     pitch 0.55
     filter lowpass cutoff 210
-    reverb wet 0.45 size 1 damping 0.98
+    reverb wet 0.58 size 1 damping 0.98
+    visual none
+
+# An octave-lower choir hangs through the water, extending the bell's chord.
+# These reuse the installed Satie takes with independent offsets and positions.
+loop bell_singing
+    source_id water_choir_low
+    persistent
+    randomstart
+    radius 3
+    zone water
+    place -10 5 10
+    move static
+    spl 66
+    pitch 0.5
+    reverb wet 0.8 size 1 damping 0.92
+    filter lowpass cutoff 1600
+    occlusion follow distance 5to24 0to0.25
+    visual none
+
+loop bell_singing
+    source_id water_choir_middle
+    persistent
+    randomstart
+    radius 3
+    zone water
+    place 11 11 2
+    move static
+    spl 65
+    pitch 0.6
+    reverb wet 0.8 size 1 damping 0.92
+    filter lowpass cutoff 1500
+    occlusion follow distance 5to24 0to0.25
+    visual none
+
+loop bell_singing
+    source_id water_choir_high
+    persistent
+    randomstart
+    radius 3
+    zone water
+    place -7 17 -9
+    move static
+    spl 64
+    pitch 0.75
+    reverb wet 0.8 size 1 damping 0.92
+    filter lowpass cutoff 1700
+    occlusion follow distance 5to24 0to0.25
+    visual none
+
+# Diffuse low currents and harmonic water; soft bubbles provide nearby detail.
+loop outer_water_resonance
+    source_id slow_current_resonance
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 31to34
+    pitch 0.8
+    filter lowpass cutoff 480
+    reverb wet 0.65 size 1 damping 0.96
+    visual none
+
+loop warm_water_harmonics
+    source_id underwater_harmonic_haze
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 29to32
+    pitch 0.5
+    filter lowpass cutoff 1100
+    reverb wet 0.78 size 1 damping 0.94
+    visual none
+
+loop gen continuous rising stream of small underwater bubbles, rounded liquid gurgles with irregular overlapping releases, gentle flow without sharp pops, close dry recording, seamless ambience loop, consistent texture
+    source_id midwater_bubbles
+    persistent
+    randomstart
+    radius 4
+    zone water
+    place -9 10 12
+    move static
+    spl 53
+    pitch 0.75
+    filter lowpass cutoff 950
+    reverb wet 0.68 size 1 damping 0.94
     visual none

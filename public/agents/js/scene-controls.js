@@ -1,11 +1,14 @@
 /* One environment for the sliders and the agent. No model text is evaluated. */
 export const PARAMETERS = [
-  { id: 'visual.water', label: 'water color', group: 'picture', type: 'color', default: '#05090f' },
-  { id: 'visual.creature', label: 'creature color', group: 'picture', type: 'color', default: '#8fb4d6' },
-  { id: 'visual.brightness', label: 'brightness', group: 'picture', min: 0.2, max: 1.8, step: 0.05, default: 1, unit: '×' },
-  { id: 'visual.fog', label: 'view distance', group: 'picture', min: 18, max: 65, step: 1, default: 40, unit: ' m' },
-  { id: 'motion.speed', label: 'motion speed', group: 'movement', min: 0, max: 2, step: 0.05, default: 1, unit: '×' },
-  { id: 'motion.breathing', label: 'breathing intensity', group: 'movement', min: 0, max: 1, step: 0.05, default: 1, unit: '×' },
+  { id: 'visual.water', label: 'water color', group: 'picture', type: 'color', default: '#232323' },
+  { id: 'visual.creature', label: 'creature color', group: 'picture', type: 'color', default: '#0433ff' },
+  { id: 'visual.brightness', label: 'brightness', group: 'picture', min: 0.2, max: 1.8, step: 0.05, default: 1.8, unit: '×' },
+  { id: 'visual.fog', label: 'view distance', group: 'picture', min: 18, max: 65, step: 1, default: 18, unit: ' m' },
+  { id: 'visual.sparkle', label: 'light scatter', group: 'picture', min: 0, max: 2, step: 0.05, default: 1, unit: '×' },
+  { id: 'motion.speed', label: 'motion speed', group: 'movement', min: 0, max: 2, step: 0.05, default: 0.05, unit: '×' },
+  { id: 'motion.breathing', label: 'breathing intensity', group: 'movement', min: 0, max: 1, step: 0.05, default: 0.6, unit: '×' },
+  { id: 'motion.current', label: 'current strength', group: 'movement', min: 0, max: 2, step: 0.05, default: 0.7, unit: '×' },
+  { id: 'life.birds', label: 'aquatic birds', group: 'life', min: 0, max: 1, step: 0.05, default: 0.75, unit: '×' },
   { id: 'audio.ambience', label: 'water & surroundings', group: 'sound', min: 0, max: 1, step: 0.05, default: 1, unit: '×' },
   { id: 'audio.voices', label: 'singing voices', group: 'sound', min: 0, max: 1, step: 0.05, default: 1, unit: '×' },
   { id: 'audio.drone', label: 'low drone', group: 'sound', min: 0, max: 1, step: 0.05, default: 1, unit: '×' },
@@ -38,11 +41,13 @@ export function createSceneControls(world, sound) {
     if (typeof value !== 'number' || !Number.isFinite(value) || value < p.min || value > p.max) {
       throw new Error(`${id} must be a number from ${p.min} to ${p.max}.`);
     }
+    const steps = (value - p.min) / p.step;
+    if (Math.abs(steps - Math.round(steps)) > 0.00001) throw new Error(`${id} uses increments of ${p.step}. Choose a value on that scale.`);
     return Math.round(value * 10000) / 10000;
   }
   const apply = (id, value) => id.startsWith('audio.') ? sound.setControl(id, value) : world.setControl(id, value);
   const notify = () => listeners.forEach(fn => fn(inspect()));
-  function patch(patch, actor = 'you', expectedRevision) {
+  function patch(patch, actor = 'you', expectedRevision, gesture) {
     if (expectedRevision !== undefined && expectedRevision !== revision) throw new Error('The scene changed since your observation. Inspect again before editing.');
     const entries = Object.entries(patch).map(([id, value]) => [id, validate(id, value)]);
     if (!entries.length) throw new Error('No parameters supplied.');
@@ -50,7 +55,8 @@ export function createSceneControls(world, sound) {
     try { for (const [id, value] of entries) apply(id, value); }
     catch (error) { for (const [id] of entries) apply(id, before[id]); throw error; }
     if (entries.some(([id, value]) => before[id] !== value)) {
-      history.push({ before, after, actor });
+      if (gesture && history.at(-1)?.gesture === gesture) history.at(-1).after = after;
+      else history.push({ before, after, actor, ...(gesture ? { gesture } : {}) });
       if (history.length > 40) history.shift();
       revision++;
     }
@@ -78,7 +84,9 @@ export function createSceneControls(world, sound) {
       return { ok: true, observation: inspect() };
     } catch (error) { return { ok: false, error: error.message, observation: inspect() }; }
   }
-  sound.onChange(() => notify());
+  let lastSound = sound.state;
+  sound.onChange(now => { if (now !== lastSound) { lastSound = now; revision++; } notify(); });
+  matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', () => { revision++; notify(); });
   return { inspect, patch, undo, execute,
     reset() { return patch(Object.fromEntries(PARAMETERS.filter(available).map(p => [p.id, p.default]))); },
     subscribe(fn) { listeners.add(fn); fn(inspect()); return () => listeners.delete(fn); },

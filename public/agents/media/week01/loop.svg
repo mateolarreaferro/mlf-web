@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="650" viewBox="0 0 720 650" role="img" aria-labelledby="title desc">
+  <title id="title">The scene agent's action and observation loop</title>
+  <desc id="desc">A goal and current scene observation go to a local model. Python parses one action. The browser executes it using the same controls as the sliders, reads the result and appends it to history for the next turn. DONE requires fresh state and a separate model check. Failed checks return to the loop. Twelve decisions is the limit.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10" fill="#a7cabb"/></marker></defs>
+  <rect width="720" height="650" rx="16" fill="#08151a"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle" fill="#e1e9e6">
+    <text x="360" y="38" font-size="21">shape the world · one decision at a time</text>
+    <g fill="#11282e" stroke="#52777b" stroke-width="1.5">
+      <rect x="160" y="68" width="400" height="60" rx="10"/>
+      <rect x="160" y="160" width="400" height="60" rx="10"/>
+      <rect x="160" y="252" width="400" height="60" rx="10"/>
+      <rect x="160" y="344" width="400" height="60" rx="10"/>
+      <rect x="160" y="436" width="400" height="60" rx="10"/>
+    </g>
+    <g font-size="19">
+      <text x="360" y="94">Goal + latest observation + history</text>
+      <text x="360" y="185">Local Qwen model</text>
+      <text x="360" y="277">Python parses one action</text>
+      <text x="360" y="369">Browser executes on shared controls</text>
+      <text x="360" y="461">Read runtime result; append to history</text>
+    </g>
+    <g font-size="14" fill="#a9bdbc">
+      <text x="360" y="114">what the person wants + what the scene reports</text>
+      <text x="360" y="205">one JSON reply, no direct access to scene code</text>
+      <text x="360" y="297">INSPECT · SET · UNDO · DONE · STOP</text>
+      <text x="360" y="389">validate range, availability and observed revision</text>
+      <text x="360" y="481">success, unchanged value or rejected action</text>
+    </g>
+    <g stroke="#a7cabb" stroke-width="2" fill="none" marker-end="url(#arrow)">
+      <path d="M360 128V154"/><path d="M360 220V246"/>
+      <path d="M360 312V338"/><path d="M360 404V430"/>
+      <path d="M560 466H640V98H566"/>
+    </g>
+    <text x="652" y="295" font-size="14" transform="rotate(90 652 295)">next decision</text>
+    <path d="M95 526H625" stroke="#52777b"/>
+    <text x="360" y="555" font-size="17">DONE → fresh state + separate local-model check</text>
+    <text x="360" y="580" font-size="14" fill="#a9bdbc">YES + stable revision → complete · NO → feedback and repeat</text>
+    <text x="360" y="618" font-size="15" fill="#d8b994">12 decisions maximum · at most 24 model calls · human can stop</text>
+  </g>
+</svg>

@@ -1,7 +1,7 @@
 {
   "version": "satie.assets/v1",
-  "sceneRevision": "6f76d835e655616c62bf9e8b40e9a1093b2e029ea8b59e6c7082cc27e5553606",
-  "scriptHash": "687c5a1558e4d8c81b9145730aad3352b66fba0c8690327281b8b8236ca8f1f1",
+  "sceneRevision": "cb1de5ff8ae2ca647f6f327f8fc01a13a972bc519f65e719d865d4a3340a73c0",
+  "scriptHash": "8162e8e37184ae305fee9f8911652d8c5170141d27bc8d50580b6afb5e44a3f0",
   "runtime": {
     "version": "0.4.3",
     "url": "https://www.satie.live/runtime/0.4.3/satie-runtime.tgz"
