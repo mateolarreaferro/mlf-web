@@ -41,8 +41,8 @@ after each action. The write-up covers observation, parsing, memory, completion
 checks, iteration bounds and failures from the course tutorial. Codex implemented
 the agent from Mateo's direction; the page discloses that assistance. Manual
 controls work on the published static site; the agent runs through the local
-server in `weekly_builds/week01/server.py`. Final project ideas are not published
-yet; do not invent them.
+server in `weekly_builds/week01/server.py`. The final project room holds three
+proposals: Satie Listener, Interview-to-Twin, and Memory Maintenance Twin.
 
 Sound is composed and played locally through the vendored Satie runtime. The
 world keeps the scene contract Satie needs (stable room ids, metres, a listener,
