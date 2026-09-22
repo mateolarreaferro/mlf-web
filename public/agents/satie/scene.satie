@@ -14,7 +14,7 @@ world the sleeping jellyfish
   weather rain 0 wind 0 fog 0
   time 10:00 season summer temp 18
 
-level_reference 52
+level_reference 60
 
 gen water_pressure
     prompt submerged slow water current, broad low fluid pressure surges with smooth upper harmonics, irregular continuous flow, no impacts, seamless ambience loop, consistent texture
