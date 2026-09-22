@@ -11,7 +11,7 @@ media:
   - { embed: "/agents/index.html?embed=1" }
 link: "/agents"
 ---
-This fall I am taking a class on agents at the MIT Media Lab, and this is where the work lives. Instead of a page of posts it is a small world under water, made of drifting shards of light: one vast jellyfish. The weeks are soft pods spiralling up a column of current, each holding a strange attractor, a different one every week, and the bell high above them is the final project. It forms around you as you swim and dissolves behind you. It starts with building an agent loop from scratch around a model that runs on my own laptop, and it will fill in as the term goes.
+Repository for my MIT Media Lab class on agents.
 ---
 
 ## notes
@@ -33,13 +33,16 @@ depth). The controls are the same as Satie's. Pressing a pod's words goes there
 and opens that week's write-up in a side panel.
 `#week01` in the URL arrives standing in that room.
 
-Week 1 (September 2026): start the documentation site, propose three final
-project ideas (who each is for, what problem, how an agent augments cognition:
-learning, reasoning, creativity, memory, socialization), and implement a minimal
-agent loop from scratch with a locally run, downloaded LLM, no hosted APIs and
-no agent frameworks. As of this writing the rooms hold placeholders; the content
-is still to come. If asked about the final project, say the ideas are not
-published yet rather than guessing.
+Week 1 (September 2026) is Shape the world: a local Qwen 2.5 3B agent uses the
+same visible controls as the person to edit color, fog, brightness, motion,
+breathing and four sound levels. A Python loop calls the downloaded model
+through local Ollama without an agent framework, and reads back runtime state
+after each action. The write-up covers observation, parsing, memory, completion
+checks, iteration bounds and failures from the course tutorial. Codex implemented
+the agent from Mateo's direction; the page discloses that assistance. Manual
+controls work on the published static site; the agent runs through the local
+server in `weekly_builds/week01/server.py`. Final project ideas are not published
+yet; do not invent them.
 
 Sound is composed and played locally through the vendored Satie runtime. The
 world keeps the scene contract Satie needs (stable room ids, metres, a listener,
