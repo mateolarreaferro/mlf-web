@@ -1,23 +1,21 @@
 <h1>shape the world</h1>
-<p class="lede">A local agent changes this scene’s look and sound through its controls. Here’s a working run.</p>
-
+<p class="lede">“Make the rain softer. Ease the drone. Keep the voices and visuals.”</p>
 <figure>
   <video controls playsinline preload="metadata" poster="media/week01/scene-agent.png" aria-label="Local agent demo">
     <source src="media/week01/demo.mp4" type="video/mp4">
     <source src="media/week01/demo.webm" type="video/webm">
     <a href="media/week01/demo.mp4">Watch the demo</a>.
   </video>
-  <figcaption>Motion to 0.4, rain to 0.3, voices unchanged. 44 seconds, silent. <a href="media/week01/demo.mp4" target="_blank" rel="noopener">Open video</a>.</figcaption>
+  <figcaption>Real local run · 52 seconds · sound on. <a href="media/week01/demo.mp4" target="_blank" rel="noopener">Open video</a>.</figcaption>
 </figure>
-
-<h2>how it works</h2>
-<p>Qwen 2.5 3B runs locally through Ollama. A Python loop reads the scene’s settings, parses one action, applies it and observes the result. No agent framework.</p>
-<pre><code>observe → decide → act → observe again</code></pre>
-<p>Actions: inspect, set, undo, done, stop. Completion needs a fresh observation and a separate model check. The limit is 12 turns.</p>
-
-<p>The agent runs on my laptop. Press <strong>shape</strong> to try the manual controls here.</p>
-
-<h2>what happened</h2>
-<p>Exact settings worked. Vague requests caused extra edits; muted audio requests hit the limit. Next: improve constraint handling.</p>
+<table><thead><tr><th>Control</th><th>Before</th><th>After</th></tr></thead><tbody>
+<tr><td>Rain</td><td>1</td><td>0.5</td></tr>
+<tr><td>Drone</td><td>1</td><td>0.3</td></tr>
+<tr><td>Voices / visuals</td><td colspan="2">unchanged</td></tr>
+</tbody></table>
+<p>Local Qwen 2.5 3B chooses the settings. A Python loop acts, observes and checks each change. No agent framework.</p>
+<pre><code>plan → act → observe → repeat → verify</code></pre>
+<p>Runs on my laptop. The controls here are manual.</p>
+<p>Early runs forgot edits or changed unrelated settings. Fixed scope and unfinished-target feedback helped; interpretation can still fail. Limit: 12 turns.</p>
 <p><a href="media/week01/demo-run.json">Transcript</a> · <a href="media/week01/loop.svg">Loop diagram</a> · <a href="media/week01/evidence.json">Tests and failures</a> · <a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week01">Code and notes</a></p>
-<p class="label">Concept and direction: Mateo. Implementation and documentation: Codex, following Tutorial 1.</p>
+<p class="label">Concept: Mateo. Implementation assistance: Codex. Based on Tutorial 1.</p>

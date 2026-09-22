@@ -1,0 +1,491 @@
+{
+  "id": "f3e630b52ce244069db0767a72e45ac4",
+  "goal": "Set rain to 0.4.",
+  "model": "qwen2.5:3b",
+  "status": "blocked",
+  "summary": "Invalid planned color.",
+  "events": [
+    {
+      "kind": "plan",
+      "text": "\n{}",
+      "at": 1790057933.0285199,
+      "raw": "{\n    \"reason\": \"Adjusts rain level to reduce visual precipitation effect.\",\n    \"blocked\": \"\",\n    \"targets\": [\n        {\n            \"parameter\": \"visual.water\",\n            \"value\": 0.4\n        }\n    ]\n    ,\"preserve\": []\n}",
+      "plan": {
+        "targets": {},
+        "preserve": [],
+        "reason": "",
+        "blocked": "Invalid planned color."
+      }
+    },
+    {
+      "kind": "finish",
+      "text": "Invalid planned color.",
+      "at": 1790057933.028523
+    }
+  ],
+  "action": null,
+  "initial": {
+    "revision": 5,
+    "values": {
+      "visual.water": "#232323",
+      "visual.creature": "#0433ff",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.8,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.3,
+      "audio.rain": 0.5
+    },
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "group": "picture",
+        "type": "color",
+        "default": "#232323",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "group": "picture",
+        "type": "color",
+        "default": "#0433ff",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "group": "picture",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "default": 1.8,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "group": "picture",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "default": 18,
+        "unit": " m",
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "group": "picture",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 0.05,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "group": "movement",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 0.7,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "group": "life",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.75,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      }
+    ],
+    "sound": "off",
+    "reducedMotion": false,
+    "history": [
+      {
+        "before": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 0.5
+        },
+        "actor": "agent"
+      },
+      {
+        "before": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 0.5
+        },
+        "after": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.3,
+          "audio.rain": 0.5
+        },
+        "actor": "agent"
+      }
+    ],
+    "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+  },
+  "final": {
+    "revision": 5,
+    "values": {
+      "visual.water": "#232323",
+      "visual.creature": "#0433ff",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.8,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.3,
+      "audio.rain": 0.5
+    },
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "group": "picture",
+        "type": "color",
+        "default": "#232323",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "group": "picture",
+        "type": "color",
+        "default": "#0433ff",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "group": "picture",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "default": 1.8,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "group": "picture",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "default": 18,
+        "unit": " m",
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "group": "picture",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 0.05,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "group": "movement",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.6,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "group": "movement",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "default": 0.7,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "group": "life",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 0.75,
+        "unit": "×",
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "group": "sound",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "default": 1,
+        "unit": "×",
+        "available": false
+      }
+    ],
+    "sound": "off",
+    "reducedMotion": false,
+    "history": [
+      {
+        "before": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 1
+        },
+        "after": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 0.5
+        },
+        "actor": "agent"
+      },
+      {
+        "before": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 1,
+          "audio.rain": 0.5
+        },
+        "after": {
+          "visual.water": "#232323",
+          "visual.creature": "#0433ff",
+          "motion.speed": 0.05,
+          "motion.breathing": 0.6,
+          "motion.current": 0.7,
+          "life.birds": 0.75,
+          "visual.sparkle": 1,
+          "visual.brightness": 1.8,
+          "visual.fog": 18,
+          "audio.ambience": 1,
+          "audio.voices": 1,
+          "audio.drone": 0.3,
+          "audio.rain": 0.5
+        },
+        "actor": "agent"
+      }
+    ],
+    "note": "Values describe runtime settings, not a judgment of how the scene looks or sounds. Sound controls require playback; use the sound button."
+  },
+  "plan": {
+    "targets": {},
+    "preserve": [],
+    "reason": "",
+    "blocked": "Invalid planned color."
+  },
+  "messages": [],
+  "model_calls": 1
+}

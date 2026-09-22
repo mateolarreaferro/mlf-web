@@ -47,7 +47,7 @@
   "controller_tests": {
     "command": "python3 -m unittest discover -s weekly_builds/week01",
     "note": "Scripted model fixtures; these are not LLM trials.",
-    "passed": 12
+    "passed": 17
   },
   "browser_checks": {
     "viewports": [
@@ -104,7 +104,7 @@
   "project_checks": {
     "next_build": "passed",
     "eslint": "passed",
-    "controller_tests_passed": 12,
+    "controller_tests_passed": 17,
     "source_mirror": "matched"
   },
   "assignment_audit": {
@@ -112,14 +112,62 @@
     "notebook_objectives": "all five covered; see weekly_builds/week01/REQUIREMENTS.md",
     "separate_assignment_rubric": "not yet verified",
     "demo": {
-      "recording": "demo.webm",
+      "recording": "demo.mp4",
       "transcript": "demo-run.json",
-      "run_id": "f905f6b51b00498c9137644c8ae69d2e",
+      "run_id": "1bfff3cd34fd45739b4f03521f43da4c",
       "status": "complete",
-      "model_calls": 6,
-      "duration_seconds": 43.84,
-      "audio": "silent screen recording; audio waveform tests recorded separately"
+      "model_calls": 7,
+      "duration_seconds": 51.65,
+      "audio": "Actual Satie output captured during the uncut screen recording, muxed with approximate synchronization.",
+      "goal": "Make the rain much softer and ease the low drone. Keep the singing voices and the visuals unchanged.",
+      "targets": {
+        "audio.rain": 0.5,
+        "audio.drone": 0.3
+      },
+      "other_settings": "All eleven other controls preserved."
     },
-    "controller_tests": 12
-  }
+    "controller_tests": 17
+  },
+  "previous_exact_demo": {
+    "recording": "demo.webm",
+    "transcript": "demo-run.json",
+    "run_id": "f905f6b51b00498c9137644c8ae69d2e",
+    "status": "complete",
+    "model_calls": 6,
+    "duration_seconds": 43.84,
+    "audio": "silent screen recording; audio waveform tests recorded separately"
+  },
+  "new_controller_trials": [
+    {
+      "transcript": "planning-failure.json",
+      "reported_status": "complete",
+      "evaluation": "FAIL: rain changed but the requested drone edit was missed; the model checker falsely accepted it."
+    },
+    {
+      "transcript": "planned-target-failure.json",
+      "reported_status": "limit",
+      "evaluation": "FAIL: correct plan, but the agent forgot the drone; deterministic completion guard rejected DONE."
+    },
+    {
+      "transcript": "demo-run.json",
+      "reported_status": "complete",
+      "evaluation": "PASS: both requested audio changes applied; every other setting unchanged; real browser and local Qwen."
+    },
+    {
+      "transcript": "planned-success.json",
+      "reported_status": "complete",
+      "evaluation": "PASS: second real browser run met both changes and all preservation assertions."
+    },
+    {
+      "transcript": "planned-muted.json",
+      "reported_status": "blocked",
+      "evaluation": "The validator rejected a malformed model plan after one call; no changes. This is not a successful model explanation of the unavailable audio control."
+    }
+  ],
+  "revision_notes": [
+    "Added an initial model plan and edit-scope guards.",
+    "Added remaining-target feedback after each observation.",
+    "All trial outcomes retained; these do not establish a general success rate.",
+    "Public site has manual controls only. Agent UI and inference run locally."
+  ]
 }

@@ -4,10 +4,15 @@ export function createEditor(world, sound) {
   const controls = createSceneControls(world, sound);
   const $ = id => document.getElementById(id);
   const panel = $('scene-editor'), toggle = $('edit-button'), fields = new Map();
-  const localAgent = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
-  $('agent-form').hidden = !localAgent;
-  $('agent-trace').hidden = !localAgent;
-  let run = null, bridge = false, seen = 0, lastAction = null, stopped = false, transcript = null;
+  let connect = () => {};
+  // The static website has manual controls only. Load the agent UI exclusively
+  // beside the Python server on localhost; no public placeholder or dead form.
+  if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+    void import('./local-agent.js').then(({ createLocalAgent }) => {
+      connect = createLocalAgent(controls, message => { $('editor-status').textContent = message; });
+      if (!panel.hidden) void connect();
+    });
+  }
   const presetsKey = 'agents-scene-presets-v1';
   let presets = {};
   try { presets = JSON.parse(localStorage.getItem(presetsKey)) || {}; } catch {}
@@ -84,72 +89,5 @@ export function createEditor(world, sound) {
     } catch (error) { status(error.message); }
   });
 
-  const api = async (path, body) => {
-    const response = await fetch(new URL(`agent-api/${path}`, document.baseURI), {
-      method: body === undefined ? 'GET' : 'POST', headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(12000),
-    });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.error || `Local agent returned ${response.status}.`);
-    return result;
-  };
-  async function connect() {
-    if (run || !localAgent) return;
-    bridge = false;
-    if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
-      try { const result = await api('status'); bridge = result.ready; $('agent-connection').textContent = bridge ? `${result.model} · running locally` : result.message; }
-      catch { $('agent-connection').textContent = 'Start the local server.'; }
-    } else $('agent-connection').textContent = 'Agent requires local server.';
-    $('agent-setup').hidden = bridge; $('agent-submit').disabled = !bridge;
-  }
-  $('agent-connect').addEventListener('click', connect);
-  $('agent-form').addEventListener('submit', async event => {
-    event.preventDefault();
-    const goal = $('agent-goal').value.trim(); if (!goal || run || !bridge) return;
-    $('agent-submit').disabled = true;
-    try {
-      const result = await api('start', { goal, observation: controls.inspect() });
-      run = result.id; seen = 0; lastAction = null; stopped = false; transcript = null;
-      $('agent-log').replaceChildren(); $('agent-trace').open = true;
-      $('agent-stop').hidden = false; $('agent-stop').disabled = false; $('agent-export').disabled = true;
-      status('agent is reading the scene…'); void poll();
-    } catch (error) { status(error.message); $('agent-submit').disabled = !bridge; }
-  });
-  $('agent-stop').addEventListener('click', async () => {
-    if (!run) return;
-    stopped = true; $('agent-stop').disabled = true;
-    try { await api(`runs/${run}/cancel`, {}); status('stopped; applied edits remain available to undo'); }
-    catch (error) { status(error.message); }
-  });
-  async function poll() {
-    const id = run;
-    try {
-      const snapshot = await api(`runs/${id}`);
-      for (const entry of snapshot.events.slice(seen)) {
-        const li = document.createElement('li'); li.textContent = entry.text; li.dataset.kind = entry.kind; $('agent-log').append(li);
-      }
-      seen = snapshot.events.length;
-      if (snapshot.action && snapshot.action.id !== lastAction && !stopped) {
-        const action = snapshot.action; lastAction = action.id;
-        const result = await controls.execute(action);
-        await api(`runs/${id}/result`, { id: action.id, ...result });
-      }
-      if (snapshot.status !== 'running') {
-        transcript = snapshot; run = null; status(snapshot.summary); $('agent-stop').hidden = true;
-        $('agent-submit').disabled = !bridge; $('agent-export').disabled = false; return;
-      }
-      setTimeout(poll, 250);
-    } catch (error) {
-      // Never replay a mutation after an ambiguous transport error.
-      try { await api(`runs/${id}/cancel`, {}); } catch {}
-      run = null; status(`Agent disconnected: ${error.message}`); $('agent-stop').hidden = true; $('agent-submit').disabled = !bridge;
-    }
-  }
-  $('agent-export').addEventListener('click', () => {
-    if (!transcript) return;
-    const url = URL.createObjectURL(new Blob([JSON.stringify(transcript, null, 2)], { type: 'application/json' }));
-    const link = document.createElement('a'); link.href = url; link.download = `scene-agent-${transcript.id}.json`; link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  });
   return { controls, close, get open() { return !panel.hidden; } };
 }
