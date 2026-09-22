@@ -15,14 +15,24 @@ try {
     await page.waitForFunction(() => window.agentsWorld?.controls);
     await page.locator('#edit-button').click();
     const localAgent = await page.evaluate(() => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname));
-    if (!localAgent) {
+    let agentAvailable = false;
+    if (localAgent) {
+      const response = await page.request.get(new URL('agent-api/status', base).href);
+      if (response.ok()) agentAvailable = (await response.json()).ready;
+    }
+    if (!agentAvailable) {
+      const response = await page.request.get(new URL('/api/scene-agent', base).href);
+      if (response.ok()) agentAvailable = (await response.json()).ready;
+    }
+    if (agentAvailable) await page.locator('#agent-form').waitFor();
+    else {
       assert.equal(await page.locator('#agent-form').count(), 0);
       assert.equal(await page.locator('#agent-setup').count(), 0);
       assert.equal(await page.locator('#agent-trace').count(), 0);
     }
-    // On the public site only manual editing is offered; presets still accept text.
+    // A static mirror keeps manual controls; the live backend enables the agent.
     await page.locator('.editor-presets summary').click();
-    const textbox = localAgent ? page.getByRole('textbox', { name: 'describe a scene change' }) : page.getByLabel('scene name', { exact: true });
+    const textbox = agentAvailable ? page.getByRole('textbox', { name: 'describe a scene change' }) : page.getByLabel('scene name', { exact: true });
     await textbox.fill('warmer water and slower motion');
     assert.equal(await textbox.inputValue(), 'warmer water and slower motion');
     const before = await page.evaluate(() => agentsWorld.walker.position.clone());

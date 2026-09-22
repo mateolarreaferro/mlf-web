@@ -4,14 +4,32 @@ export function createEditor(world, sound) {
   const controls = createSceneControls(world, sound);
   const $ = id => document.getElementById(id);
   const panel = $('scene-editor'), toggle = $('edit-button'), fields = new Map();
-  let connect = () => {};
-  // The static website has manual controls only. Load the agent UI exclusively
-  // beside the Python server on localhost; no public placeholder or dead form.
-  if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
-    void import('./local-agent.js').then(({ createLocalAgent }) => {
-      connect = createLocalAgent(controls, message => { $('editor-status').textContent = message; });
-      if (!panel.hidden) void connect();
-    });
+  let connecting = false, mounted = false, reconnect = () => {};
+  async function connect() {
+    if (mounted) return reconnect();
+    if (connecting) return;
+    connecting = true;
+    try {
+      // The Python assignment server remains available locally. The public
+      // version uses the existing site's backend. Static mirrors keep sliders.
+      if (['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+        try {
+          const response = await fetch(new URL('agent-api/status', document.baseURI), { signal: AbortSignal.timeout(1500) });
+          if (response.ok && (await response.json()).ready) {
+            const { createLocalAgent } = await import('./local-agent.js');
+            reconnect = createLocalAgent(controls, message => { $('editor-status').textContent = message; });
+            mounted = true; await reconnect(); return;
+          }
+        } catch { /* The Next development server has no Python bridge. */ }
+      }
+      const response = await fetch('/api/scene-agent', { signal: AbortSignal.timeout(5000) });
+      if (response.ok && (await response.json()).ready) {
+        const { createWebAgent } = await import('./web-agent.js');
+        reconnect = createWebAgent(controls, message => { $('editor-status').textContent = message; });
+        mounted = true;
+      }
+    } catch { /* An unavailable service never leaves a dead agent form. */ }
+    finally { connecting = false; }
   }
   const presetsKey = 'agents-scene-presets-v1';
   let presets = {};

@@ -1,0 +1,278 @@
+{
+  "id": "3cff616a-e208-4e05-bcb3-2f44ecf2fe9e",
+  "goal": "Make the rain quieter.",
+  "status": "blocked",
+  "summary": "Rain audio control is currently unavailable to change.",
+  "initial": {
+    "revision": 8,
+    "values": {
+      "visual.water": "#006b6b",
+      "visual.creature": "#021a80",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.5,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.6,
+      "audio.rain": 0.3
+    },
+    "sound": "off",
+    "reducedMotion": false,
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      }
+    ]
+  },
+  "final": {
+    "revision": 8,
+    "values": {
+      "visual.water": "#006b6b",
+      "visual.creature": "#021a80",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.5,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.6,
+      "audio.rain": 0.3
+    },
+    "sound": "off",
+    "reducedMotion": false,
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": false
+      }
+    ]
+  },
+  "plan": {
+    "reason": "Cannot adjust rain volume because all rain audio controls are unavailable.",
+    "blocked": "Rain audio control is currently unavailable to change.",
+    "targets": {},
+    "preserve": []
+  },
+  "model": "gpt-5.1",
+  "inference": "OpenAI via the website server",
+  "model_calls": 1,
+  "messages": [],
+  "events": [
+    {
+      "kind": "plan",
+      "text": "Cannot adjust rain volume because all rain audio controls are unavailable.",
+      "at": 1790059867936,
+      "plan": {
+        "reason": "Cannot adjust rain volume because all rain audio controls are unavailable.",
+        "blocked": "Rain audio control is currently unavailable to change.",
+        "targets": {},
+        "preserve": []
+      }
+    },
+    {
+      "kind": "finish",
+      "text": "Rain audio control is currently unavailable to change.",
+      "at": 1790059867936
+    }
+  ]
+}

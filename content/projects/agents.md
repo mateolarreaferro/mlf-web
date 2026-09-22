@@ -33,16 +33,13 @@ depth). The controls are the same as Satie's. Pressing a pod's words goes there
 and opens that week's write-up in a side panel.
 `#week01` in the URL arrives standing in that room.
 
-Week 1 (September 2026) is Shape the world: a local Qwen 2.5 3B agent uses the
-same visible controls as the person to edit color, fog, brightness, motion,
-breathing and four sound levels. A Python loop calls the downloaded model
-through local Ollama without an agent framework, and reads back runtime state
-after each action. The write-up covers observation, parsing, memory, completion
-checks, iteration bounds and failures from the course tutorial. Codex implemented
-the agent from Mateo's direction; the page discloses that assistance. Manual
-controls work on the published static site; the agent runs through the local
-server in `weekly_builds/week01/server.py`. The final project room holds three
-proposals: Satie Listener, Interview-to-Twin, and Memory Maintenance Twin.
+Week 1 (September 2026) is Shape the world: an agent changes the scene through
+its visible controls. On the website, a handwritten browser loop uses GPT-5.1
+through a server-side API to interpret requests, apply changes and verify the
+result. The original Python/Qwen version runs locally without an agent
+framework. Both use bounded action/observation loops and preserve controls outside
+the chosen edit scope. The weekly page includes real transcripts, a local video,
+failures and implementation notes.
 
 Sound is composed and played locally through the vendored Satie runtime. The
 world keeps the scene contract Satie needs (stable room ids, metres, a listener,

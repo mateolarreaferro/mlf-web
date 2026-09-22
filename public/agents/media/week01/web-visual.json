@@ -1,0 +1,956 @@
+{
+  "id": "598a7e76-be66-4eee-abd5-274f996d83bf",
+  "goal": "Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.",
+  "status": "complete",
+  "summary": "Changes applied and checked.",
+  "initial": {
+    "revision": 4,
+    "values": {
+      "visual.water": "#232323",
+      "visual.creature": "#0433ff",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.8,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.6,
+      "audio.rain": 0.3
+    },
+    "sound": "on",
+    "reducedMotion": false,
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      }
+    ]
+  },
+  "final": {
+    "revision": 7,
+    "values": {
+      "visual.water": "#006b6b",
+      "visual.creature": "#021a80",
+      "motion.speed": 0.05,
+      "motion.breathing": 0.6,
+      "motion.current": 0.7,
+      "life.birds": 0.75,
+      "visual.sparkle": 1,
+      "visual.brightness": 1.5,
+      "visual.fog": 18,
+      "audio.ambience": 1,
+      "audio.voices": 1,
+      "audio.drone": 0.6,
+      "audio.rain": 0.3
+    },
+    "sound": "on",
+    "reducedMotion": false,
+    "controls": [
+      {
+        "id": "visual.water",
+        "label": "water color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.creature",
+        "label": "creature color",
+        "type": "color",
+        "available": true
+      },
+      {
+        "id": "visual.brightness",
+        "label": "brightness",
+        "min": 0.2,
+        "max": 1.8,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "visual.fog",
+        "label": "view distance",
+        "min": 18,
+        "max": 65,
+        "step": 1,
+        "available": true
+      },
+      {
+        "id": "visual.sparkle",
+        "label": "light scatter",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.speed",
+        "label": "motion speed",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.breathing",
+        "label": "breathing intensity",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "motion.current",
+        "label": "current strength",
+        "min": 0,
+        "max": 2,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "life.birds",
+        "label": "aquatic birds",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.ambience",
+        "label": "water & surroundings",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.voices",
+        "label": "singing voices",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.drone",
+        "label": "low drone",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      },
+      {
+        "id": "audio.rain",
+        "label": "rain",
+        "min": 0,
+        "max": 1,
+        "step": 0.05,
+        "available": true
+      }
+    ]
+  },
+  "plan": {
+    "reason": "Make the water a deep teal and dim the creature while keeping sound and movement unchanged.",
+    "blocked": "",
+    "targets": {
+      "visual.water": "#006b6b",
+      "visual.creature": "#021a80",
+      "visual.brightness": 1.5
+    },
+    "preserve": [
+      "audio.ambience",
+      "audio.voices",
+      "audio.drone",
+      "audio.rain",
+      "motion.speed",
+      "motion.breathing",
+      "motion.current"
+    ]
+  },
+  "model": "gpt-5.1",
+  "inference": "OpenAI via the website server",
+  "model_calls": 7,
+  "messages": [
+    {
+      "role": "user",
+      "content": "GOAL: Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.\nTARGETS: {\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"visual.brightness\":1.5}\nRESULT: Apply only the planned targets. Keep all other settings unchanged.\nOBSERVATION: {\"revision\":4,\"values\":{\"visual.water\":\"#232323\",\"visual.creature\":\"#0433ff\",\"motion.speed\":0.05,\"motion.breathing\":0.6,\"motion.current\":0.7,\"life.birds\":0.75,\"visual.sparkle\":1,\"visual.brightness\":1.8,\"visual.fog\":18,\"audio.ambience\":1,\"audio.voices\":1,\"audio.drone\":0.6,\"audio.rain\":0.3},\"sound\":\"on\",\"reducedMotion\":false,\"controls\":[{\"id\":\"visual.water\",\"label\":\"water color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.creature\",\"label\":\"creature color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.brightness\",\"label\":\"brightness\",\"min\":0.2,\"max\":1.8,\"step\":0.05,\"available\":true},{\"id\":\"visual.fog\",\"label\":\"view distance\",\"min\":18,\"max\":65,\"step\":1,\"available\":true},{\"id\":\"visual.sparkle\",\"label\":\"light scatter\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.speed\",\"label\":\"motion speed\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.breathing\",\"label\":\"breathing intensity\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"motion.current\",\"label\":\"current strength\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"life.birds\",\"label\":\"aquatic birds\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.ambience\",\"label\":\"water & surroundings\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.voices\",\"label\":\"singing voices\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.drone\",\"label\":\"low drone\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.rain\",\"label\":\"rain\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true}]}\nREMAINING: {\"visual.water\":{\"current\":\"#232323\",\"target\":\"#006b6b\"},\"visual.creature\":{\"current\":\"#0433ff\",\"target\":\"#021a80\"},\"visual.brightness\":{\"current\":1.8,\"target\":1.5}}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"reason\":\"Set the water color to the requested deep teal target value.\",\"action\":\"SET\",\"parameter\":\"visual.water\",\"value\":\"#006b6b\"}"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.\nTARGETS: {\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"visual.brightness\":1.5}\nRESULT: visual.water: #006b6b\nOBSERVATION: {\"revision\":5,\"values\":{\"visual.water\":\"#006b6b\",\"visual.creature\":\"#0433ff\",\"motion.speed\":0.05,\"motion.breathing\":0.6,\"motion.current\":0.7,\"life.birds\":0.75,\"visual.sparkle\":1,\"visual.brightness\":1.8,\"visual.fog\":18,\"audio.ambience\":1,\"audio.voices\":1,\"audio.drone\":0.6,\"audio.rain\":0.3},\"sound\":\"on\",\"reducedMotion\":false,\"controls\":[{\"id\":\"visual.water\",\"label\":\"water color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.creature\",\"label\":\"creature color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.brightness\",\"label\":\"brightness\",\"min\":0.2,\"max\":1.8,\"step\":0.05,\"available\":true},{\"id\":\"visual.fog\",\"label\":\"view distance\",\"min\":18,\"max\":65,\"step\":1,\"available\":true},{\"id\":\"visual.sparkle\",\"label\":\"light scatter\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.speed\",\"label\":\"motion speed\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.breathing\",\"label\":\"breathing intensity\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"motion.current\",\"label\":\"current strength\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"life.birds\",\"label\":\"aquatic birds\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.ambience\",\"label\":\"water & surroundings\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.voices\",\"label\":\"singing voices\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.drone\",\"label\":\"low drone\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.rain\",\"label\":\"rain\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true}]}\nREMAINING: {\"visual.creature\":{\"current\":\"#0433ff\",\"target\":\"#021a80\"},\"visual.brightness\":{\"current\":1.8,\"target\":1.5}}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"reason\":\"Adjust the creature color toward the dimmer target while keeping motion and audio unchanged.\",\"action\":\"SET\",\"parameter\":\"visual.creature\",\"value\":\"#021a80\"}"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.\nTARGETS: {\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"visual.brightness\":1.5}\nRESULT: visual.creature: #021a80\nOBSERVATION: {\"revision\":6,\"values\":{\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"motion.speed\":0.05,\"motion.breathing\":0.6,\"motion.current\":0.7,\"life.birds\":0.75,\"visual.sparkle\":1,\"visual.brightness\":1.8,\"visual.fog\":18,\"audio.ambience\":1,\"audio.voices\":1,\"audio.drone\":0.6,\"audio.rain\":0.3},\"sound\":\"on\",\"reducedMotion\":false,\"controls\":[{\"id\":\"visual.water\",\"label\":\"water color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.creature\",\"label\":\"creature color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.brightness\",\"label\":\"brightness\",\"min\":0.2,\"max\":1.8,\"step\":0.05,\"available\":true},{\"id\":\"visual.fog\",\"label\":\"view distance\",\"min\":18,\"max\":65,\"step\":1,\"available\":true},{\"id\":\"visual.sparkle\",\"label\":\"light scatter\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.speed\",\"label\":\"motion speed\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.breathing\",\"label\":\"breathing intensity\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"motion.current\",\"label\":\"current strength\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"life.birds\",\"label\":\"aquatic birds\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.ambience\",\"label\":\"water & surroundings\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.voices\",\"label\":\"singing voices\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.drone\",\"label\":\"low drone\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.rain\",\"label\":\"rain\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true}]}\nREMAINING: {\"visual.brightness\":{\"current\":1.8,\"target\":1.5}}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"reason\":\"Lower overall brightness to the specified target so the creature appears noticeably dimmer while leaving motion and audio unchanged.\",\"action\":\"SET\",\"parameter\":\"visual.brightness\",\"value\":1.5}"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.\nTARGETS: {\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"visual.brightness\":1.5}\nRESULT: visual.brightness: 1.5\nOBSERVATION: {\"revision\":7,\"values\":{\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"motion.speed\":0.05,\"motion.breathing\":0.6,\"motion.current\":0.7,\"life.birds\":0.75,\"visual.sparkle\":1,\"visual.brightness\":1.5,\"visual.fog\":18,\"audio.ambience\":1,\"audio.voices\":1,\"audio.drone\":0.6,\"audio.rain\":0.3},\"sound\":\"on\",\"reducedMotion\":false,\"controls\":[{\"id\":\"visual.water\",\"label\":\"water color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.creature\",\"label\":\"creature color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.brightness\",\"label\":\"brightness\",\"min\":0.2,\"max\":1.8,\"step\":0.05,\"available\":true},{\"id\":\"visual.fog\",\"label\":\"view distance\",\"min\":18,\"max\":65,\"step\":1,\"available\":true},{\"id\":\"visual.sparkle\",\"label\":\"light scatter\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.speed\",\"label\":\"motion speed\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.breathing\",\"label\":\"breathing intensity\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"motion.current\",\"label\":\"current strength\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"life.birds\",\"label\":\"aquatic birds\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.ambience\",\"label\":\"water & surroundings\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.voices\",\"label\":\"singing voices\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.drone\",\"label\":\"low drone\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.rain\",\"label\":\"rain\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true}]}\nREMAINING: {}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"reason\":\"All target values are now met; verify final state before completion.\",\"action\":\"INSPECT\",\"parameter\":\"\",\"value\":null}"
+    },
+    {
+      "role": "user",
+      "content": "GOAL: Turn the water deep teal and make the creature noticeably dimmer. Keep all sound levels and movement unchanged.\nTARGETS: {\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"visual.brightness\":1.5}\nRESULT: Scene inspected.\nOBSERVATION: {\"revision\":7,\"values\":{\"visual.water\":\"#006b6b\",\"visual.creature\":\"#021a80\",\"motion.speed\":0.05,\"motion.breathing\":0.6,\"motion.current\":0.7,\"life.birds\":0.75,\"visual.sparkle\":1,\"visual.brightness\":1.5,\"visual.fog\":18,\"audio.ambience\":1,\"audio.voices\":1,\"audio.drone\":0.6,\"audio.rain\":0.3},\"sound\":\"on\",\"reducedMotion\":false,\"controls\":[{\"id\":\"visual.water\",\"label\":\"water color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.creature\",\"label\":\"creature color\",\"type\":\"color\",\"available\":true},{\"id\":\"visual.brightness\",\"label\":\"brightness\",\"min\":0.2,\"max\":1.8,\"step\":0.05,\"available\":true},{\"id\":\"visual.fog\",\"label\":\"view distance\",\"min\":18,\"max\":65,\"step\":1,\"available\":true},{\"id\":\"visual.sparkle\",\"label\":\"light scatter\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.speed\",\"label\":\"motion speed\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"motion.breathing\",\"label\":\"breathing intensity\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"motion.current\",\"label\":\"current strength\",\"min\":0,\"max\":2,\"step\":0.05,\"available\":true},{\"id\":\"life.birds\",\"label\":\"aquatic birds\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.ambience\",\"label\":\"water & surroundings\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.voices\",\"label\":\"singing voices\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.drone\",\"label\":\"low drone\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true},{\"id\":\"audio.rain\",\"label\":\"rain\",\"min\":0,\"max\":1,\"step\":0.05,\"available\":true}]}\nREMAINING: {}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\"reason\":\"All target visual settings are applied while audio and motion remain unchanged; request user confirmation to finalize.\",\"action\":\"DONE\",\"parameter\":\"\",\"value\":null}"
+    }
+  ],
+  "events": [
+    {
+      "kind": "plan",
+      "text": "Make the water a deep teal and dim the creature while keeping sound and movement unchanged.",
+      "at": 1790059855822,
+      "plan": {
+        "reason": "Make the water a deep teal and dim the creature while keeping sound and movement unchanged.",
+        "blocked": "",
+        "targets": {
+          "visual.water": "#006b6b",
+          "visual.creature": "#021a80",
+          "visual.brightness": 1.5
+        },
+        "preserve": [
+          "audio.ambience",
+          "audio.voices",
+          "audio.drone",
+          "audio.rain",
+          "motion.speed",
+          "motion.breathing",
+          "motion.current"
+        ]
+      }
+    },
+    {
+      "kind": "model",
+      "text": "Set the water color to the requested deep teal target value.",
+      "at": 1790059857038,
+      "step": 1,
+      "raw": {
+        "reason": "Set the water color to the requested deep teal target value.",
+        "action": "SET",
+        "parameter": "visual.water",
+        "value": "#006b6b"
+      }
+    },
+    {
+      "kind": "observation",
+      "text": "visual.water: #006b6b",
+      "at": 1790059857320,
+      "action": {
+        "kind": "SET",
+        "parameter": "visual.water",
+        "value": "#006b6b",
+        "reason": "Set the water color to the requested deep teal target value."
+      },
+      "result": {
+        "ok": true,
+        "observation": {
+          "revision": 5,
+          "values": {
+            "visual.water": "#006b6b",
+            "visual.creature": "#0433ff",
+            "motion.speed": 0.05,
+            "motion.breathing": 0.6,
+            "motion.current": 0.7,
+            "life.birds": 0.75,
+            "visual.sparkle": 1,
+            "visual.brightness": 1.8,
+            "visual.fog": 18,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 0.6,
+            "audio.rain": 0.3
+          },
+          "sound": "on",
+          "reducedMotion": false,
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "available": true
+            },
+            {
+              "id": "visual.sparkle",
+              "label": "light scatter",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.current",
+              "label": "current strength",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "life.birds",
+              "label": "aquatic birds",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "Adjust the creature color toward the dimmer target while keeping motion and audio unchanged.",
+      "at": 1790059858546,
+      "step": 2,
+      "raw": {
+        "reason": "Adjust the creature color toward the dimmer target while keeping motion and audio unchanged.",
+        "action": "SET",
+        "parameter": "visual.creature",
+        "value": "#021a80"
+      }
+    },
+    {
+      "kind": "observation",
+      "text": "visual.creature: #021a80",
+      "at": 1790059858807,
+      "action": {
+        "kind": "SET",
+        "parameter": "visual.creature",
+        "value": "#021a80",
+        "reason": "Adjust the creature color toward the dimmer target while keeping motion and audio unchanged."
+      },
+      "result": {
+        "ok": true,
+        "observation": {
+          "revision": 6,
+          "values": {
+            "visual.water": "#006b6b",
+            "visual.creature": "#021a80",
+            "motion.speed": 0.05,
+            "motion.breathing": 0.6,
+            "motion.current": 0.7,
+            "life.birds": 0.75,
+            "visual.sparkle": 1,
+            "visual.brightness": 1.8,
+            "visual.fog": 18,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 0.6,
+            "audio.rain": 0.3
+          },
+          "sound": "on",
+          "reducedMotion": false,
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "available": true
+            },
+            {
+              "id": "visual.sparkle",
+              "label": "light scatter",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.current",
+              "label": "current strength",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "life.birds",
+              "label": "aquatic birds",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "Lower overall brightness to the specified target so the creature appears noticeably dimmer while leaving motion and audio unchanged.",
+      "at": 1790059860102,
+      "step": 3,
+      "raw": {
+        "reason": "Lower overall brightness to the specified target so the creature appears noticeably dimmer while leaving motion and audio unchanged.",
+        "action": "SET",
+        "parameter": "visual.brightness",
+        "value": 1.5
+      }
+    },
+    {
+      "kind": "observation",
+      "text": "visual.brightness: 1.5",
+      "at": 1790059860348,
+      "action": {
+        "kind": "SET",
+        "parameter": "visual.brightness",
+        "value": 1.5,
+        "reason": "Lower overall brightness to the specified target so the creature appears noticeably dimmer while leaving motion and audio unchanged."
+      },
+      "result": {
+        "ok": true,
+        "observation": {
+          "revision": 7,
+          "values": {
+            "visual.water": "#006b6b",
+            "visual.creature": "#021a80",
+            "motion.speed": 0.05,
+            "motion.breathing": 0.6,
+            "motion.current": 0.7,
+            "life.birds": 0.75,
+            "visual.sparkle": 1,
+            "visual.brightness": 1.5,
+            "visual.fog": 18,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 0.6,
+            "audio.rain": 0.3
+          },
+          "sound": "on",
+          "reducedMotion": false,
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "available": true
+            },
+            {
+              "id": "visual.sparkle",
+              "label": "light scatter",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.current",
+              "label": "current strength",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "life.birds",
+              "label": "aquatic birds",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "All target values are now met; verify final state before completion.",
+      "at": 1790059861876,
+      "step": 4,
+      "raw": {
+        "reason": "All target values are now met; verify final state before completion.",
+        "action": "INSPECT",
+        "parameter": "",
+        "value": null
+      }
+    },
+    {
+      "kind": "observation",
+      "text": "Scene inspected.",
+      "at": 1790059862095,
+      "action": {
+        "kind": "INSPECT",
+        "parameter": "",
+        "value": null,
+        "reason": "All target values are now met; verify final state before completion."
+      },
+      "result": {
+        "ok": true,
+        "observation": {
+          "revision": 7,
+          "values": {
+            "visual.water": "#006b6b",
+            "visual.creature": "#021a80",
+            "motion.speed": 0.05,
+            "motion.breathing": 0.6,
+            "motion.current": 0.7,
+            "life.birds": 0.75,
+            "visual.sparkle": 1,
+            "visual.brightness": 1.5,
+            "visual.fog": 18,
+            "audio.ambience": 1,
+            "audio.voices": 1,
+            "audio.drone": 0.6,
+            "audio.rain": 0.3
+          },
+          "sound": "on",
+          "reducedMotion": false,
+          "controls": [
+            {
+              "id": "visual.water",
+              "label": "water color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.creature",
+              "label": "creature color",
+              "type": "color",
+              "available": true
+            },
+            {
+              "id": "visual.brightness",
+              "label": "brightness",
+              "min": 0.2,
+              "max": 1.8,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "visual.fog",
+              "label": "view distance",
+              "min": 18,
+              "max": 65,
+              "step": 1,
+              "available": true
+            },
+            {
+              "id": "visual.sparkle",
+              "label": "light scatter",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.speed",
+              "label": "motion speed",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.breathing",
+              "label": "breathing intensity",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "motion.current",
+              "label": "current strength",
+              "min": 0,
+              "max": 2,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "life.birds",
+              "label": "aquatic birds",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.ambience",
+              "label": "water & surroundings",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.voices",
+              "label": "singing voices",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.drone",
+              "label": "low drone",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            },
+            {
+              "id": "audio.rain",
+              "label": "rain",
+              "min": 0,
+              "max": 1,
+              "step": 0.05,
+              "available": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "model",
+      "text": "All target visual settings are applied while audio and motion remain unchanged; request user confirmation to finalize.",
+      "at": 1790059863367,
+      "step": 5,
+      "raw": {
+        "reason": "All target visual settings are applied while audio and motion remain unchanged; request user confirmation to finalize.",
+        "action": "DONE",
+        "parameter": "",
+        "value": null
+      }
+    },
+    {
+      "kind": "check",
+      "text": "Water color changed to deep teal, creature made dimmer via lower brightness, and all specified audio and motion values are preserved exactly as requested.",
+      "at": 1790059865172,
+      "verdict": {
+        "passed": true,
+        "reason": "Water color changed to deep teal, creature made dimmer via lower brightness, and all specified audio and motion values are preserved exactly as requested."
+      }
+    },
+    {
+      "kind": "finish",
+      "text": "Changes applied and checked.",
+      "at": 1790059865426
+    }
+  ]
+}

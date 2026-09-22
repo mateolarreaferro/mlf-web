@@ -168,6 +168,355 @@
     "Added an initial model plan and edit-scope guards.",
     "Added remaining-target feedback after each observation.",
     "All trial outcomes retained; these do not establish a general success rate.",
-    "Public site has manual controls only. Agent UI and inference run locally."
-  ]
+    "Public site has manual controls only. Agent UI and inference run locally.",
+    "Added a browser adaptation of the from-scratch loop, using hosted GPT-5.1 through a same-origin inference endpoint; Python/Qwen remains available locally."
+  ],
+  "web_agent": {
+    "base": "http://127.0.0.1:3001/agents/",
+    "model": "gpt-5.1",
+    "audio": "complete",
+    "visual": "complete",
+    "muted": "blocked",
+    "telemetry": [
+      {
+        "source": "deep_water_pressure",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "deep_water_pressure",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "column_bubbles",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "week01_singing",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "bell_singer_1",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "bell_singer_2",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "bell_singer_3",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "swimming_water",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "membrane_enter",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "membrane_leave",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "page_open_bell",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "page_close_bubbles",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "hover_bubble",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "press_bubble",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "seabed_grains",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "seabed_grains",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "upper_water_shimmer",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "upper_water_shimmer",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "outer_water_hollow",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "outer_water_hollow",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "column_strands",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "week01_tendril_swish",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "week01_membrane_skin",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bell_frill_ripple",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bell_dome_breath",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week02_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week03_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week04_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week06_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week07_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week09_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week10_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week11_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week12_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bud_week13_murmur",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "kelp_leaf_friction",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "kelp_leaf_friction",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "kelp_leaf_friction",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "kelp_leaf_friction",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "sign_glass_hum",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "ascending_bubbles",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "descending_pressure",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "attractor_water_warmth",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bell_arrival_bloom",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "bell_departure_release",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "sleeping_bud_stir",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "attractor_brush_sweep",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "glide_draw",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "glide_settle",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "swimming_push",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "sand_lift",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "upper_membrane_press",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "water_edge_refusal",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "menu_rise",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "menu_fall",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "water_arriving",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "submerged_surface_rain",
+        "group": "audio.rain",
+        "gain": 0.30000001192092896
+      },
+      {
+        "source": "open_ocean_ambience",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "deep_body_drone",
+        "group": "audio.drone",
+        "gain": 0.6000000238418579
+      },
+      {
+        "source": "water_choir_low",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "water_choir_middle",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "water_choir_high",
+        "group": "audio.voices",
+        "gain": 1
+      },
+      {
+        "source": "slow_current_resonance",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "underwater_harmonic_haze",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "midwater_bubbles",
+        "group": "audio.ambience",
+        "gain": 1
+      },
+      {
+        "source": "week01_bubbles",
+        "group": "audio.ambience",
+        "gain": 1
+      }
+    ],
+    "errors": [],
+    "modelCalls": 14,
+    "location": "Browser test on local Next server using real OpenAI inference; production check follows deployment.",
+    "transcripts": [
+      "web-audio.json",
+      "web-visual.json",
+      "web-muted.json"
+    ],
+    "controller_tests": 10
+  }
 }

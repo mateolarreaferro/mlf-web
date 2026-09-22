@@ -6,16 +6,16 @@
     <source src="media/week01/demo.webm" type="video/webm">
     <a href="media/week01/demo.mp4">Watch the demo</a>.
   </video>
-  <figcaption>Real local run · 52 seconds · sound on. <a href="media/week01/demo.mp4" target="_blank" rel="noopener">Open video</a>.</figcaption>
+  <figcaption>Recorded local version · 52 seconds · sound on. <a href="media/week01/demo.mp4" target="_blank" rel="noopener">Open video</a>.</figcaption>
 </figure>
 <table><thead><tr><th>Control</th><th>Before</th><th>After</th></tr></thead><tbody>
 <tr><td>Rain</td><td>1</td><td>0.5</td></tr>
 <tr><td>Drone</td><td>1</td><td>0.3</td></tr>
 <tr><td>Voices / visuals</td><td colspan="2">unchanged</td></tr>
 </tbody></table>
-<p>Local Qwen 2.5 3B chooses the settings. A Python loop acts, observes and checks each change. No agent framework.</p>
+<p>The agent chooses settings, applies them, observes and checks the result. Live: GPT-5.1 via API. Recording: local Qwen. Both loops are built from scratch.</p>
 <pre><code>plan → act → observe → repeat → verify</code></pre>
-<p>Runs on my laptop. The controls here are manual.</p>
+<p><a href="https://mateolarreaferro.com/agents">Try the live agent</a>: <strong>controls → describe a change → reshape</strong>. Turn sound on for audio edits.</p>
 <p>Early runs forgot edits or changed unrelated settings. Fixed scope and unfinished-target feedback helped; interpretation can still fail. Limit: 12 turns.</p>
-<p><a href="media/week01/demo-run.json">Transcript</a> · <a href="media/week01/loop.svg">Loop diagram</a> · <a href="media/week01/evidence.json">Tests and failures</a> · <a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week01">Code and notes</a></p>
+<p><a href="media/week01/web-audio.json">Web run</a> · <a href="media/week01/demo-run.json">Recorded run</a> · <a href="media/week01/loop.svg">Loop diagram</a> · <a href="media/week01/evidence.json">Tests and failures</a> · <a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week01">Code and notes</a></p>
 <p class="label">Concept: Mateo. Implementation assistance: Codex. Based on Tutorial 1.</p>
