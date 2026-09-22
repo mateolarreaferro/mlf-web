@@ -15,6 +15,7 @@ import { createWalker } from "./walker.js";
 import { createSound, soundManifest } from "./sound.js";
 import { layout } from "./rooms.js";
 import { createEditor } from "./editor.js";
+import { createNotes } from "./notes.js";
 
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
@@ -31,6 +32,7 @@ let world = null;
 let renderer = null;
 let walker = null;
 let editor = null;
+let notes = null;
 const sound = createSound();
 
 const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 220);
@@ -56,12 +58,15 @@ async function start() {
   // fewer points on small screens: a phone draws them with less to spare
   world = buildWorld({ density: Math.min(innerWidth, innerHeight) < 700 ? 0.45 : 1.3 });
   walker = createWalker(camera, canvas, world, { onPress, reducedMotion });
-  window.agentsWorld = { world, walker, sound, soundManifest: () => soundManifest(world) };
+  window.agentsWorld = { world, camera, walker, sound, soundManifest: () => soundManifest(world) };
   if (!embed) sound.attach(world, walker); // the card on the main site stays silent
   if (!embed) {
     editor = createEditor(world, sound);
     window.agentsWorld.controls = editor.controls;
     $("edit-button").disabled = false;
+    notes = createNotes({ world, camera, walker, canvas, reducedMotion,
+      beforeOpen() { closePanel(); closeMenu(); if (editor?.open) editor.close(); } });
+    $("notes-button").disabled = false;
   }
 
   // If the font arrived after the labels were drawn, draw them again.
@@ -86,6 +91,7 @@ function resize() {
   camera.updateProjectionMatrix();
   const dpr = renderer.getPixelRatio();
   world.setViewport(h * dpr, camera.fov, dpr);
+  notes?.resize();
 }
 
 /* Start in the room named by the hash, or outside the front door. */
@@ -111,10 +117,11 @@ function frame(now) {
   else walker.update(dt);
 
   world.update(reducedMotion() ? 0 : dt, camera);
+  notes?.update(dt);
   sound.update(camera, dt);
 
   const at = walker.regionAt(camera.position.x, camera.position.y, camera.position.z);
-  if (at !== region) changeRegion(at);
+  if (!notes?.opened && at !== region) changeRegion(at);
 
   renderer.render(world.scene, camera);
 }
@@ -173,6 +180,7 @@ function pick(e) {
 /* A click on a room's words goes there and reads; a double-click on the ground goes to that spot. */
 function onPress(e, double) {
   sound.start(); // a press is the only thing allowed to wake the audio
+  if (notes?.press(e)) return;
   const hit = pick(e);
   if (!hit) return;
   const id = hit.object.userData.roomId;
@@ -184,7 +192,7 @@ let hoverAt = 0;
 canvas.addEventListener("pointermove", (e) => {
   if (!world || e.buttons || e.timeStamp - hoverAt < 80) return;
   hoverAt = e.timeStamp;
-  canvas.style.cursor = pick(e)?.object.userData.roomId ? "pointer" : "grab";
+  canvas.style.cursor = notes?.hover(e) || pick(e)?.object.userData.roomId ? "pointer" : "grab";
 });
 
 /* Walk to a room and, if it has a page, open it on arrival. */
@@ -232,6 +240,7 @@ $("menu-button").addEventListener("click", () => {
 });
 
 $("edit-button").addEventListener("click", closeMenu);
+$("notes-button").addEventListener("click", () => notes?.open(region));
 
 $("here-read").addEventListener("click", () => world.rooms.find((r) => r.id === region)?.open && openPanel(region));
 
@@ -276,6 +285,7 @@ document.addEventListener("click", (e) => e.target.closest?.("button, a") && sou
 let returnFocus = null;
 
 async function openPanel(id) {
+  if (notes?.opened) notes.close();
   if (editor?.open) editor.close();
   const room = world?.rooms.find((r) => r.id === id);
   const panel = $("panel");
@@ -320,7 +330,7 @@ addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closePanel();
     closeMenu();
-  } else if (e.key === "Enter" && $("panel").hidden && !e.target.closest?.("button, a, input, textarea, select, summary")) {
+  } else if (e.key === "Enter" && !notes?.opened && $("panel").hidden && !e.target.closest?.("button, a, input, textarea, select, summary")) {
     const room = world?.rooms.find((r) => r.id === region);
     if (room?.open) openPanel(room.id);
   }
