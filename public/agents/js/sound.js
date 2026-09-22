@@ -164,6 +164,7 @@ export function createSound() {
   let reading = false;
   let wanted = false; // a press has asked for sound, before or after loading
   let muted = false;
+  let watchdog = null;
   try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch {}
   const listeners = new Set();
   const levels = { 'audio.ambience': 1, 'audio.voices': 1, 'audio.drone': 1, 'audio.rain': 1 };
@@ -260,11 +261,20 @@ export function createSound() {
         // to running but the scene itself is no longer playing.
         if (audio.engine.audioContext.state === "running" && wanted && !muted && !audio.engine.isPlaying) start();
       });
+      // Some mobile browsers suspend a context without delivering a useful
+      // statechange event. Keep the user-requested transport alive and resume
+      // the same loaded scene instead of creating a second scene or voices.
+      watchdog = setInterval(() => {
+        if (!audio || muted || !wanted || starting) return;
+        const ctx = audio.engine.audioContext;
+        if (ctx.state !== "running" || !audio.engine.isPlaying) start();
+      }, 900);
       audio.state(reading ? "reading" : null);
       tell();
       if (wanted && !muted) start(); // works if the press is recent enough; if not, the next press does it
     } catch (err) {
       failed = true;
+      if (watchdog) { clearInterval(watchdog); watchdog = null; }
       tell();
       console.warn("sound: the world stays silent.", err);
     }
@@ -331,6 +341,9 @@ export function createSound() {
     if (!audio) return;
     try {
       audio.update(camera); // the camera is the listener; hosts are read from what they are bound to
+      if (wanted && !muted && !starting && audio.engine.audioContext.state !== "running") {
+        void audio.engine.audioContext.resume().catch(() => {});
+      }
       updateTrims();
       const { x, y, z } = camera.position;
       here.x = x; here.y = y; here.z = z;
@@ -370,6 +383,7 @@ export function createSound() {
       }
     } catch (err) {
       console.warn("sound: stopped.", err);
+      if (watchdog) { clearInterval(watchdog); watchdog = null; }
       audio?.dispose();
       audio = null;
       playing = false;
