@@ -1,53 +1,54 @@
-<!--
-  The final project room. Same rules as the week pages: a fragment, paths
-  relative to website/, .todo is still to write, .slot is a held place for a
-  sketch or diagram. This page grows into the final project's documentation;
-  the three ideas stay at the bottom as where it started.
--->
+<!-- Three possible final projects, each extending an existing Satie or AugTwins agent. -->
 
 <h1>final project</h1>
-<p class="lede">Three starting points. None of them is a commitment yet.</p>
+<p class="lede">Three ways to make the agents hear, build, and maintain a useful world.</p>
 
 <div class="ideas">
   <section class="idea">
-    <h3>idea one <span class="todo">name</span></h3>
-    <div class="slot">sketch or diagram (media/final/idea-1.png)</div>
+    <h3>01 · Satie Listener</h3>
+    <p class="lede">The first step toward acoustic intelligence in a multimodal agent.</p>
     <dl>
       <dt>who it is for</dt>
-      <dd class="todo">The person, specifically.</dd>
+      <dd>Satie authors and researchers evaluating spatial audio scenes.</dd>
       <dt>the problem</dt>
-      <dd class="todo">What is hard for them today.</dd>
+      <dd>Satie knows where every source is supposed to be, but an agent cannot yet hear whether the rendered scene actually communicates that location, distance, movement, or event.</dd>
       <dt>what the agent adds</dt>
-      <dd class="todo">Which part of thinking it augments: learning, reasoning, creativity, memory or socialization, and how.</dd>
+      <dd>It receives rendered binaural or multichannel audio and predicts source identity, direction, distance, motion, and event timing. Satie compares those predictions with the scene contract and reports localization error, source confusion, audibility, and confidence.</dd>
+      <dt>first prototype</dt>
+      <dd>Render controlled scenes with one moving source, two overlapping sources, and a source entering from behind. Evaluate localization, event detection, and source separation before attempting a general acoustic model.</dd>
     </dl>
   </section>
 
   <section class="idea">
-    <h3>idea two <span class="todo">name</span></h3>
-    <div class="slot">sketch or diagram (media/final/idea-2.png)</div>
+    <h3>02 · Interview-to-Twin</h3>
+    <p class="lede">A working version of the AugTwins builder.</p>
     <dl>
       <dt>who it is for</dt>
-      <dd class="todo">The person, specifically.</dd>
+      <dd>Someone who wants to create a useful digital twin from a real interview.</dd>
       <dt>the problem</dt>
-      <dd class="todo">What is hard for them today.</dd>
+      <dd>Building a twin currently means assembling memories, a persona, utterance patterns, knowledge files, and audio prompts by hand.</dd>
       <dt>what the agent adds</dt>
-      <dd class="todo">Which part of thinking it augments, and how.</dd>
+      <dd>It conducts a structured interview, extracts memories and speech patterns, asks follow-up questions when information is vague or contradictory, and produces editable AugTwins profile files, memory records, retrieval data, and standard voice prompts.</dd>
+      <dt>first prototype</dt>
+      <dd>Start with one interview and one agent, such as Pattie. Show every extracted claim with its source passage, confidence, privacy level, and approval state before it enters the twin.</dd>
     </dl>
   </section>
 
   <section class="idea">
-    <h3>idea three <span class="todo">name</span></h3>
-    <div class="slot">sketch or diagram (media/final/idea-3.png)</div>
+    <h3>03 · Memory Maintenance Twin</h3>
+    <p class="lede">A working version of the AugTwins memory system after the twin exists.</p>
     <dl>
       <dt>who it is for</dt>
-      <dd class="todo">The person, specifically.</dd>
+      <dd>People and teams who already have a twin but need its memory to stay trustworthy.</dd>
       <dt>the problem</dt>
-      <dd class="todo">What is hard for them today.</dd>
+      <dd>Memories accumulate duplicates, outdated facts, conflicting versions, missing dates, and privacy mistakes. A twin can sound convincing while its memory quietly degrades.</dd>
       <dt>what the agent adds</dt>
-      <dd class="todo">Which part of thinking it augments, and how.</dd>
+      <dd>It audits the memory hub, groups duplicates, detects conflicts, marks stale facts, asks for resolutions, and proposes a reviewable before-and-after diff. It never silently rewrites the source memory.</dd>
+      <dt>first prototype</dt>
+      <dd>Run it against an existing AugTwins agent and produce a queue of proposed merges, updates, privacy changes, and unresolved contradictions for human approval.</dd>
     </dl>
   </section>
 </div>
 
-<h2>where it is going</h2>
-<p class="todo">Once an idea is chosen: why that one, and the plan.</p>
+<h2>how I will choose</h2>
+<p>The choice depends on whether the final project should teach an agent to perceive a new modality, build a twin from a person, or keep a twin reliable over time.</p>
