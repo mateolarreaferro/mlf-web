@@ -165,6 +165,11 @@ export function createSound() {
   let wanted = false; // a press has asked for sound, before or after loading
   let muted = false;
   let watchdog = null;
+  const diagnosticLog = [];
+  const logDiagnostic = (event, detail = {}) => {
+    diagnosticLog.push({ at: performance.now(), event, ...detail });
+    if (diagnosticLog.length > 80) diagnosticLog.shift();
+  };
   try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch {}
   const listeners = new Set();
   const levels = { 'audio.ambience': 1, 'audio.voices': 1, 'audio.drone': 1, 'audio.rain': 1 };
@@ -252,10 +257,12 @@ export function createSound() {
       }
 
       audio = scene;
+      logDiagnostic("scene.loaded", { context: audio.engine.audioContext.state, voices: audio.engine.tracks.size });
       // The browser can suspend or interrupt a live scene (for example when
       // changing audio devices). Reflect that in the button, and let the next
       // gesture resume the same scene without resetting its voices.
       audio.engine.audioContext.addEventListener("statechange", () => {
+        logDiagnostic("context.statechange", { context: audio.engine.audioContext.state, playing: audio.engine.isPlaying });
         tell();
         // Satie's field-study wrapper retries transport when a context returns
         // to running but the scene itself is no longer playing.
@@ -273,6 +280,7 @@ export function createSound() {
       tell();
       if (wanted && !muted) start(); // works if the press is recent enough; if not, the next press does it
     } catch (err) {
+      logDiagnostic("scene.error", { message: String(err?.message ?? err) });
       failed = true;
       if (watchdog) { clearInterval(watchdog); watchdog = null; }
       tell();
@@ -284,6 +292,7 @@ export function createSound() {
   let greeted = false;
   function start() {
     wanted = true;
+    logDiagnostic("start.request", { context: audio?.engine?.audioContext?.state ?? null, playing: audio?.engine?.isPlaying ?? false, muted });
     if (muted || !audio || starting || audio.engine.audioContext.state === "running" && audio.engine.isPlaying) return;
     // Satie's browser integration resumes synchronously on the gesture, then
     // starts the already-loaded scene. Calling start before load completes is
@@ -295,6 +304,7 @@ export function createSound() {
       starting = false;
       if (muted) { audio.stop(); tell(); return; }
       playing = audio.engine.isPlaying;
+      logDiagnostic("start.resolved", { context: audio.engine.audioContext.state, playing: audio.engine.isPlaying, voices: audio.engine.tracks.size });
       audio.state(reading ? "reading" : null);
       tell();
       if (!greeted) fire("sound_on", here);
@@ -303,6 +313,7 @@ export function createSound() {
       playing = false;
       starting = false;
       console.warn("sound: could not start.", err);
+      logDiagnostic("start.error", { message: String(err?.message ?? err), context: audio?.engine?.audioContext?.state ?? null });
       tell();
     });
   }
@@ -421,5 +432,18 @@ export function createSound() {
     get state() { return state(); },
     onChange(fn) { listeners.add(fn); fn(state()); },
     get scene() { return audio; },
+    diagnostics() {
+      const ctx = audio?.engine?.audioContext;
+      const engine = audio?.engine;
+      return {
+        state: state(), muted, wanted, playing, starting, failed,
+        context: ctx?.state ?? null,
+        contextTime: ctx?.currentTime ?? null,
+        transport: engine?.isPlaying ?? false,
+        voices: engine?.tracks?.size ?? 0,
+        levelAnchorDb: engine?.levelAnchorDb ?? null,
+        log: diagnosticLog.slice(),
+      };
+    },
   };
 }
