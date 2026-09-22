@@ -33,9 +33,9 @@ export function createNotesSculpture(world) {
     ctx.fillStyle = gradient; ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = palette.light; ctx.globalAlpha = 0.1; ctx.fillRect(0, 0, w, 64); ctx.globalAlpha = 1;
     ctx.strokeStyle = palette.light; ctx.globalAlpha = 0.25; ctx.strokeRect(1, 1, w - 2, h - 2); ctx.globalAlpha = 1;
-    ctx.fillStyle = palette.light; ctx.font = '24px "Instrument Sans", sans-serif';
+    ctx.fillStyle = palette.light; ctx.font = '24px "Helvetica Neue", Helvetica, Arial, sans-serif';
     ctx.fillText(world.rooms.find(r => r.id === note.week)?.label || "notes", 54, 117);
-    ctx.fillStyle = "#eff0e7"; ctx.font = '42px "Instrument Serif", Georgia, serif';
+    ctx.fillStyle = "#eff0e7"; ctx.font = '42px "Helvetica Neue", Helvetica, Arial, sans-serif';
     const text = note.text || "a thought, still forming…";
     const lines = [];
     for (const paragraph of text.split("\n")) {

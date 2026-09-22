@@ -1,5 +1,6 @@
 // Saved notes live on the server. Only unfinished drafts live in this browser.
 // Each note has a revision; two devices cannot silently overwrite each other.
+import { accessRole, chooseRole } from "./access.js";
 const API = "/api/weekly-notes";
 const DRAFTS = "agents-weekly-note-drafts-v1";
 export function createNotesStore(onChange) {
@@ -23,7 +24,8 @@ export function createNotesStore(onChange) {
   async function load() {
     try {
       const data = await request();
-      ready = data.ready; canEdit = data.canEdit; privateNotes = data.private;
+      ready = data.ready; canEdit = data.canEdit && accessRole() === "editor"; privateNotes = data.private;
+      if (privateNotes && !canEdit) data.notes = [];
       for (const note of data.notes) if (!pending.has(note.id)) notes.set(note.id, note);
       for (const id of notes.keys()) if (!pending.has(id) && !data.notes.some(n => n.id === id)) notes.delete(id);
       message = ready ? (pending.size ? "unsaved" : canEdit ? "saved" : "") : "Notes are available on mateolarreaferro.com.";
@@ -113,15 +115,16 @@ export function createNotesStore(onChange) {
     }
     stash(); emit();
   }
-  async function login(key) { await request({ action: "login", key }); await load(); }
+  async function login(key) { await request({ action: "login", key }); chooseRole("editor", false); await load(); }
   async function logout() {
     await flush();
     if (pending.size) throw new Error("Save or resolve your drafts before signing out.");
-    await request({ action: "logout" }); canEdit = false; recovered = false; notes.clear(); await load();
+    await request({ action: "logout" }); chooseRole("guest", false); canEdit = false; recovered = false; notes.clear(); await load();
   }
   addEventListener("beforeunload", e => { if (pending.size) { e.preventDefault(); e.returnValue = ""; } });
   document.addEventListener("visibilitychange", () => { if (document.hidden) void flush(); });
   addEventListener("online", () => void flush());
+  addEventListener("agents:access", () => void load());
   return { load, edit, flush, remove, login, logout, resolve,
     get notes() { return [...notes.values()]; }, get ready() { return ready; }, get canEdit() { return canEdit; },
     get private() { return privateNotes; }, get message() { return message; }, get pending() { return pending.size; },

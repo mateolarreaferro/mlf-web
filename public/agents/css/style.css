@@ -15,10 +15,9 @@
   --shadow: 0 18px 60px rgb(0 0 0 / 0.55);
   --room: var(--ink);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* A serif with some air in it for anything that is a name or a title (and
-     for everything written in the water); a quiet sans for the interface. */
-  --display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
-  --text: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Match the course website: one quiet Helvetica family throughout. */
+  --display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --text: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color-scheme: dark;
 }
 
@@ -49,14 +48,65 @@ body {
 }
 :root[data-reading] #world { opacity: 0.48; filter: saturate(0.7); }
 
+/* An entrance over the living scene, with sound explicitly invited in. */
+.entrance {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; grid-template-rows: auto 1fr auto;
+  gap: 2.5rem; overflow-y: auto;
+  padding: clamp(1.5rem, 4.5vw, 4.5rem) clamp(1.5rem, 7.5vw, 8rem);
+  background: linear-gradient(90deg, rgb(5 10 14 / 0.97), rgb(5 10 14 / 0.78) 65%, rgb(5 10 14 / 0.4));
+  color: #eceeea;
+}
+:root[data-entering] #environment .hud, :root[data-entering] #environment .legend, :root[data-entering] #environment .here { visibility: hidden; }
+:root[data-entering] #world { opacity: 0.7; }
+.entrance-header, .entrance-footer { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; }
+.entrance-marks { display: flex; align-items: center; gap: 2.2rem; }
+.entrance-marks a { display: flex; }
+.entrance-marks img { width: auto; height: 2.7rem; display: block; filter: brightness(0) invert(1); opacity: 0.9; }
+.entrance-course { font-size: 0.82rem; letter-spacing: 0.035em; text-decoration: none; white-space: nowrap; color: #bac7ca; }
+.entrance-course span { margin-left: 0.8rem; }
+.entrance-main { align-self: center; padding-block: 1rem; }
+.entrance-kicker { font-size: clamp(0.8rem, 1.05vw, 1rem); color: #9caeb4; margin-bottom: 1.6rem; }
+.entrance h1 { font: 400 clamp(4.4rem, 10.5vw, 10rem) / 0.93 var(--display); letter-spacing: -0.055em; margin-left: -0.055em; }
+.entrance-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: clamp(2rem, 4vw, 3.5rem); }
+.entrance .pill { min-height: 3rem; padding-inline: 1.3rem; font-size: 0.9rem; }
+.entrance-actions .pill span, .entrance-code-row .pill span { margin-left: 1.4rem; }
+.entrance .pill.solid { background: #d5e2df; color: #0c1b1d; }
+.entrance-actions > :not(.solid) { background: rgb(213 226 223 / 0.075); }
+.entrance-form { margin-top: 1rem; width: min(29rem, 100%); }
+.entrance-code-row { display: flex; gap: 0.5rem; }
+.entrance-code-row input { min-width: 0; flex: 1; border: 0; border-radius: 999px; background: rgb(213 226 223 / 0.085); color: var(--ink); padding: 0.8rem 1.2rem; font: 1rem var(--text); }
+.entrance-code-row input::placeholder { color: #98abae; }
+#entrance-status { min-height: 1.6em; margin: 0.7rem 1.2rem 0; font-size: 0.83rem; color: #b8ceca; }
+.entrance-footer { color: #9caeb4; font-size: 0.8rem; }
+.entrance-footer p { display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; }
+.entrance-footer a { text-decoration: none; }
+.entrance-audio { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; white-space: nowrap; }
+.entrance-audio[aria-pressed="true"] { color: #b4e0cc; background: rgb(116 183 154 / 0.13); }
+:root[data-embed] #entrance { display: none; }
+@media (max-width: 40rem) {
+  .entrance { gap: 1.5rem; padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem max(1.5rem, env(safe-area-inset-bottom)); }
+  .entrance-marks { gap: 1.2rem; }
+  .entrance-marks img { height: 2rem; }
+  .entrance-course { font-size: 0.7rem; }
+  .entrance-kicker { max-width: 16rem; line-height: 1.5; }
+  .entrance h1 { font-size: clamp(4.2rem, 15vw, 6.5rem); }
+  .entrance .pill { padding-inline: 1rem; font-size: 0.83rem; }
+  .entrance-actions { gap: 0.5rem; }
+  .entrance-actions .pill span { margin-left: 0.6rem; }
+  .entrance-footer { align-items: flex-end; }
+  .entrance-footer p { flex-direction: column; }
+  .entrance-code-row .pill span { display: none; }
+}
+
 /* Notes are paper suspended in the same water. HTML is only their close-up. */
 :root[data-notes] .hud, :root[data-notes] .here, :root[data-notes] .legend { visibility: hidden; }
 .notes-bar { position: fixed; top: max(1.5rem, env(safe-area-inset-top)); left: 50%; translate: -50% 0; display: flex; align-items: center; gap: 0.6rem; width: max-content; max-width: calc(100vw - 2rem); padding: 0.55rem; border-radius: 28px; background: var(--sheet); backdrop-filter: blur(20px); box-shadow: var(--shadow); }
-.notes-name { font: italic 1.65rem var(--display); padding: 0 0.65rem; }
+.notes-name { font: 400 1.65rem var(--display); padding: 0 0.65rem; }
 .notes-bar select { min-height: 2.5rem; max-width: 9rem; padding: 0.5rem; border: 0; border-radius: 15px; background: var(--soft); color: var(--ink); font: inherit; }
 .notes-bar option { background: var(--paper); }
 .notes-empty { position: fixed; inset: 44% 1rem auto; text-align: center; pointer-events: none; }
-.notes-empty p { font: italic clamp(2rem, 5vw, 3.8rem) var(--display); color: #c6d9d2; text-shadow: 0 2px 25px #071813; margin-bottom: 1rem; }
+.notes-empty p { font: 400 clamp(2rem, 5vw, 3.8rem) var(--display); color: #c6d9d2; text-shadow: 0 2px 25px #071813; margin-bottom: 1rem; }
 .notes-empty button { pointer-events: auto; }
 .notes-foot { position: fixed; bottom: max(1rem, env(safe-area-inset-bottom)); left: 50%; translate: -50% 0; width: min(48rem, calc(100vw - 2rem)); text-align: center; }
 .notes-index { display: flex; align-items: center; justify-content: center; gap: 0.4rem; max-height: 5.6rem; overflow: auto; flex-wrap: wrap; }
@@ -85,7 +135,7 @@ dialog.note-dialog, dialog.notes-login { margin: auto; color: var(--ink); border
 #note-conflict p { margin-bottom: 0.5rem; }
 #note-remove-confirm { display: flex; gap: 0.5rem; align-items: center; justify-content: space-between; }
 .notes-login { border-radius: 24px; background: #122328; }
-.notes-login h2 { font: italic 2rem var(--display); }
+.notes-login h2 { font: 400 2rem var(--display); }
 .notes-login label { display: block; font-size: 0.85rem; color: var(--faint); }
 .notes-login input { width: 100%; border: 0; padding: 0.75rem 1rem; margin: 0.5rem 0 1rem; border-radius: 12px; color: var(--ink); background: var(--soft); font: inherit; }
 #notes-login-status { margin-top: 0.8rem; color: #e6b6c1; font-size: 0.85rem; }
@@ -158,7 +208,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   pointer-events: none;
 }
 .hud.top > * { pointer-events: auto; }
-.who h1 { font-family: var(--display); font-style: italic; font-size: 2rem; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; }
+.who h1 { font-family: var(--display); font-style: normal; font-size: 2rem; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; }
 .who { min-width: 0; }
 .who .label { margin-top: 0.4rem; text-wrap: balance; }
 .tools { display: flex; flex-shrink: 0; gap: 0.5rem; }
@@ -394,7 +444,7 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .editor-heading { display: flex; justify-content: space-between; align-items: center; gap: 0.7rem; }
 .editor-heading-actions { display: flex; align-items: center; gap: 0.35rem; }
 .editor-heading .label { font-size: 0.7rem; }
-.editor-heading h2 { font: italic 2rem/1.15 var(--display); margin-top: 0.25rem; }
+.editor-heading h2 { font: 400 2rem/1.15 var(--display); margin-top: 0.25rem; }
 .editor-heading .pill { padding-inline: 0.8rem; }
 .editor-intro { color: var(--faint); margin: 0.8rem 0 1.1rem; line-height: 1.5; }
 .scene-editor textarea, .scene-editor select, .scene-editor input:not([type="range"]):not([type="color"]) {

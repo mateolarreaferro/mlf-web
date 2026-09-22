@@ -48,8 +48,8 @@
 import * as THREE from "../vendor/three.module.min.js";
 import { COOL, DIM, WARM, ground, layout } from "./rooms.js";
 
-export const DISPLAY = '"Instrument Serif", "Iowan Old Style", Georgia, serif';
-export const TEXT = '"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
+export const DISPLAY = '"Helvetica Neue", Helvetica, Arial, sans-serif';
+export const TEXT = DISPLAY;
 
 export const WATER = {
   ink: "#dbe6ea", faint: "#8a9ba3", // the page's lettering
@@ -646,7 +646,7 @@ export function buildWorld({ density = 1 } = {}) {
       type(ctx, TEXT, h * 0.085);
       ctx.fillText(room.label, w / 2, h * 0.17);
       ctx.fillStyle = room.open ? p.ink : p.faint;
-      type(ctx, DISPLAY, h * (room.open ? 0.2 : 0.24), room.open ? "" : "italic");
+      type(ctx, DISPLAY, h * (room.open ? 0.2 : 0.24));
       wrap(ctx, room.open ? room.title : "not yet", w / 2, h * (room.open ? 0.45 : 0.55), w, h * 0.21);
       ctx.fillStyle = p.faint;
       type(ctx, TEXT, h * 0.075);
@@ -700,7 +700,7 @@ export function buildWorld({ density = 1 } = {}) {
   const sign = label(4.4, 1.5, (ctx, w, h, p) => {
     ctx.textAlign = "center";
     ctx.fillStyle = p.ink;
-    type(ctx, DISPLAY, h * 0.36, "italic");
+    type(ctx, DISPLAY, h * 0.36);
     ctx.fillText("agents", w / 2, h * 0.4);
     ctx.fillStyle = p.faint;
     type(ctx, TEXT, h * 0.105);

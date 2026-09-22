@@ -12,6 +12,8 @@ try {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.addInitScript(() => localStorage.setItem('agents-sound-off', '1'));
   await page.goto(base);
+  await page.click('#entrance-guest');
+  await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.waitForFunction(() => window.agentsWorld?.sound.scene && agentsWorld.sound.state === 'off', null, { timeout: 120000 });
   await page.click('#edit-button');
   await page.locator('#agent-form').waitFor({ timeout: 15000 });

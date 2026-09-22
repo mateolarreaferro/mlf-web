@@ -12,6 +12,8 @@ try {
     const errors = []; page.on('pageerror', error => errors.push(error.message));
     await page.addInitScript(() => localStorage.setItem('agents-sound-off', '1'));
     await page.goto(base);
+    await page.click('#entrance-guest');
+    await page.locator('#entrance').waitFor({ state: 'hidden' });
     await page.waitForFunction(() => window.agentsWorld?.controls);
     await page.locator('#edit-button').click();
     const localAgent = await page.evaluate(() => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname));

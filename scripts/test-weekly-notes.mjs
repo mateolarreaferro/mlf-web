@@ -25,12 +25,13 @@ try {
   const before = await api(); assert.equal(before.body.ready, true, JSON.stringify(before));
   originalIds = new Set(before.body.notes.map(n => n.id));
   await page.goto(base + '#week01');
+  await page.click('#entrance-editor');
+  await page.fill('#entrance-code', key);
+  await page.click('#entrance-submit');
+  await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.locator('#notes-button').waitFor();
   await page.waitForFunction(() => !document.getElementById('notes-button').disabled);
   await page.click('#notes-button');
-  await page.waitForFunction(() => !document.getElementById('notes-auth').disabled);
-  await page.click('#notes-auth');
-  await page.fill('#notes-key', key); await page.locator('#notes-login-form button[type="submit"]').click();
   await page.locator('#notes-add').waitFor({ state: 'visible' });
   const fixtures = [
     'A room that listens.\n\nWhat if the space changed with the way we pay attention?',
@@ -39,6 +40,7 @@ try {
   ];
   for (const text of fixtures) {
     await page.click('#notes-add');
+    testIds.add(await page.locator('.notes-index-item').last().getAttribute('data-note-id'));
     await page.fill('#note-text', text);
     await page.locator('#note-text').press('End');
     const position = await page.evaluate(() => ({ ...agentsWorld.walker.position }));
@@ -103,7 +105,9 @@ try {
   await page.click('#note-done');
   // The next week starts independently, including unpublished rooms.
   await page.selectOption('#notes-week', 'week02');
-  await page.click('#notes-add'); await page.fill('#note-text', 'A thought for week two.'); await page.click('#note-done');
+  await page.click('#notes-add');
+  testIds.add(await page.locator('.notes-index-item').last().getAttribute('data-note-id'));
+  await page.fill('#note-text', 'A thought for week two.'); await page.click('#note-done');
   await page.waitForFunction(() => document.getElementById('notes-status').textContent === 'saved');
   const weekTwo = (await api()).body.notes.find(n => n.week === 'week02' && n.text === 'A thought for week two.' && !originalIds.has(n.id));
   assert.ok(weekTwo); testIds.add(weekTwo.id);
@@ -146,10 +150,10 @@ try {
   console.error('UI:', await page.locator('#note-save-status').textContent().catch(() => ''), await page.locator('#notes-status').textContent().catch(() => ''));
   throw error;
 } finally {
-  // Discover run-created fixtures even if an assertion failed just after save.
+  // IDs are recorded at creation, including if an assertion fails during save.
   const latest = await api();
   for (const note of latest.body.notes || []) {
-    if (testIds.has(note.id) || (!originalIds.has(note.id) && /^(A room that listens|Less instruction|Things to try|A thought for week two|My unfinished draft|Saved on another device)/.test(note.text))) {
+    if (testIds.has(note.id)) {
       const result = await api({ action: 'delete', id: note.id, revision: note.revision });
       if (result.status !== 200) console.error('Fixture cleanup:', JSON.stringify(result));
     }

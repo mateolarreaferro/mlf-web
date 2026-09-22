@@ -1,6 +1,7 @@
 # Weekly notes
 
-Open `/agents`, choose **notes**, select a week, and use **edit** to sign in.
+Open `/agents` and **join as editor** with your code, then choose **notes**
+and select a week. Guests can also use **notes → edit** to sign in later.
 The editing key is in the ignored local `.env.weekly-notes-owner` file. It is
 also configured as the sensitive production `WEEKLY_NOTES_EDIT_KEY` secret.
 Never commit that file or put the key in a URL. Sign-in lasts 30 days on that

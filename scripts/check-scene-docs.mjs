@@ -5,6 +5,8 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 960 }, reducedMotion: 'reduce' });
   const base = process.env.AGENTS_URL ?? 'http://127.0.0.1:8766/';
   await page.goto(base);
+  await page.click('#entrance-guest');
+  await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.waitForFunction(() => window.agentsWorld?.controls);
   await page.click('#menu-button');
   await page.locator('#menu-list li[data-room="week01"] button').click();

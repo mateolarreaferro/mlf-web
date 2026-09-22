@@ -16,6 +16,7 @@ import { createSound, soundManifest } from "./sound.js";
 import { layout } from "./rooms.js";
 import { createEditor } from "./editor.js";
 import { createNotes } from "./notes.js";
+import { createEntrance } from "./entrance.js";
 
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
@@ -36,12 +37,14 @@ let notes = null;
 const sound = createSound();
 
 const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 220);
+const entrance = embed ? null : createEntrance({ sound, onEnter() { walker?.setEnabled(true); } });
+if (embed) $("environment").inert = false;
 
 async function start() {
   // Labels are drawn to canvases, so the font has to be there first. Give it
   // a moment and then go without it rather than hold the page for a font.
   await Promise.race([
-    Promise.all(['400 32px "Instrument Serif"', 'italic 400 32px "Instrument Serif"', '400 32px "Instrument Sans"'].map((f) => document.fonts.load(f))),
+    document.fonts.ready,
     new Promise((r) => setTimeout(r, 1500)),
   ]).catch(() => {});
 
@@ -58,6 +61,7 @@ async function start() {
   // fewer points on small screens: a phone draws them with less to spare
   world = buildWorld({ density: Math.min(innerWidth, innerHeight) < 700 ? 0.45 : 1.3 });
   walker = createWalker(camera, canvas, world, { onPress, reducedMotion });
+  walker.setEnabled(!entrance?.open);
   window.agentsWorld = { world, camera, walker, sound, soundManifest: () => soundManifest(world) };
   if (!embed) sound.attach(world, walker); // the card on the main site stays silent
   if (!embed) {
@@ -117,6 +121,7 @@ function frame(now) {
   else walker.update(dt);
 
   world.update(reducedMotion() ? 0 : dt, camera);
+  if (entrance?.open) for (const object of world.scene.children) if (object.userData.fade) object.visible = false;
   notes?.update(dt);
   sound.update(camera, dt);
 
@@ -179,7 +184,7 @@ function pick(e) {
 
 /* A click on a room's words goes there and reads; a double-click on the ground goes to that spot. */
 function onPress(e, double) {
-  sound.start(); // a press is the only thing allowed to wake the audio
+  if (sound.diagnostics().wanted) sound.start();
   if (notes?.press(e)) return;
   const hit = pick(e);
   if (!hit) return;
@@ -244,7 +249,8 @@ $("notes-button").addEventListener("click", () => notes?.open(region));
 
 $("here-read").addEventListener("click", () => world.rooms.find((r) => r.id === region)?.open && openPanel(region));
 
-// Sound starts with your first press anywhere, and this button turns it off and on.
+// Audio starts only from an explicit audio button. Later gestures can resume
+// playback after the browser suspends it, without overriding an intentional mute.
 const soundButton = $("sound-button");
 let soundButtonGesture = false;
 const SOUND_LABEL = { loading: "sound loading", starting: "sound starting", ready: "play sound", on: "sound on", off: "sound off", unavailable: "sound unavailable" };
@@ -275,8 +281,8 @@ soundButton.addEventListener("pointerdown", (e) => {
 });
 // Match Satie's field-study integration: a gesture resumes the loaded scene.
 // The sound button owns its own click so one press cannot start then immediately mute.
-addEventListener("pointerdown", (e) => e.target !== soundButton && sound.start(), { capture: true });
-addEventListener("keydown", (e) => e.target !== soundButton && sound.start(), { capture: true });
+addEventListener("pointerdown", (e) => !entrance?.open && e.target !== soundButton && sound.diagnostics().wanted && sound.start(), { capture: true });
+addEventListener("keydown", (e) => !entrance?.open && e.target !== soundButton && sound.diagnostics().wanted && sound.start(), { capture: true });
 document.addEventListener("pointerover", (e) => e.target.closest?.("button, a") && !e.relatedTarget?.closest?.("button, a") && sound.event("ui.hover"));
 document.addEventListener("click", (e) => e.target.closest?.("button, a") && sound.event("ui.press"));
 
@@ -327,6 +333,7 @@ function closePanel() {
 $("panel-close").addEventListener("click", closePanel);
 
 addEventListener("keydown", (e) => {
+  if (entrance?.open) return;
   if (e.key === "Escape") {
     closePanel();
     closeMenu();
