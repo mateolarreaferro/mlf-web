@@ -43,7 +43,7 @@
       <div class="entrance-main">
         <p class="entrance-kicker">AI agents for cognitive augmentation</p>
         <h1 id="entrance-title">cognitive<br>agents.</h1>
-        <div class="entrance-actions">
+        <div id="entrance-actions" class="entrance-actions">
           <button id="entrance-guest" class="pill solid">join as guest <span aria-hidden="true">↗</span></button>
           <button id="entrance-editor" class="pill">join as editor <span aria-hidden="true">↗</span></button>
         </div>
@@ -52,10 +52,18 @@
           <div class="entrance-code-row"><input id="entrance-code" type="password" placeholder="editor code" autocomplete="current-password" maxlength="256" required><button id="entrance-submit" class="pill solid" type="submit">enter <span aria-hidden="true">↗</span></button><button id="entrance-back" class="pill" type="button">back</button></div>
           <p id="entrance-status" role="status" aria-live="polite"></p>
         </form>
+        <div id="entrance-launch" class="entrance-launch" hidden>
+          <div class="entrance-actions">
+            <button id="entrance-audio" class="pill solid" aria-pressed="false"><span id="entrance-audio-label">enter with sound</span> <span aria-hidden="true">↗</span></button>
+            <button id="entrance-quiet" class="pill">enter quietly</button>
+          </div>
+          <p id="entrance-load-status" role="status" aria-live="polite">headphones recommended</p>
+          <progress id="entrance-progress" aria-label="loading soundscape" hidden></progress>
+        </div>
       </div>
       <footer class="entrance-footer">
         <p><a href="https://mateolarreaferro.com">mateo larrea ferro</a><span>2026</span></p>
-        <button id="entrance-audio" class="pill entrance-audio" aria-pressed="false" disabled><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3Z"/><path d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg><span id="entrance-audio-label">loading audio…</span></button>
+        <span class="entrance-place">an evolving world · boston</span>
       </footer>
     </section>
     <div id="environment" inert>
@@ -67,9 +75,11 @@
         <p class="label">
           <a href="https://mateolarreaferro.com">mateo larrea ferro</a> · mit media lab · 2026
         </p>
+        <a id="ecosystem-weather" class="weather-label" href="https://open-meteo.com/" target="_blank" rel="noreferrer">boston · simulated tide</a>
       </div>
       <nav class="tools" aria-label="site">
         <button id="notes-button" class="pill" aria-expanded="false" aria-controls="weekly-notes" disabled>notes</button>
+        <button id="nav-sound" class="pill" aria-pressed="false">sound off</button>
         <button id="edit-button" class="pill" aria-expanded="false" aria-controls="scene-editor" disabled>controls</button>
         <button id="menu-button" class="pill" aria-expanded="false" aria-controls="menu">rooms</button>
       </nav>

@@ -13,10 +13,9 @@ try {
   page.on('console', message => { if (message.type() === 'warning' || message.type() === 'error') warnings.push(message.text()); });
   await page.goto(base);
   await page.click('#entrance-guest');
+  await page.click('#entrance-audio');
   await page.locator('#entrance').waitFor({ state: 'hidden' });
-  await page.waitForFunction(() => window.agentsWorld?.sound.state === 'ready', null, { timeout: 120000 });
   await page.click('#edit-button');
-  await page.click('#sound-button');
   await page.waitForFunction(() => agentsWorld.sound.state === 'on');
   const report = await page.evaluate(async () => {
     const engine = agentsWorld.sound.scene.engine;

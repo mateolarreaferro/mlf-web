@@ -13,8 +13,9 @@ try {
   await page.addInitScript(() => localStorage.setItem('agents-sound-off', '1'));
   await page.goto(base);
   await page.click('#entrance-guest');
+    await page.click('#entrance-quiet');
   await page.locator('#entrance').waitFor({ state: 'hidden' });
-  await page.waitForFunction(() => window.agentsWorld?.sound.scene && agentsWorld.sound.state === 'off', null, { timeout: 120000 });
+  await page.waitForFunction(() => window.agentsWorld?.controls);
   await page.click('#edit-button');
   await page.locator('#agent-form').waitFor({ timeout: 15000 });
   assert.equal(await page.locator('#agent-setup').count(), 0, 'no local setup text on the web');

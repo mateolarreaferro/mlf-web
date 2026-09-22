@@ -8,7 +8,8 @@ try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
     await page.route('**/js/sound.js', route => route.fulfill({ contentType: 'text/javascript', body: mixer ? sound : sound.replace('function updateTrims() {', 'function updateTrims() { return;') }));
     await page.goto('http://127.0.0.1:8766/');
-    await page.waitForFunction(() => window.agentsWorld?.sound.state === 'ready');
+    await page.click('#entrance-guest'); await page.click('#entrance-quiet'); await page.locator('#entrance').waitFor({ state: 'hidden' });
+    await page.click('#edit-button');
     await page.click('#sound-button'); await page.waitForFunction(() => agentsWorld.sound.state === 'on');
     const samples = await page.evaluate(async () => {
       const engine = agentsWorld.sound.scene.engine, context = engine.audioContext;

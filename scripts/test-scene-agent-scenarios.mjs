@@ -10,7 +10,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 1440, height: 960 } });
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.addInitScript(() => localStorage.setItem('agents-sound-off', '1'));
-  await page.goto(base); await page.waitForFunction(() => window.agentsWorld?.sound.scene && agentsWorld.sound.state === 'off', null, { timeout: 120000 });
+  await page.goto(base); await page.click('#entrance-guest'); await page.click('#entrance-quiet'); await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.click('#edit-button');
   await page.click('#sound-button'); await page.waitForFunction(() => agentsWorld.sound.state === 'on');
   await page.waitForFunction(() => !document.getElementById('agent-submit').disabled);

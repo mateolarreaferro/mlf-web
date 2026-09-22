@@ -28,6 +28,7 @@ try {
   await page.click('#entrance-editor');
   await page.fill('#entrance-code', key);
   await page.click('#entrance-submit');
+  await page.click('#entrance-quiet');
   await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.locator('#notes-button').waitFor();
   await page.waitForFunction(() => !document.getElementById('notes-button').disabled);
@@ -78,6 +79,7 @@ try {
   await page.unroute('**/api/weekly-notes');
   page.once('dialog', dialog => dialog.accept());
   await page.reload();
+  await page.click('#entrance-quiet');
   await page.waitForFunction(() => document.getElementById('notes-button') && !document.getElementById('notes-button').disabled);
   await page.click('#notes-button');
   await page.locator(`.notes-index-item[data-note-id="${firstId}"]`).click();
@@ -112,6 +114,7 @@ try {
   const weekTwo = (await api()).body.notes.find(n => n.week === 'week02' && n.text === 'A thought for week two.' && !originalIds.has(n.id));
   assert.ok(weekTwo); testIds.add(weekTwo.id);
   await page.reload();
+  await page.click('#entrance-quiet');
   await page.waitForFunction(() => document.getElementById('notes-button') && !document.getElementById('notes-button').disabled);
   await page.click('#notes-button'); await page.selectOption('#notes-week', 'week02');
   await page.locator(`.notes-index-item[data-note-id="${weekTwo.id}"]`).waitFor();

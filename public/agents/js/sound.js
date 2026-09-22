@@ -152,10 +152,19 @@ export function soundManifest(world) {
   The site must never depend on it: if anything here fails to load, the world
   is silent and everything else works.
 */
+import { SatieScene, SatieEngine } from "../vendor/satie-three.js";
+import * as THREE from "../vendor/three.module.min.js";
+
 const MUTE_KEY = "agents-sound-off";
 
 export function createSound() {
   let audio = null; // the SatieScene, once loaded
+  let prepared = null; // created and unlocked synchronously in the audio click
+  let ownedContext = null;
+  let loading = null;
+  let lastError = "";
+  const progress = { completed: 0, total: 0, label: "choose sound" };
+  const markers = [];
   let world = null;
   let walker = null;
   let playing = false;
@@ -230,30 +239,88 @@ export function createSound() {
   }
   const here = { x: 0, y: 0, z: 0 };
   const tell = () => listeners.forEach((fn) => fn(state()));
-  const state = () => (failed ? "unavailable" : muted ? "off" : starting ? "starting" : playing && audio?.engine.audioContext.state === "running" ? "on" : audio ? "ready" : "loading");
+  const state = () => (failed ? "unavailable" : muted ? "off" : starting ? "starting" : playing && audio?.engine.audioContext.state === "running" ? "on" : audio ? "ready" : loading || wanted ? "loading" : "idle");
 
   // What the installed contract declares. The inventory above can run ahead
   // of the last composition (a week opens, a host is added); anything Satie
   // has not been told about yet is skipped, never an error.
   const declared = { events: new Set(), signals: new Set() };
 
-  async function attach(w, by) {
+  function attach(w, by) {
     world = w;
     walker = by;
+    if (wanted && !muted) void load();
+  }
+
+  function release() {
+    if (watchdog) { clearInterval(watchdog); watchdog = null; }
+    for (const { node } of trims.values()) node.disconnect();
+    trims.clear();
+    outputAnalyser?.disconnect(); outputAnalyser = null; outputNode = null;
+    markers.splice(0).forEach(marker => marker.removeFromParent());
+    const old = audio || prepared; audio = null; prepared = null;
+    old?.dispose();
+    if (ownedContext?.state !== "closed") void ownedContext?.close().catch(() => {});
+    ownedContext = null; playing = false; starting = false;
+  }
+
+  // Called directly by an explicit button, BEFORE any awaits or world work.
+  function enable() {
+    wanted = true; muted = false;
+    try { localStorage.setItem(MUTE_KEY, "0"); } catch {}
     try {
-      const THREE = await import("../vendor/three.module.min.js");
-      const { SatieScene } = await import("../vendor/satie-three.js");
-      const response = await fetch("satie/scene.contract.json");
+      if (failed) { release(); failed = false; lastError = ""; }
+      if (!audio && !prepared) {
+        // These 108 stereo assets otherwise decode to >500 MiB. A 24 kHz
+        // scene retains spatial stereo and the underwater voice bandwidth
+        // while halving decoded memory on phones. Original hashes stay intact.
+        try { ownedContext = new AudioContext({ sampleRate: 24000 }); }
+        catch { ownedContext = new AudioContext(); }
+        prepared = new SatieScene({ engine: new SatieEngine({ audioContext: ownedContext }), seed: 7, levelAnchorDb: 60 });
+      }
+      const context = (audio || prepared).engine.audioContext;
+      void context.resume().catch(error => logDiagnostic("unlock.error", { message: String(error) }));
+      if (audio) start();
+      else if (world) void load();
+    } catch (error) {
+      lastError = String(error?.message ?? error); failed = true;
+      logDiagnostic("unlock.error", { message: lastError });
+    }
+    tell();
+  }
+
+  function load() {
+    if (loading || audio || !world || !prepared) return loading;
+    loading = loadScene().finally(() => { loading = null; tell(); });
+    return loading;
+  }
+  async function loadScene() {
+    const scene = prepared;
+    let timeout;
+    try {
+      progress.completed = 0; progress.total = 0; progress.label = "loading soundscape"; tell();
+      const response = await fetch("satie/scene.contract.json", { signal: AbortSignal.timeout(15000), cache: "no-cache" });
       if (!response.ok) throw new Error(`Scene contract: ${response.status}`);
       const contract = await response.json();
-      const mixResponse = await fetch("satie/mix.json");
+      const mixResponse = await fetch("satie/mix.json", { signal: AbortSignal.timeout(15000) });
       if (!mixResponse.ok) throw new Error(`Scene mix: ${mixResponse.status}`);
       const mix = await mixResponse.json();
-      const scene = new SatieScene({ contract, seed: 7, levelAnchorDb: mix.levelAnchorDb });
-      await scene.load(
+      scene.contract = contract;
+      scene.engine.setLevelAnchorDb(mix.levelAnchorDb);
+      const manifest = await fetch("satie/samples.json", { signal: AbortSignal.timeout(15000) });
+      if (!manifest.ok) throw new Error(`Audio manifest: ${manifest.status}`);
+      progress.total = Object.keys(await manifest.json()).length;
+      const decode = scene.engine.decodeAudioAsset.bind(scene.engine);
+      scene.engine.decodeAudioAsset = async (...args) => {
+        const buffer = await decode(...args);
+        progress.completed++; progress.label = `loading sound ${progress.completed} / ${progress.total}`; tell();
+        return buffer;
+      };
+      await Promise.race([scene.load(
         new URL("satie/scene.satie", document.baseURI).href,
         new URL("satie/samples.json", document.baseURI).href,
-      );
+      ), new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error("Sound loading timed out. Please retry.")), 90000); })]);
+      declared.events.clear(); declared.signals.clear();
       for (const e of contract.scene.events ?? []) declared.events.add(e.name);
       for (const g of contract.scene.signals ?? []) declared.signals.add(g.name);
 
@@ -265,6 +332,7 @@ export function createSound() {
         const o = new THREE.Object3D();
         o.position.set(x, y, z);
         world.scene.add(o);
+        markers.push(o);
         return o;
       };
       const real = new Map(world.stones.map((st) => [hostId(st.id), st.points]));
@@ -276,11 +344,14 @@ export function createSound() {
       }
 
       audio = scene;
+      prepared = null;
+      progress.label = "sound ready";
       logDiagnostic("scene.loaded", { context: audio.engine.audioContext.state, voices: audio.engine.tracks.size });
       // The browser can suspend or interrupt a live scene (for example when
       // changing audio devices). Reflect that in the button, and let the next
       // gesture resume the same scene without resetting its voices.
       audio.engine.audioContext.addEventListener("statechange", () => {
+        if (audio !== scene) return;
         logDiagnostic("context.statechange", { context: audio.engine.audioContext.state, playing: audio.engine.isPlaying });
         tell();
         // Satie's field-study wrapper retries transport when a context returns
@@ -291,7 +362,7 @@ export function createSound() {
       // statechange event. Keep the user-requested transport alive and resume
       // the same loaded scene instead of creating a second scene or voices.
       watchdog = setInterval(() => {
-        if (!audio || muted || !wanted || starting) return;
+        if (!audio || muted || !wanted || starting || failed || document.hidden) return;
         sampleOutput();
         logDiagnostic("watchdog.sample", { rms: outputRms, context: audio.engine.audioContext.state, playing: audio.engine.isPlaying });
         const ctx = audio.engine.audioContext;
@@ -302,11 +373,11 @@ export function createSound() {
       if (wanted && !muted) start(); // works if the press is recent enough; if not, the next press does it
     } catch (err) {
       logDiagnostic("scene.error", { message: String(err?.message ?? err) });
-      failed = true;
-      if (watchdog) { clearInterval(watchdog); watchdog = null; }
+      lastError = String(err?.message ?? err);
+      release(); failed = true; progress.label = "sound couldn’t load — retry or enter quietly";
       tell();
       console.warn("sound: the world stays silent.", err);
-    }
+    } finally { clearTimeout(timeout); }
   }
 
   /* A gesture requests playback; attach can finish that request after loading. */
@@ -314,14 +385,20 @@ export function createSound() {
   function start() {
     wanted = true;
     logDiagnostic("start.request", { context: audio?.engine?.audioContext?.state ?? null, playing: audio?.engine?.isPlaying ?? false, muted });
-    if (muted || !audio || starting || audio.engine.audioContext.state === "running" && audio.engine.isPlaying) return;
+    if (muted || failed || !audio || starting) return;
+    if (audio.engine.audioContext.state === "running" && audio.engine.isPlaying) { playing = true; tell(); return; }
     // Satie's browser integration resumes synchronously on the gesture, then
     // starts the already-loaded scene. Calling start before load completes is
     // unreliable in Brave and Safari and can produce a brief one-shot then silence.
     void audio.engine.audioContext.resume().catch(() => {});
     starting = true;
     tell();
-    audio.start().then(() => {
+    const active = audio;
+    let resumeTimeout;
+    Promise.race([active.start(), new Promise((_, reject) => {
+      resumeTimeout = setTimeout(() => reject(new DOMException("Tap to resume audio.", "TimeoutError")), 8000);
+    })]).then(() => {
+      if (audio !== active) return;
       starting = false;
       if (muted) { audio.stop(); tell(); return; }
       playing = audio.engine.isPlaying;
@@ -331,25 +408,23 @@ export function createSound() {
       if (!greeted) fire("sound_on", here);
       greeted = true;
     }, (err) => {
+      if (audio !== active) return;
       playing = false;
       starting = false;
+      failed = err?.name !== "TimeoutError"; lastError = String(err?.message ?? err);
       console.warn("sound: could not start.", err);
       logDiagnostic("start.error", { message: String(err?.message ?? err), context: audio?.engine?.audioContext?.state ?? null });
       tell();
-    });
+    }).finally(() => clearTimeout(resumeTimeout));
   }
 
-  function toggle() {
-    muted = !muted;
-    try { localStorage.setItem(MUTE_KEY, muted ? "1" : "0"); } catch {}
-    if (muted && playing) {
-      audio.stop();
-      playing = false;
-    } else if (!muted) {
-      start();
-    }
+  function silence() {
+    muted = true; wanted = false;
+    try { localStorage.setItem(MUTE_KEY, "1"); } catch {}
+    audio?.stop(); playing = false;
     tell();
   }
+  function toggle() { if (playing && !muted || starting) silence(); else enable(); }
 
   const fire = (name, at) => {
     if (!audio || !playing || !declared.events.has(name)) return;
@@ -430,9 +505,7 @@ export function createSound() {
       logDiagnostic("update.error", { message: String(err?.message ?? err) });
       console.warn("sound: stopped.", err);
       if (watchdog) { clearInterval(watchdog); watchdog = null; }
-      audio?.dispose();
-      audio = null;
-      playing = false;
+      lastError = String(err?.message ?? err); release();
       failed = true;
       tell();
     }
@@ -460,7 +533,8 @@ export function createSound() {
   }
 
   return {
-    attach, start, toggle, update, event, setControl,
+    attach, start, enable, silence, toggle, update, event, setControl,
+    get progress() { return { ...progress, error: lastError }; },
     controlValues: () => ({ ...levels }),
     hasControl: id => !!audio?.engine.scriptStatements.some(statement => category(statement) === id),
     controlTelemetry: () => [...trims].map(([track, trim]) => ({ source: track.statement.sourceId, group: trim.group, gain: trim.node.gain.value })),
@@ -471,8 +545,9 @@ export function createSound() {
       const ctx = audio?.engine?.audioContext;
       const engine = audio?.engine;
       return {
-        state: state(), muted, wanted, playing, starting, failed,
+        state: state(), muted, wanted, playing, starting, failed, progress: { ...progress }, error: lastError,
         context: ctx?.state ?? null,
+        sampleRate: ctx?.sampleRate ?? ownedContext?.sampleRate ?? null,
         contextTime: ctx?.currentTime ?? null,
         transport: engine?.isPlaying ?? false,
         voices: engine?.tracks?.size ?? 0,

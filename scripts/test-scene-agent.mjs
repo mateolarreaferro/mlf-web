@@ -13,6 +13,7 @@ try {
     await page.addInitScript(() => localStorage.setItem('agents-sound-off', '1'));
     await page.goto(base);
     await page.click('#entrance-guest');
+    await page.click('#entrance-quiet');
     await page.locator('#entrance').waitFor({ state: 'hidden' });
     await page.waitForFunction(() => window.agentsWorld?.controls);
     await page.locator('#edit-button').click();
@@ -66,9 +67,9 @@ try {
     });
     assert.ok(rejected.every(r => !r.ok), 'stale, out-of-range and unavailable controls must reject');
     await page.getByRole('button', { name: 'reset', exact: true }).click();
-    await page.waitForFunction(() => agentsWorld.sound.scene && agentsWorld.sound.state === 'off', null, { timeout: 120000 });
+    assert.equal(await page.evaluate(() => agentsWorld.sound.state), 'off');
     await page.click('#sound-button');
-    await page.waitForFunction(() => agentsWorld.sound.state === 'on', null, { timeout: 30000 });
+    await page.waitForFunction(() => agentsWorld.sound.state === 'on', null, { timeout: 120000 });
     await page.locator('#scene-fields details').filter({ has: page.locator('summary', { hasText: /^satie mixer$/ }) }).locator('summary').click();
     await page.getByLabel('low drone', { exact: true }).fill('0.25');
     await page.getByLabel('rain', { exact: true }).fill('0.45');

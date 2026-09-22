@@ -6,6 +6,7 @@ try {
   const base = process.env.AGENTS_URL ?? 'http://127.0.0.1:8766/';
   await page.goto(base);
   await page.click('#entrance-guest');
+    await page.click('#entrance-quiet');
   await page.locator('#entrance').waitFor({ state: 'hidden' });
   await page.waitForFunction(() => window.agentsWorld?.controls);
   await page.click('#menu-button');

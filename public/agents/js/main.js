@@ -17,6 +17,7 @@ import { layout } from "./rooms.js";
 import { createEditor } from "./editor.js";
 import { createNotes } from "./notes.js";
 import { createEntrance } from "./entrance.js";
+import { followBoston } from "./ecosystem.js";
 
 const $ = (id) => document.getElementById(id);
 const root = document.documentElement;
@@ -37,7 +38,7 @@ let notes = null;
 const sound = createSound();
 
 const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 220);
-const entrance = embed ? null : createEntrance({ sound, onEnter() { walker?.setEnabled(true); } });
+const entrance = embed ? null : createEntrance({ sound, loadWorld: start, onEnter() { walker?.setEnabled(true); } });
 if (embed) $("environment").inert = false;
 
 async function start() {
@@ -60,6 +61,11 @@ async function start() {
 
   // fewer points on small screens: a phone draws them with less to spare
   world = buildWorld({ density: Math.min(innerWidth, innerHeight) < 700 ? 0.45 : 1.3 });
+  if (!embed) followBoston(world.ecosystem, ({ source, weather }) => {
+    const label = $("ecosystem-weather");
+    label.textContent = source === "simulation" ? "boston · simulated tide" : `boston · ${Math.round(weather.temperature)}° · ${Math.round(weather.wind)} km/h wind${source === "cached" ? " · last weather" : ""}`;
+    label.title = weather ? `Weather by Open-Meteo · ${new Date(weather.observedAt).toLocaleString()} · ${weather.rain} mm rain · ${weather.cloud}% cloud. Currents and tides are artistically modelled.` : "Weather offline. The ecosystem continues with modelled currents and tides.";
+  });
   walker = createWalker(camera, canvas, world, { onPress, reducedMotion });
   walker.setEnabled(!entrance?.open);
   window.agentsWorld = { world, camera, walker, sound, soundManifest: () => soundManifest(world) };
@@ -252,37 +258,25 @@ $("here-read").addEventListener("click", () => world.rooms.find((r) => r.id === 
 // Audio starts only from an explicit audio button. Later gestures can resume
 // playback after the browser suspends it, without overriding an intentional mute.
 const soundButton = $("sound-button");
-let soundButtonGesture = false;
-const SOUND_LABEL = { loading: "sound loading", starting: "sound starting", ready: "play sound", on: "sound on", off: "sound off", unavailable: "sound unavailable" };
+const SOUND_LABEL = { idle: "enable sound", loading: "loading sound…", starting: "starting sound…", ready: "start sound", on: "sound on", off: "sound off", unavailable: "retry sound" };
 sound.onChange((now) => {
-  soundButton.textContent = SOUND_LABEL[now];
-  soundButton.setAttribute("aria-pressed", String(now === "on"));
-  soundButton.disabled = now === "unavailable" || now === "loading" || now === "starting";
-  soundButton.setAttribute("aria-busy", String(now === "loading" || now === "starting"));
-});
-soundButton.addEventListener("click", (e) => {
-  e.stopPropagation();
-  // Brave can resolve scene.start() before dispatching the synthesized click
-  // that follows pointerdown. That click must not be mistaken for a second
-  // press, or it immediately toggles the scene back off.
-  if (soundButtonGesture) { soundButtonGesture = false; return; }
-  // A pointer click should return Space to swimming. Keyboard activation
-  // keeps focus so the button remains usable with Tab, Enter and Space.
-  if (e.detail > 0) soundButton.blur();
-  if (sound.state === "ready" || sound.state === "loading" || sound.state === "starting") sound.start();
-  else sound.toggle();
-});
-soundButton.addEventListener("pointerdown", (e) => {
-  e.stopPropagation();
-  if (sound.state === "ready") {
-    soundButtonGesture = true;
-    sound.start();
+  for (const button of [soundButton, $("nav-sound")]) {
+    button.textContent = SOUND_LABEL[now];
+    button.setAttribute("aria-pressed", String(now === "on"));
+    button.disabled = now === "loading" || now === "starting";
+    button.setAttribute("aria-busy", String(button.disabled));
+    button.title = now === "loading" ? sound.progress.label : now === "unavailable" ? "Sound couldn’t load. Press to retry." : "";
   }
+});
+for (const button of [soundButton, $("nav-sound")]) button.addEventListener("click", e => {
+  e.stopPropagation();
+  sound.toggle();
+  if (e.detail > 0) button.blur();
 });
 // Match Satie's field-study integration: a gesture resumes the loaded scene.
 // The sound button owns its own click so one press cannot start then immediately mute.
-addEventListener("pointerdown", (e) => !entrance?.open && e.target !== soundButton && sound.diagnostics().wanted && sound.start(), { capture: true });
-addEventListener("keydown", (e) => !entrance?.open && e.target !== soundButton && sound.diagnostics().wanted && sound.start(), { capture: true });
+addEventListener("pointerdown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.start(), { capture: true });
+addEventListener("keydown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.start(), { capture: true });
 document.addEventListener("pointerover", (e) => e.target.closest?.("button, a") && !e.relatedTarget?.closest?.("button, a") && sound.event("ui.hover"));
 document.addEventListener("click", (e) => e.target.closest?.("button, a") && sound.event("ui.press"));
 
@@ -354,6 +348,9 @@ addEventListener("keydown", (e) => lightKey(e, true));
 addEventListener("keyup", (e) => lightKey(e, false));
 addEventListener("blur", () => legendKeys.forEach((el) => el.removeAttribute("data-on")));
 
-start();
+if (embed) start();
 
-addEventListener("pagehide", () => sound.scene?.dispose(), { once: true });
+// Preserve the loaded scene across back/forward cache restores. Disposing on
+// pagehide left restored pages holding a destroyed audio engine.
+addEventListener("pagehide", () => { void sound.scene?.engine.audioContext.suspend(); });
+addEventListener("pageshow", () => { if (sound.diagnostics().wanted) sound.start(); });

@@ -39,14 +39,16 @@
   waves bent by the same noise.
 
   Shards are triangles of wildly different sizes: mostly dust, some large
-  translucent slivers. All of it is one vertex shader with no state: a shard's
-  place is a pure function of its home, its seed, the time, and you.
+  translucent slivers. They share a vertex shader; moving orbit textures and
+  persistent flow ribbons sit within a slowly evolving ecological state.
   Everything is placed by a seeded generator: the same world on every visit.
   No lights, no visible meshes. One mood: dark.
 */
 
 import * as THREE from "../vendor/three.module.min.js";
 import { COOL, DIM, WARM, ground, layout } from "./rooms.js";
+import { createEcosystem } from "./ecosystem.js";
+import { createFlowRibbons } from "./flow-ribbons.js";
 
 export const DISPLAY = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 export const TEXT = DISPLAY;
@@ -59,7 +61,7 @@ export const WATER = {
 };
 
 const FOG_NEAR = 9;
-const FOG_FAR = 18;
+const FOG_FAR = 30;
 const MAX_STONES = 16;
 const TRAIL = 6;
 
@@ -95,6 +97,9 @@ const VERT = /* glsl */ `
   attribute float kind;   // 0 drift, 1 seabed, 2 streamline, 3 orbit, 4 strand, 5 membrane, 6 gill
 
   uniform float uTime, uScale, uMax, uFogNear, uFogFar, uSurface, uWobble, uSwell;
+  uniform float uTurbulence, uBloom, uDaylight, uEvolution, uCurrentStrength;
+  uniform sampler2D uOrbit;
+  uniform float uOrbitRadius;
   uniform vec3 uInk, uTeal, uBlue, uFoam, uCam, uCurrent;
   uniform vec4 uStone[${MAX_STONES}];     // xyz, and the radius it stirs
   uniform vec3 uStoneTint[${MAX_STONES}];
@@ -144,7 +149,7 @@ const VERT = /* glsl */ `
     float near = exp(-r2 / 150.0);
     vec3 v = vec3(-p.z, 0.0, p.x) / (sqrt(r2) + 1.5) * (0.65 * near) + vec3(0.0, 0.2 + 0.3 * near, 0.0);
     v += uCurrent * (0.25 + 0.25 * near);
-    v += swirl(p * 0.2 + vec3(0.0, t * 0.012, t * 0.02)) * 1.3;
+    v += swirl(p * (0.16 + 0.035 * sin(uEvolution)) + vec3(sin(uEvolution) * 2.0, t * 0.022, t * 0.03)) * (0.65 + uTurbulence * 1.5);
     for (int i = 0; i < ${MAX_STONES}; i++) {
       if (i >= uStones) break;
       vec3 r = p - uStone[i].xyz;
@@ -154,7 +159,12 @@ const VERT = /* glsl */ `
       v = mix(v, v * 0.35, g);
       v += g * (around * 1.0 - vec3(r.x, 0.0, r.z) * 0.12 + vec3(0.0, 0.3, 0.0));
     }
-    return v;
+    return v * uCurrentStrength;
+  }
+
+  vec3 orbitPoint(float index) {
+    index = mod(index, 4096.0);
+    return texture2D(uOrbit, (vec2(mod(index, 1024.0), floor(index / 1024.0)) + 0.5) / vec2(1024.0, 4.0)).xyz;
   }
 
   void main() {
@@ -168,6 +178,21 @@ const VERT = /* glsl */ `
     float isOrbit = step(2.5, kind) * step(kind, 3.5);
     float isGill = step(5.5, kind);
 
+    if (isOrbit > 0.5) {
+      // Each seed is a swimmer with a fading tail. It actually travels along
+      // the chaotic orbit; the orbit is no longer a fixed point sculpture.
+      float age = fract(seed + t * (0.018 + 0.006 * sin(seed * 19.0)) - lag * 0.009);
+      float index = age * 4095.0;
+      vec3 local = mix(orbitPoint(floor(index)), orbitPoint(floor(index) + 1.0), fract(index)) * uOrbitRadius;
+      float twist = sin(local.y * 1.7 + t * 0.32 + uEvolution) * (0.16 + 0.22 * uTurbulence);
+      local.xz = mat2(cos(twist), -sin(twist), sin(twist), cos(twist)) * local.xz;
+      local += swirl(local * 0.7 + vec3(t * 0.08, cos(uEvolution) * 2.0, seed * 0.06)) * (0.10 + uBloom * 0.12);
+      home = (modelMatrix * vec4(local, 1.0)).xyz;
+      p = home;
+      a *= pow(1.0 - lag, 1.5) * smoothstep(0.0, 0.035, age) * (1.0 - smoothstep(0.96, 1.0, age));
+      col = mix(tint, uFoam, (1.0 - lag) * 0.3);
+    }
+
     // how near you are: the world forms around you and lets go behind you
     float dc = distance(home, uCam);
     float form = smoothstep(19.0, 6.5, dc);
@@ -176,16 +201,18 @@ const VERT = /* glsl */ `
       // A streamline: every shard on it starts at the same seed and rides the
       // field for a different age, so together they draw the line and slide
       // along it. Midpoint steps, because the water turns.
-      float u = fract(t * 0.02 + lag + seed);
-      float h = u * reach / 11.0;
-      for (int i = 0; i < 11; i++) {
+      float u = fract(t * 0.038 + lag + seed);
+      float h = u * reach / 7.0;
+      for (int i = 0; i < 7; i++) {
         vec3 mid = p + field(p, t) * (h * 0.5);
         p += field(mid, t) * h;
         p.y = abs(p.y);
       }
       a *= pow(sin(3.14159 * u), 0.7);
-      a *= 0.3 + 0.7 * smoothstep(0.25, 0.78, noised(p * 0.19 + vec3(0.0, -t * 0.06, 0.0)).x);
+      a *= 0.25 + 1.6 * pow(0.5 + 0.5 * cos(u * 12.5664 - t * 1.2 + seed * 6.2832), 8.0);
+      a *= 0.55 + 0.6 * smoothstep(0.25, 0.78, noised(p * 0.19 + vec3(0.0, -t * 0.09, 0.0)).x);
       col = mix(uTeal, uBlue, smoothstep(0.0, 0.8, u));
+      col = mix(col, uFoam, pow(1.0 - abs(u - 0.6), 12.0) * uBloom * 0.35);
       float nearest = 1e4;
       vec3 warm = uInk;
       for (int i = 0; i < ${MAX_STONES}; i++) {
@@ -204,8 +231,9 @@ const VERT = /* glsl */ `
       if (kind > 4.5) {
         vec3 radial = home - pivot;
         float nearPod = smoothstep(11.0, 2.5, distance(pivot, uCam));
-        float breath = 0.085 * (uSwell - 0.5);
+        float breath = 0.18 * (uSwell - 0.5);
         p += radial * (breath + 0.1 * nearPod);
+        p.xz += uCurrent.xz * (0.12 + abs(radial.y) * 0.07);
         float contact = exp(-dot(home - uCam, home - uCam) / 10.0);
         p += normalize(radial + vec3(0.001)) * contact * 0.48;
         // Inside the skin, leave space for the orbit and its words.
@@ -269,16 +297,20 @@ const VERT = /* glsl */ `
 
       if (kind > 0.5 && kind < 1.5) { // caustics: light from the surface, moving over the bed
         float c = noised(home * 0.35 + vec3(t * 0.025, 0.0, -t * 0.035)).x;
-        a *= 0.22 + 0.75 * smoothstep(0.4, 0.8, c);
+        a *= (0.16 + 0.7 * uDaylight) * (0.35 + 0.9 * smoothstep(0.4, 0.8, c));
       }
-      if (isOrbit > 0.5) {            // light runs along an attractor's orbit
-        a *= 0.65 + 0.6 * noised(vec3(lag * 11.0, t * 0.13, 2.7)).x;
-      }
+      if (isOrbit > 0.5) a *= 0.8 + uBloom * 0.6;
 
       // And the whole world wobbles, together: one slow large noise moves
       // everything, so forms undulate like jelly and never jitter.
       vec3 wob = swirl(home * 0.11 + vec3(t * 0.05, t * 0.04, -t * 0.03));
       p += wob * uWobble * (kind > 0.5 && kind < 1.5 ? vec3(0.5, 0.35, 0.5) : vec3(1.0));
+      if (kind < 0.5 && rise == 0.0) {
+        // Suspended life is advected in long, overlapping breaths of current.
+        float drift = sin(t * 0.13 + seed * 6.2832);
+        p += field(home, t) * drift * (1.4 + uBloom);
+        a *= 0.65 + uBloom * 0.9;
+      }
     }
 
     vec4 mv = viewMatrix * vec4(p, 1.0);
@@ -413,6 +445,7 @@ function orbit(which, n) {
 }
 
 export function buildWorld({ density = 1 } = {}) {
+  const ecosystem = createEcosystem();
   const plan = layout();
   const SURFACE = plan.bell.y + 8;
   const scene = new THREE.Scene();
@@ -423,6 +456,8 @@ export function buildWorld({ density = 1 } = {}) {
     uTime: { value: 0 }, uScale: { value: 700 }, uMax: { value: 80 },
     uOpacity: { value: 0.95 }, uSurface: { value: SURFACE }, uWobble: { value: 0.5 },
     uSwell: { value: 0.5 }, uBrightness: { value: 1.8 },
+    uTurbulence: { value: 0.4 }, uBloom: { value: 0.5 }, uDaylight: { value: 0.5 }, uEvolution: { value: 0 }, uCurrentStrength: { value: 1 },
+    uOrbit: { value: new THREE.DataTexture(new Float32Array(4096 * 4), 1024, 4, THREE.RGBAFormat, THREE.FloatType) }, uOrbitRadius: { value: 1 },
     uFogNear: { value: FOG_NEAR }, uFogFar: { value: FOG_FAR },
     uInk: { value: new THREE.Color(WATER.pointDeep) }, uTeal: { value: new THREE.Color(WATER.teal) },
     uBlue: { value: new THREE.Color(WATER.blue) }, uFoam: { value: new THREE.Color(WATER.foam) },
@@ -433,6 +468,7 @@ export function buildWorld({ density = 1 } = {}) {
     uStones: { value: 0 },
     uTrail: { value: Array.from({ length: TRAIL }, () => new THREE.Vector4(0, -99, 0, 0)) },
   };
+  uniforms.uOrbit.value.needsUpdate = true;
   const glow = new THREE.ShaderMaterial({
     vertexShader: VERT, fragmentShader: FRAG, uniforms,
     transparent: true, depthWrite: false, depthTest: false,
@@ -573,22 +609,27 @@ export function buildWorld({ density = 1 } = {}) {
     }
   }
 
-  /* The week's object: a strange attractor, drawn as its own orbit, turning. */
+  /* A population travelling through a chaotic orbit, carried by the water. */
   function attractor(id, which, c, radius, color) {
     const rnd = seeded(`attractor.${id}`);
     const bag = cloud();
-    const pts = orbit(which, N(11000));
-    pts.forEach((p, i) => {
-      const shedding = rnd() < 0.22;
-      bag.add(p[0] * radius, p[1] * radius, p[2] * radius, {
-        kind: KIND.orbit, fixed: true, lag: i / pts.length, tint: color, amt: 0.95,
-        size: 0.012 + 0.023 * rnd() ** 3, alpha: 0.14, // preserve the orbit's lines instead of burning them white
-        loose: shedding ? 0.9 : 0.03, reach: 3 + rnd() * 5,
+    const pts = orbit(which, 4096), data = new Float32Array(4096 * 4);
+    pts.forEach((p, i) => data.set([...p, 1], i * 4));
+    const texture = new THREE.DataTexture(data, 1024, 4, THREE.RGBAFormat, THREE.FloatType);
+    texture.needsUpdate = true;
+    const material = glow.clone();
+    material.uniforms = { ...uniforms, uOrbit: { value: texture }, uOrbitRadius: { value: radius * 1.35 } };
+    const swimmers = Math.round(150 * Math.min(density, 1));
+    for (let i = 0; i < swimmers; i++) {
+      const seed = rnd();
+      for (let tail = 0; tail < 24; tail++) bag.add(0, 0, 0, {
+        kind: KIND.orbit, fixed: true, seed, lag: tail / 24, tint: color, amt: 1,
+        size: 0.026 + (1 - tail / 24) * 0.019, alpha: 0.62, loose: 0, reach: 0,
       }, rnd);
-    });
-    const points = bag.build(glow);
+    }
+    const points = bag.build(material);
     points.position.set(c.x, c.y, c.z);
-    points.userData = { y: c.y, turn: 0.07 + rnd() * 0.05, phase: rnd() * 6.28 };
+    points.userData = { origin: new THREE.Vector3(c.x, c.y, c.z), turn: 0.10 + rnd() * 0.05, phase: rnd() * 6.28 };
     scene.add(points);
 
     for (let i = 0; i < N(380); i++) { // bubbles climb away from it
@@ -871,8 +912,15 @@ export function buildWorld({ density = 1 } = {}) {
       for (let k = 0; k < n; k++) {
         const a = (k / n) * Math.PI * 2 + r;
         const x = Math.cos(a) * r, z = Math.sin(a) * r;
-        streamline(x, ground(x, z) + 0.3 + rnd() * 1.2, z, 46, 300, {});
+        streamline(x, ground(x, z) + 0.3 + rnd() * 1.2, z, 32, 220, {});
       }
+    }
+
+    // Cross-currents at several depths make the water's circulation legible
+    // from the entry view, not only when looking down at the seabed.
+    for (let k = 0; k < 36; k++) {
+      const a = k / 36 * Math.PI * 2;
+      streamline(Math.cos(a) * 14, 3 + (k % 6) * 3.2, Math.sin(a) * 14, 24, 200, { alpha: 0.82 });
     }
     for (const st of stones) {
       for (const [r, n] of [[1.1, 8], [1.9, 11]]) {
@@ -900,10 +948,11 @@ export function buildWorld({ density = 1 } = {}) {
   }
 
   scene.add(main.build(glow));
+  const ribbons = createFlowRibbons(scene, ecosystem, { density, surface: SURFACE, stones });
 
   /* ---------- each frame ---------- */
 
-  let time = 0;
+  let time = (Date.now() / 1000) % 1200;
   let swell = 0.5;
   const at = new THREE.Vector3();
   const was = new THREE.Vector3();
@@ -912,12 +961,12 @@ export function buildWorld({ density = 1 } = {}) {
   let head = 0;
   const deep = new THREE.Color(WATER.deep), shallow = new THREE.Color(WATER.shallow);
   const inkDeep = new THREE.Color(WATER.pointDeep), inkShallow = new THREE.Color(WATER.pointShallow);
-  const settings = { 'visual.water': '#232323', 'visual.creature': '#0433ff', 'motion.speed': 0.05, 'motion.breathing': 0.6, 'motion.current': 0.7, 'life.birds': 0.75, 'visual.sparkle': 1 };
+  const settings = { 'visual.water': '#232323', 'visual.creature': '#0433ff', 'motion.speed': 0.8, 'motion.breathing': 0.6, 'motion.current': 1, 'life.birds': 0.75, 'visual.sparkle': 1 };
 
   function setControl(id, value) {
     if (id === 'visual.brightness') uniforms.uBrightness.value = value;
     else if (id === 'visual.sparkle') settings[id] = value;
-    else if (id === 'visual.fog') scene.fog.far = uniforms.uFogFar.value = value;
+    else if (id === 'visual.fog') settings[id] = scene.fog.far = uniforms.uFogFar.value = value;
     else if (id === 'visual.water') {
       settings[id] = value; deep.set(value);
       if (value === WATER.deep) shallow.set(WATER.shallow);
@@ -930,16 +979,28 @@ export function buildWorld({ density = 1 } = {}) {
     else throw new Error(`Unknown visual control: ${id}`);
   }
   function controlValues() {
-    return { ...settings, 'visual.brightness': uniforms.uBrightness.value, 'visual.fog': uniforms.uFogFar.value };
+    return { ...settings, 'visual.brightness': uniforms.uBrightness.value, 'visual.fog': settings['visual.fog'] ?? FOG_FAR };
   }
 
   function update(dt, camera) {
-    time += dt * settings['motion.speed'];
-    swell = 0.5 + settings['motion.breathing'] * (0.3 * Math.sin(time * 0.27) + 0.2 * Math.sin(time * 0.17 + 1.3));
+    const eco = ecosystem.update(dt);
+    const motion = dt * settings['motion.speed'];
+    ribbons.update(motion, settings['motion.current']);
+    time += motion * eco.metabolism;
+    swell = 0.5 + settings['motion.breathing'] * ((0.22 + eco.energy * 0.16) * Math.sin(time * 0.27) + 0.17 * Math.sin(time * 0.17 + eco.phase));
     uniforms.uTime.value = time;
     uniforms.uSwell.value = swell;
     uniforms.uWobble.value = (0.38 + swell * 0.18) * settings['motion.breathing'];
     uniforms.uCam.value.copy(camera.position);
+    uniforms.uEvolution.value = eco.phase;
+    uniforms.uTurbulence.value = eco.turbulence;
+    uniforms.uBloom.value = eco.bloom;
+    uniforms.uDaylight.value = eco.light;
+    uniforms.uOpacity.value = 0.95 * settings['visual.sparkle'];
+    uniforms.uCurrentStrength.value = settings['motion.current'];
+    uniforms.uCurrent.value.set(eco.currentX, 0.18 + eco.tide * 0.14, eco.currentZ).multiplyScalar(settings['motion.current']);
+    uniforms.uFogFar.value = settings['visual.fog'] ?? FOG_FAR * (1.08 - eco.turbulence * 0.2);
+    scene.fog.far = uniforms.uFogFar.value;
 
     // Your wake: every third of a second, leave a mark where you are, as
     // strong as you were fast; the marks fade over a few seconds.
@@ -960,14 +1021,22 @@ export function buildWorld({ density = 1 } = {}) {
     // the water changes with your depth
     const up = THREE.MathUtils.smoothstep(camera.position.y, 1, plan.bell.y);
     scene.background.copy(deep).lerp(shallow, up);
+    scene.background.multiplyScalar(0.5 + eco.light * 0.45);
     scene.fog.color.copy(scene.background);
     uniforms.uInk.value.copy(inkDeep).lerp(inkShallow, up);
 
     for (const s of stones) {
       const p = s.points;
-      p.rotation.y += p.userData.turn * dt * settings['motion.speed'];
-      p.position.y = p.userData.y + Math.sin(time * 0.5 + p.userData.phase) * 0.06;
+      const u = p.userData;
+      p.rotation.y += u.turn * motion;
+      p.rotation.z = Math.sin(time * 0.14 + u.phase) * 0.22;
+      p.position.copy(u.origin);
+      p.position.x += eco.currentX * 0.6 + Math.sin(time * 0.16 + u.phase) * 0.2;
+      p.position.z += eco.currentZ * 0.6 + Math.cos(time * 0.13 + u.phase) * 0.2;
+      p.position.y += Math.sin(time * 0.45 + u.phase) * 0.22;
+      s.x = p.position.x; s.y = p.position.y; s.z = p.position.z;
     }
+    stones.slice(0, MAX_STONES).forEach((s, i) => uniforms.uStone.value[i].set(s.x, s.y, s.z, 2.5 + eco.bloom));
     for (const mesh of lettering) {
       const [near, far] = mesh.userData.fade;
       const want = 1 - THREE.MathUtils.smoothstep(mesh.getWorldPosition(at).distanceTo(camera.position), near, far);
@@ -979,8 +1048,8 @@ export function buildWorld({ density = 1 } = {}) {
     for (const bird of birds) {
       const u = bird.userData;
       const t = time * u.speed + u.phase;
-      bird.position.x += Math.cos(t * 0.83 + u.bank) * dt * 0.18 * settings['motion.current'];
-      bird.position.z += Math.sin(t * 0.71 + u.bank) * dt * 0.18 * settings['motion.current'];
+      bird.position.x += (Math.cos(t * 0.83 + u.bank) * 0.42 + eco.currentX * 0.35) * motion * settings['motion.current'];
+      bird.position.z += (Math.sin(t * 0.71 + u.bank) * 0.42 + eco.currentZ * 0.35) * motion * settings['motion.current'];
       bird.position.y = u.height + Math.sin(t * 0.9) * 0.45;
       bird.rotation.y = Math.atan2(Math.sin(t * 0.71 + u.bank), Math.cos(t * 0.83 + u.bank));
       bird.rotation.z = Math.sin(t * 1.7) * 0.18;
@@ -991,8 +1060,8 @@ export function buildWorld({ density = 1 } = {}) {
     for (const whale of whales) {
       const u = whale.userData;
       const t = time * u.speed + u.phase;
-      whale.position.x += dt * u.speed * 0.55;
-      whale.position.z += Math.sin(t * 0.7 + u.bank) * dt * 0.12;
+      whale.position.x += motion * (u.speed * 0.9 + eco.currentX * 0.08);
+      whale.position.z += (Math.sin(t * 0.7 + u.bank) * 0.16 + eco.currentZ * 0.1) * motion;
       whale.position.y = u.height + Math.sin(t * 0.42) * 0.22;
       whale.rotation.y = Math.sin(t * 0.7 + u.bank) * 0.22;
       whale.rotation.z = Math.sin(t * 0.35) * 0.08;
@@ -1001,10 +1070,11 @@ export function buildWorld({ density = 1 } = {}) {
     for (const drone of drones) {
       const u = drone.userData;
       const t = time * u.speed + u.phase;
-      drone.position.x += Math.cos(t * 0.53) * dt * 0.2;
-      drone.position.z += Math.sin(t * 0.47) * dt * 0.2;
-      drone.position.y += Math.sin(t * 0.31) * dt * 0.04;
-      drone.rotation.y += dt * 0.03;
+      drone.position.x += (Math.cos(t * 0.53) * 0.2 + eco.currentX * 0.3) * motion;
+      drone.position.z += (Math.sin(t * 0.47) * 0.2 + eco.currentZ * 0.3) * motion;
+      drone.position.y += Math.sin(t * 0.31) * motion * 0.04;
+      drone.rotation.y += motion * (0.06 + eco.turbulence * 0.06);
+      if (Math.hypot(drone.position.x, drone.position.z) > DIM.world - 3) { drone.position.x *= 0.999; drone.position.z *= 0.999; }
     }
   }
 
@@ -1018,7 +1088,7 @@ export function buildWorld({ density = 1 } = {}) {
   redraw();
 
   return {
-    scene, rooms, plan, clickable, floors, stones, kelp, sign, birds, ground, ceiling: SURFACE - 2,
+    scene, rooms, plan, clickable, floors, stones, kelp, sign, birds, ecosystem, ground, ceiling: SURFACE - 2,
     get swell() { return swell; },
     get points() { return main.count + stones.reduce((n, s) => n + s.points.geometry.attributes.seed.count, 0); },
     redraw, setViewport, update, setControl, controlValues,

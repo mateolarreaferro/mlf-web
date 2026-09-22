@@ -83,6 +83,15 @@ body {
 .entrance-footer a { text-decoration: none; }
 .entrance-audio { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; white-space: nowrap; }
 .entrance-audio[aria-pressed="true"] { color: #b4e0cc; background: rgb(116 183 154 / 0.13); }
+.entrance-launch { max-width: 30rem; }
+.entrance-launch .pill > span:first-child { margin-left: 0; }
+#entrance-load-status { margin-top: 1rem; font-size: 0.85rem; color: #9caeb4; }
+#entrance-progress { display: block; width: 17rem; max-width: 100%; height: 3px; margin-top: 0.8rem; border: 0; border-radius: 4px; accent-color: #9bd9ca; background: #ffffff12; }
+#entrance-progress::-webkit-progress-bar { background: #ffffff12; border-radius: 4px; }
+#entrance-progress::-webkit-progress-value { background: #9bd9ca; border-radius: 4px; transition: width 0.3s; }
+.weather-label { display: inline-block; margin-top: 0.55rem; color: var(--faint); font-size: 0.7rem; text-decoration: none; }
+.weather-label:hover { color: var(--ink); }
+.entrance-place { text-align: right; }
 :root[data-embed] #entrance { display: none; }
 @media (max-width: 40rem) {
   .entrance { gap: 1.5rem; padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem max(1.5rem, env(safe-area-inset-bottom)); }

@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import { createEcosystem, validWeather } from '../agents2026-mateo/website/js/ecosystem.js';
+const now = Date.now();
+const calm = { observedAt: now, temperature: 12, cloud: 5, wind: 2, gust: 3, direction: 30, rain: 0, daylight: 1 };
+const storm = { ...calm, wind: 42, gust: 65, direction: 240, rain: 6, cloud: 100, daylight: 0 };
+const a = createEcosystem({ now }), b = createEcosystem({ now });
+const sleeping = createEcosystem({ now: now - 86400000 });
+assert.ok(sleeping.setWeather(calm), 'a resumed tab accepts fresh weather');
+assert.ok(sleeping.snapshot().time >= now / 1000, 'environment clock catches up after sleep');
+assert.ok(a.setWeather(calm)); assert.ok(b.setWeather(storm));
+assert.equal(validWeather({ ...calm, wind: NaN }), false);
+assert.equal(validWeather({ ...calm, observedAt: now - 7 * 3600000 }), false);
+const before = a.snapshot(); a.update(0); assert.deepEqual(a.snapshot(), before);
+b.update(1); assert.ok(Math.abs(b.state.energy - before.energy) < 0.02, 'weather changes ease, never snap');
+for (let i = 0; i < 3600; i++) { a.update(1); b.update(1); }
+assert.ok(b.state.energy > a.state.energy + 0.3);
+assert.ok(b.state.turbulence > a.state.turbulence + 0.4);
+assert.ok(b.state.light < a.state.light);
+assert.notEqual(a.state.currentX > 0, b.state.currentX > 0, 'wind direction changes circulation');
+assert.ok(Math.abs(a.state.plankton - before.plankton) > 0.03, 'ecosystem develops over minutes');
+for (const model of [a, b]) for (const [key, value] of Object.entries(model.state)) assert.ok(Number.isFinite(value), key);
+for (let i = 0; i < 7; i++) a.update(3600);
+assert.equal(a.snapshot().source, 'simulation', 'stale data is not presented as current weather');
+console.log('Ecosystem: gradual response, weather causality, bounded evolution, frozen motion, and stale-data fallback passed.');
