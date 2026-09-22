@@ -165,10 +165,29 @@ export function createSound() {
   let wanted = false; // a press has asked for sound, before or after loading
   let muted = false;
   let watchdog = null;
+  let outputAnalyser = null;
+  let outputNode = null;
+  let outputRms = null;
   const diagnosticLog = [];
   const logDiagnostic = (event, detail = {}) => {
     diagnosticLog.push({ at: performance.now(), event, ...detail });
     if (diagnosticLog.length > 80) diagnosticLog.shift();
+  };
+  const sampleOutput = () => {
+    if (!audio?.engine?.audioContext) return;
+    const node = audio.engine.outputNode;
+    if (!outputAnalyser || outputNode !== node) {
+      try { outputAnalyser?.disconnect(); } catch {}
+      outputAnalyser = audio.engine.audioContext.createAnalyser();
+      outputAnalyser.fftSize = 1024;
+      node.connect(outputAnalyser);
+      outputNode = node;
+    }
+    const data = new Float32Array(outputAnalyser.fftSize);
+    outputAnalyser.getFloatTimeDomainData(data);
+    let sum = 0;
+    for (const value of data) sum += value * value;
+    outputRms = Math.sqrt(sum / data.length);
   };
   try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch {}
   const listeners = new Set();
@@ -273,6 +292,8 @@ export function createSound() {
       // the same loaded scene instead of creating a second scene or voices.
       watchdog = setInterval(() => {
         if (!audio || muted || !wanted || starting) return;
+        sampleOutput();
+        logDiagnostic("watchdog.sample", { rms: outputRms, context: audio.engine.audioContext.state, playing: audio.engine.isPlaying });
         const ctx = audio.engine.audioContext;
         if (ctx.state !== "running" || !audio.engine.isPlaying) start();
       }, 900);
@@ -442,6 +463,7 @@ export function createSound() {
         transport: engine?.isPlaying ?? false,
         voices: engine?.tracks?.size ?? 0,
         levelAnchorDb: engine?.levelAnchorDb ?? null,
+        outputRms,
         log: diagnosticLog.slice(),
       };
     },
