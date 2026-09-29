@@ -128,6 +128,13 @@ export function createWalker(camera, canvas, world, { onPress, reducedMotion }) 
     travel([{ x: pos.x, y: pos.y, z: pos.z }, { x, y, z }], null, null, true);
   }
 
+  function goToPose(target, heading) {
+    keys.clear(); velocity.set(0, 0, 0);
+    if (reducedMotion()) return place(target.x, target.y, target.z, heading);
+    travel(waypoints(target), heading, () => { yaw = heading; pitch = 0; });
+    if (route) route.duration = Math.min(3.5, Math.max(1.2, route.duration));
+  }
+
   function place(x, y, z, heading, elevation = 0) {
     pos.set(x, y, z);
     yaw = heading;
@@ -287,7 +294,7 @@ export function createWalker(camera, canvas, world, { onPress, reducedMotion }) 
   }
 
   return {
-    update, goToRoom, goToPoint, place, regionAt,
+    update, goToRoom, goToPoint, goToPose, place, regionAt,
     get position() { return pos; },
     get yaw() { return yaw; },
     get moving() { return route !== null || keys.size > 0; },

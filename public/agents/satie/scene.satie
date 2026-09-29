@@ -856,3 +856,28 @@ loop gen continuous rising stream of small underwater bubbles, rounded liquid gu
     filter lowpass cutoff 950
     reverb wet 0.68 size 1 damping 0.94
     visual none
+
+# Mateo's supplied Drone.wav, alongside the original underwater beds.
+loop mateo_drone
+    source_id mateo_drone
+    bed
+    randomstart
+    zone water
+    move static
+    spl follow swell 0to1 43to46
+    pitch 1
+    reverb wet 0.25 size 1 damping 0.9
+    visual none
+
+# Larry shares the player swimming recording, with independent speed and spatial position.
+loop gen water flowing smoothly around a submerged swimming body, gentle irregular fluid rush without splashes or strokes, close dry recording, seamless ambience loop, consistent texture
+    source_id larry_swimming_water
+    zone water
+    at larry
+    persistent
+    radius 1
+    spl 44
+    volume follow larry_speed 0to2 0to1
+    reverb wet 0.35 size 0.65 damping 0.95
+    filter lowpass cutoff 850
+    visual none

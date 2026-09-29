@@ -10,7 +10,7 @@
   next.config.ts rewrites /agents to the copied index.html.
 */
 
-import { cpSync, existsSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -28,3 +28,15 @@ cpSync(from, to, {
   filter: (src) => !/(^|\/)(\.DS_Store|\.gitkeep)$/.test(src),
 });
 console.log("sync-agents: public/agents now matches agents2026-mateo/website");
+
+// The Week 2 runtime is Python/smolagents, packaged beside the Next app.
+// Copy only source and the skill, never local notes, credentials, runs or a venv.
+const week2 = path.join(root, "agents2026-mateo", "weekly_builds", "week02");
+const runtime = path.join(root, "python", "notes_agent");
+if (existsSync(path.join(week2, "bridge.py"))) {
+  mkdirSync(runtime, { recursive: true });
+  for (const file of ["agent.py", "graph.py", "bridge.py", "requirements.lock.txt", "skills"]) {
+    cpSync(path.join(week2, file), path.join(runtime, file), { recursive: true });
+  }
+  console.log("sync-agents: Python notes agent source synchronized");
+}

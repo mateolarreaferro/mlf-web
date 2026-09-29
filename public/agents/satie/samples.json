@@ -558,5 +558,9 @@
     "url": "./samples/a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f.audio",
     "sha256": "a5ce146945b24fce3c8f311d90b4c4b681b622b5fa19e5ef79334d4c08589c7f",
     "sampleId": "17b456e3-7ecf-4a4f-b9c5-4803a6d6be9d"
+  },
+  "Audio/mateo_drone": {
+    "url": "./samples/780461f8e472952750cff170a02aa26fe89fb9ce76e91e82f734788564993713.audio",
+    "sha256": "780461f8e472952750cff170a02aa26fe89fb9ce76e91e82f734788564993713"
   }
 }

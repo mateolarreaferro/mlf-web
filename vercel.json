@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/notes-agent.py": {
+      "maxDuration": 300,
+      "excludeFiles": "{node_modules,public,agents2026-mateo,.next,.git,.satie}/**"
+    }
+  }
+}

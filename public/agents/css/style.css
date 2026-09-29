@@ -495,3 +495,134 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
   .scene-editor textarea, .scene-editor input:not([type="range"]):not([type="color"]), .scene-editor select { font-size: 16px; }
   :root[data-editing] .here, :root[data-editing] .legend { visibility: hidden; }
 }
+
+/* The graph is another view of the same class notes, over the living world. */
+
+#knowledge-view { position: fixed; inset: 9rem 1.5rem auto auto; z-index: 6; width: min(26rem, calc(100vw - 3rem)); pointer-events: none; }
+#knowledge-view > * { pointer-events: auto; }
+.knowledge-bar { display: flex; align-items: center; justify-content: space-between; }
+.knowledge-bar .label { color: var(--ink); font-size: 1rem; }
+#knowledge-count { color: var(--faint); font-size: .75rem; margin-top: .25rem; }
+.knowledge-search { display: flex; gap: .5rem; align-items: center; width: min(42rem, 100%); margin: 0 0 .5rem; padding: .45rem .5rem .45rem 1.3rem; border-radius: 999px; background: rgb(10 16 21 / .9); }
+.knowledge-search input { min-width: 0; flex: 1; border: 0; background: transparent; color: var(--ink); font: inherit; outline: none; padding: .55rem 0; }
+.knowledge-search:focus-within { box-shadow: 0 0 0 1px #7ab7d46b; }
+.knowledge-search input::placeholder { color: var(--faint); }
+.knowledge-search .pill { background: var(--soft); font-size: 1.25rem; }
+.knowledge-caption { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: .75rem; color: var(--faint); min-height: 3rem; }
+.knowledge-caption .pill { font-size: .75rem; }
+.knowledge-answer-panel { border-radius: 24px; background: rgb(10 16 21 / .92); padding: 1.5rem; max-height: calc(100dvh - 20rem); overflow: auto; overscroll-behavior: contain; }
+.knowledge-answer-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; }
+.knowledge-answer-heading h2 { font: 400 1.15rem/1.4 var(--text); }
+.knowledge-answer-heading .pill { padding: 0 .55rem; min-height: 1.8rem; }
+#knowledge-answer { white-space: pre-wrap; font-size: .88rem; line-height: 1.8; margin-top: 1.4rem; overflow-wrap: anywhere; }
+.knowledge-hint { color: var(--faint); white-space: normal; }
+#knowledge-answer blockquote { color: var(--ink); margin: 1rem 0 .3rem; }
+.knowledge-citation { color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-size: .76rem; text-align: left; text-decoration: underline; text-underline-offset: 3px; }
+.knowledge-connection { display: block; color: var(--faint); background: transparent; padding: .5rem 0; font: inherit; font-size: .76rem; text-align: left; cursor: pointer; border: 0; line-height: 1.6; }
+.knowledge-connection:hover { color: var(--ink); }
+.knowledge-source { margin-top: 1.25rem; padding-top: .7rem; font-size: .78rem; }
+.knowledge-source summary { color: var(--accent); cursor: pointer; }
+.knowledge-source pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; color: var(--faint); margin-top: .7rem; }
+.knowledge-source blockquote { margin-top: .7rem; }
+.knowledge-empty { position: absolute; top: 45%; left: 0; right: 0; text-align: center; color: var(--faint); font-size: .9rem; }
+@media (max-width: 800px) {
+  #knowledge-view { inset: 11rem .75rem auto; width: auto; }
+  .knowledge-search input { font-size: 16px; }
+  .knowledge-answer-panel { position: fixed; bottom: .75rem; left: .75rem; right: .75rem; max-height: 38dvh; padding: 1rem; }
+  .knowledge-caption { font-size: .7rem; }
+}
+.note-dialog textarea { overflow-y: auto; overscroll-behavior: contain; }
+
+/* Shared tool panel; the world stays interactive around it. */
+#workspace { position: fixed; z-index: 6; top: 1.5rem; right: 1.5rem; width: min(25rem, calc(100vw - 3rem)); max-height: calc(100dvh - 3rem); display: flex; flex-direction: column; background: #0d1419; border-radius: 18px; box-shadow: 0 12px 45px #0003; overflow: hidden; }
+.workspace-tabs { display: flex; padding: .4rem; gap: .15rem; flex-shrink: 0; }
+.workspace-tab { flex: 1; min-width: 0; border: 0; border-radius: 11px; padding: .45rem .25rem; color: var(--faint); background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: .25rem; font: inherit; }
+.workspace-tab svg { width: 19px; height: 19px; }
+.workspace-tab span { font-size: .65rem; }
+.workspace-tab[aria-selected="true"] { color: var(--ink); background: var(--soft); }
+.workspace-tab:focus-visible { outline: 1px solid var(--accent); outline-offset: -2px; }
+#workspace-content { min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: #35434c transparent; overscroll-behavior: contain; padding: .2rem 1rem 1rem; }
+#workspace #knowledge-view, #workspace #weekly-notes, #workspace #scene-editor, #workspace #menu { position: static; inset: auto; width: auto; max-width: none; max-height: none; padding: 0; margin: 0; box-shadow: none; background: none; backdrop-filter: none; transform: none; translate: none; }
+#workspace .knowledge-answer-panel { position: static; max-height: none; overflow: visible; padding: .75rem 0; border-radius: 0; background: transparent; }
+#workspace .knowledge-search { width: 100%; background: var(--soft); padding-left: 1rem; }
+#workspace .knowledge-search input { font-size: .85rem; }
+#workspace .knowledge-caption { font-size: .7rem; flex-wrap: wrap; gap: .3rem; }
+#workspace #knowledge-close, #workspace #notes-close, #workspace #editor-close { display: none; }
+#workspace .notes-bar, #workspace .notes-foot { position: static; width: auto; max-width: none; translate: none; box-shadow: none; background: none; backdrop-filter: none; padding: 0; }
+#workspace .notes-bar { display: flex; flex-wrap: wrap; gap: .4rem; padding: .5rem 0 .75rem; }
+#workspace .notes-bar select { min-height: 2rem; font-size: .85rem; padding: .35rem .6rem; border-radius: 8px; }
+#workspace .notes-bar .pill { min-height: 2rem; padding: .35rem .6rem; font-size: .8rem; }
+#workspace .notes-bar select:focus { outline: none; }
+#workspace .notes-bar select:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+#workspace .notes-name { display: none; }
+#workspace .notes-index { max-height: none; overflow: visible; gap: .15rem; display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; margin-top: 0; }
+#workspace .notes-index-item { flex-shrink: 0; width: 100%; min-width: 0; text-align: left; max-width: none; padding: .6rem .65rem; border: 0; border-radius: 8px; background: transparent; backdrop-filter: none; white-space: normal; overflow-wrap: anywhere; line-height: 1.4; font-size: .83rem; }
+#workspace .notes-index-item:hover, #workspace .notes-index-item:focus-visible { background: var(--soft); }
+#workspace .notes-empty p { font-size: .9rem; text-shadow: none; }
+#workspace .notes-empty { position: static; transform: none; margin-top: 1rem; }
+#workspace-sound h2 { font-size: 1rem; font-weight: 400; }
+#workspace-sound p { font-size: .85rem; color: var(--faint); margin: .5rem 0 1rem; }
+:root[data-entering] #workspace, :root[data-embed] #workspace, :root[data-reading] #workspace { display: none; }
+:root[data-notes] .hud, :root[data-notes] .here, :root[data-notes] .legend { visibility: visible; opacity: 1; }
+@media (max-width: 800px) {
+  #workspace { top: 8rem; right: .75rem; width: min(25rem, calc(100vw - 1.5rem)); max-height: calc(100dvh - 9rem); }
+  #workspace .knowledge-answer-panel { max-height: none; }
+  #workspace .knowledge-search input { font-size: 16px; }
+}
+
+.knowledge-network-key { color: var(--faint); font-size: .7rem; line-height: 1.6; margin: .25rem 0 .75rem; }
+
+:root[data-note-search] .here, :root[data-note-search] .legend { opacity: .4; }
+
+.thread-header { display: flex; align-items: center; justify-content: space-between; padding: .5rem 0; }
+.thread-header h2 { font: 400 1.25rem var(--text); }
+.thread-header p, #thread-status { color: var(--faint); font-size: .73rem; }
+.thread-header .pill { font-size: .7rem; padding: .35rem .6rem; min-height: 2rem; }
+.thread-modes { display: flex; gap: .4rem; margin: .5rem 0 1rem; }
+.thread-modes button { border: 0; background: transparent; color: var(--faint); font: inherit; font-size: .78rem; padding: .35rem .65rem; border-radius: 8px; cursor: pointer; }
+.thread-modes button[aria-pressed="true"] { color: var(--ink); background: var(--soft); }
+.thread-welcome { font-size: .87rem; line-height: 1.7; color: #bacbd1; margin-bottom: 1rem; }
+.thread-message { padding: .8rem 0; }
+.thread-user { background: #ffffff06; border-radius: 12px; padding: .7rem .85rem; margin-top: .75rem; }
+.thread-speaker { font-size: .68rem; color: var(--faint); }
+.thread-message-body { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .87rem; line-height: 1.7; margin-top: .3rem; }
+.thread-activity { font-size: .7rem; color: var(--faint); margin-top: .6rem; }
+.thread-activity summary { cursor: pointer; color: var(--accent); }
+.thread-activity ol { padding-left: 1.2rem; margin-top: .5rem; }
+#thread-suggestions { display: flex; flex-direction: column; gap: .4rem; margin: 1rem 0; }
+#thread-suggestions button { background: transparent; border: 0; color: var(--accent); padding: .3rem 0; text-align: left; font: inherit; font-size: .78rem; cursor: pointer; }
+#thread-form { display: flex; align-items: flex-end; gap: .5rem; background: #1b242a; padding: .6rem; border-radius: 14px; margin-top: .75rem; }
+#thread-input { flex: 1; min-width: 0; border: 0; resize: vertical; max-height: 8rem; background: transparent; color: var(--ink); font: .86rem/1.5 var(--text); padding: .3rem; outline: none; }
+#thread-form:focus-within { box-shadow: 0 0 0 1px #7ab7d46b; }
+#thread-send { padding: .4rem .7rem; min-height: 2rem; background: #32484d; }
+#thread-status { margin-top: .6rem; }
+#thread-companion-label { position: fixed; z-index: 5; translate: -50% 0; font-size: .7rem; padding: .3rem .65rem; min-height: 1.8rem; color: #8fadb8; background: transparent; }
+:root[data-entering] #thread-companion-label, :root[data-reading] #thread-companion-label { display: none; }
+@media (max-width: 800px) { #thread-input { font-size: 16px; } }
+
+.here, .legend { transition: opacity 1s ease; }
+#knowledge-results { display: grid; gap: .3rem; margin: .5rem 0; }
+.knowledge-result { background: transparent; border: 0; border-radius: 8px; color: var(--ink); text-align: left; padding: .6rem; font: .82rem/1.45 var(--text); cursor: pointer; }
+.knowledge-result:hover { background: var(--soft); }
+#thread-context { color: var(--faint); font-size: .7rem; line-height: 1.5; margin-top: .6rem; }
+#thread-reset { background: transparent; color: var(--faint); padding: .4rem; min-width: 2rem; }
+#thread-status:empty { display: none; }
+#knowledge-answer-title { font-size: 1rem; line-height: 1.45; }
+#knowledge-answer { white-space: pre-wrap; font-size: .85rem; line-height: 1.65; }
+.connection-evidence { margin: .8rem 0; }
+.connection-evidence blockquote { color: var(--faint); font-size: .8rem; line-height: 1.6; margin: .3rem 0; }
+@media (prefers-reduced-motion: reduce) { .here, .legend { transition-duration: .2s; } }
+
+#workspace[hidden], #workspace-open[hidden] { display: none; }
+#workspace .workspace-tabs { padding-right: 2.5rem; }
+#workspace-close { position: absolute; right: .4rem; top: .6rem; min-height: 2rem; width: 2rem; padding: 0; font-size: 1.15rem; background: transparent; color: var(--faint); }
+#workspace-open { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 6; }
+.lab-mark { display: inline-block; margin-top: .8rem; opacity: .7; }
+.lab-mark img { display: block; width: 100px; height: auto; filter: invert(1); }
+.lab-mark:hover { opacity: 1; }
+
+#nav-sound { position: fixed; right: max(1.5rem, env(safe-area-inset-right)); bottom: max(1.5rem, env(safe-area-inset-bottom)); z-index: 7; width: 44px; height: 44px; padding: 10px; display: grid; place-items: center; border-radius: 50%; background: #0d1419; color: var(--faint); }
+#nav-sound svg { width: 22px; height: 22px; }
+#nav-sound[aria-pressed="true"] { color: var(--ink); }
+#nav-sound[aria-busy="true"] { opacity: .5; }
+:root[data-entering] #nav-sound, :root[data-embed] #nav-sound { display: none; }

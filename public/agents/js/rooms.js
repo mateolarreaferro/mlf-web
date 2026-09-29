@@ -14,7 +14,7 @@
 
 export const ROOMS = [
   { id: "week01", label: "week 1", title: "a first agent, from scratch", status: "open" },
-  { id: "week02", label: "week 2", title: "", status: "soon" },
+  { id: "week02", label: "week 2", title: "larry · connecting my class notes", status: "open" },
   { id: "week03", label: "week 3", title: "", status: "soon" },
   { id: "week04", label: "week 4", title: "", status: "soon" },
   { id: "week06", label: "week 6", title: "", status: "soon" },

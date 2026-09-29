@@ -202,9 +202,11 @@ export function createSound() {
   const listeners = new Set();
   const levels = { 'audio.ambience': 1, 'audio.voices': 1, 'audio.drone': 1, 'audio.rain': 1 };
   const trims = new Map();
+  let focus = 0;
+  const focusGain = () => 1 - .65 * focus;
   const category = statement => {
     const id = statement.sourceId ?? '';
-    if (id === 'deep_body_drone') return 'audio.drone';
+    if (id === 'deep_body_drone' || id === 'mateo_drone') return 'audio.drone';
     if (id === 'submerged_surface_rain') return 'audio.rain';
     if (id === 'week01_singing' || id.startsWith('bell_singer_') || id.startsWith('water_choir_')) return 'audio.voices';
     return 'audio.ambience';
@@ -222,14 +224,15 @@ export function createSound() {
       if (!trim) {
         const node = engine.audioContext.createGain();
         const group = category(track.statement);
-        node.gain.value = levels[group];
+        node.gain.value = levels[group] * focusGain();
         track.gainNode.disconnect(track.scaleGain);
         track.gainNode.connect(node); node.connect(track.scaleGain);
-        trim = { node, group, target: levels[group] }; trims.set(track, trim);
+        trim = { node, group, target: levels[group] * focusGain() }; trims.set(track, trim);
       }
-      if (trim.target !== levels[trim.group]) {
-        trim.target = levels[trim.group];
-        trim.node.gain.setTargetAtTime(trim.target, now, 0.04);
+      const target = levels[trim.group] * focusGain();
+      if (Math.abs(trim.target - target) > .0001) {
+        trim.target = target;
+        trim.node.gain.setTargetAtTime(trim.target, now, 0.12);
       }
     }
   }
@@ -337,6 +340,8 @@ export function createSound() {
       };
       const real = new Map(world.stones.map((st) => [hostId(st.id), st.points]));
       real.set("sign", world.sign);
+      const larry = world.scene.getObjectByName("larry-companion");
+      if (larry) real.set("larry", larry);
       const top = world.plan.bell.y;
       for (const host of contract.scene.objects ?? []) {
         if (host.id === "column") scene.bindLine("column", mark([0, 0, 0]), [[0, 0, 0], [0, top, 0]], 5);
@@ -390,12 +395,12 @@ export function createSound() {
     // Satie's browser integration resumes synchronously on the gesture, then
     // starts the already-loaded scene. Calling start before load completes is
     // unreliable in Brave and Safari and can produce a brief one-shot then silence.
-    void audio.engine.audioContext.resume().catch(() => {});
+    const resumed = audio.engine.audioContext.resume();
     starting = true;
     tell();
     const active = audio;
     let resumeTimeout;
-    Promise.race([active.start(), new Promise((_, reject) => {
+    Promise.race([resumed.then(() => active.start()), new Promise((_, reject) => {
       resumeTimeout = setTimeout(() => reject(new DOMException("Tap to resume audio.", "TimeoutError")), 8000);
     })]).then(() => {
       if (audio !== active) return;
@@ -411,7 +416,7 @@ export function createSound() {
       if (audio !== active) return;
       playing = false;
       starting = false;
-      failed = err?.name !== "TimeoutError"; lastError = String(err?.message ?? err);
+      failed = !["TimeoutError", "NotAllowedError", "AbortError"].includes(err?.name); lastError = String(err?.message ?? err);
       console.warn("sound: could not start.", err);
       logDiagnostic("start.error", { message: String(err?.message ?? err), context: audio?.engine?.audioContext?.state ?? null });
       tell();
@@ -419,12 +424,13 @@ export function createSound() {
   }
 
   function silence() {
+    logDiagnostic("mute.request", { context: audio?.engine?.audioContext?.state ?? null });
     muted = true; wanted = false;
     try { localStorage.setItem(MUTE_KEY, "1"); } catch {}
     audio?.stop(); playing = false;
     tell();
   }
-  function toggle() { if (playing && !muted || starting) silence(); else enable(); }
+  function toggle() { if (state() === "on" || starting) silence(); else enable(); }
 
   const fire = (name, at) => {
     if (!audio || !playing || !declared.events.has(name)) return;
@@ -445,13 +451,11 @@ export function createSound() {
   let carried = false;
   let birdNear = false;
 
-  function update(camera, dt = 0) {
+  function update(camera, dt = 0, companion = null) {
     if (!audio) return;
     try {
+      signal("larry_speed", companion?.speed || 0);
       audio.update(camera); // the camera is the listener; hosts are read from what they are bound to
-      if (wanted && !muted && !starting && audio.engine.audioContext.state !== "running") {
-        void audio.engine.audioContext.resume().catch(() => {});
-      }
       updateTrims();
       const { x, y, z } = camera.position;
       here.x = x; here.y = y; here.z = z;
@@ -534,6 +538,9 @@ export function createSound() {
 
   return {
     attach, start, enable, silence, toggle, update, event, setControl,
+    setFocus(value) { focus = Math.min(1, Math.max(0, value)); },
+    get focusLevel() { return focus; },
+    get focusMultiplier() { return focusGain(); },
     get progress() { return { ...progress, error: lastError }; },
     controlValues: () => ({ ...levels }),
     hasControl: id => !!audio?.engine.scriptStatements.some(statement => category(statement) === id),

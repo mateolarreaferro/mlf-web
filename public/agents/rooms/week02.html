@@ -1,0 +1,49 @@
+<p class="label">week 2 · AI-written working draft · author review pending</p>
+<h1>Larry: connecting my class notes</h1>
+<h2>Objective</h2>
+<p>I wanted an agent that could help me return to my class notes and find connections between them. Taking notes is one thing. Remembering where a thought came from, or how it relates to another class, is harder. Larry is meant to help with memory, learning, and reasoning.</p>
+<p>I also wanted this to happen inside my agents website. I did not want another separate interface. The notes already exist as cards in an underwater world, so Larry lives there too: a small swimming creature that I can talk to.</p>
+<h2>How it works</h2>
+<p>There is one input. Typing a few words highlights matching notes. Sending a question starts Larry’s agent loop. These are different things: highlighting is local search; answering can involve the model choosing tools, reading their results, and deciding what to do next.</p>
+<p>Larry uses smolagents’ ToolCallingAgent with GPT-5.1 through LiteLLM. The loop has an 18-step limit. It can answer ordinary conversation directly, retrieve evidence from notes, or search for a paper reference when that is useful. It does not need to look through my notes to introduce itself.</p>
+<p>The graph stores concepts, thoughts, questions, references, and relationships, with quotes pointing back to the original notes. Retrieval starts with word matching and follows graph connections. It does not use embeddings. SQLite holds a working copy during each run, while the website saves the graph separately from the notes in Vercel Blob storage.</p>
+<pre aria-label="Larry architecture" style="overflow-x:auto"><code>You + underwater notes / Larry chat
+                 |
+                 v
+Website API: permission boundary
+  Guest: read-only / Editor: indexing
+                 |
+                 v
+smolagents loop &lt;----&gt; GPT-5.1
+  choose tool -&gt; observe -&gt; decide
+                 |
+                 v
+Tools + consolidation skill
+  | integrate_note / trace_thought
+  |          |
+  |          v
+  |     SQLite working graph
+  |          |
+  |          v
+  |     Saved graph: Vercel Blob
+  |
+  +-- search_references &lt;--&gt; Exa MCP
+
+Original notes stay separate from the graph.
+Tool permissions are not an OS sandbox.</code></pre>
+<h2>Tools, skill, and MCP</h2>
+<p>The two main tools I designed with coding assistance are <code>integrate_note</code> and <code>trace_thought</code>.</p>
+<p><code>integrate_note</code> takes a note ID, its revision, and structured nodes and relationships. It checks the supporting quotes and returns a receipt, including references that still need resolving. This makes consolidation traceable instead of letting the model silently rewrite my notes.</p>
+<p><code>trace_thought</code> takes a topic and a limited search depth. It returns matching ideas, source quotes, and paths between them. It also reports when matches belong to disconnected groups. The point is to understand why two notes are connected, not just draw a line between them.</p>
+<p>A Markdown skill gives Larry a procedure for consolidating notes, reusing concepts, and distinguishing evidence from inference. An external Exa MCP connection lets it search for paper references. Those results remain candidates, not proof that I read the paper.</p>
+<h2>Example run</h2>
+<p>One recorded test used synthetic notes mentioning ReAct. After integration, the tool returned an unresolved reference. Larry used that result to search for the paper through Exa MCP. The search returned a URL and a receipt. Larry then passed both to <code>attach_reference</code>, which checked them before attaching the candidate, and traced the updated graph.</p>
+<p>This shows a tool result changing the next action. It also exposed a problem: the final answer claimed a connection between disconnected groups. That failure is preserved in the evidence rather than presented as a perfect run.</p>
+<p><a href="media/week02/tool-sequence.json">Example tool sequence</a> · <a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week02">Code and full evidence</a></p>
+<h2>Reflection and tool hygiene</h2>
+<p>The interface needed a lot of work. At first, connections were hard to see, the panel was crowded, and Larry answered simple questions with unnecessary retrieval and citations. I kept asking for a simpler conversation, clearer connections, and a way to click a source and go to that note.</p>
+<p>The current version separates ordinary conversation from questions needing evidence. Selecting a note shows its text and connections. Focusing on notes gradually dims the world and lowers the sound.</p>
+<p>The tools validate arguments, source revisions, quotes, and reference receipts. Guests cannot change the graph, and asking a question does not automatically index notes. These are capability limits, not a full operating-system sandbox.</p>
+<p>The main limitation is still interpretation. A valid quote does not guarantee a correct relationship, and word matching can miss another way of expressing the same idea. The next useful improvement would be evaluating Larry against a small set of questions whose answers I already know, especially ambiguous names and connections across weeks.</p>
+<h2>AI disclosure</h2>
+<p>I used Codex to set up Larry and integrate Satie audio.</p>

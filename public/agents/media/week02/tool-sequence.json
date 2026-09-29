@@ -1,0 +1,45 @@
+{
+  "label": "Real model and MCP run using synthetic example notes; early version",
+  "run_id": "20260929T010409-6d2be4f4",
+  "model": "openai/gpt-5.1",
+  "mcp": {
+    "enabled": true,
+    "connected": true,
+    "server": "https://mcp.exa.ai/mcp",
+    "tool": "web_search_exa"
+  },
+  "sequence": [
+    {
+      "step": 3,
+      "tool": "integrate_note",
+      "observation_used_next": {
+        "unresolved_references": [
+          {
+            "key": "r-react-paper",
+            "label": "ReAct paper about interleaving reasoning and acting"
+          }
+        ]
+      }
+    },
+    {
+      "step": 4,
+      "tool": "search_references",
+      "arguments": {
+        "query": "ReAct interleaving reasoning and acting paper"
+      }
+    },
+    {
+      "step": 5,
+      "tool": "attach_reference",
+      "arguments": {
+        "note_id": "tool-use",
+        "revision": "0fee52f485f655f6",
+        "node_key": "r-react-paper",
+        "receipt_id": "search-97e53aad6418735d",
+        "url": "https://arxiv.org/abs/2210.03629",
+        "title": "Synergizing Reasoning and Acting in Language Models"
+      }
+    }
+  ],
+  "limitation": "The final answer overstated a path between disconnected groups. This trace demonstrates tool chaining, not flawless answer quality."
+}

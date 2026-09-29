@@ -16,6 +16,9 @@ import { createSound, soundManifest } from "./sound.js";
 import { layout } from "./rooms.js";
 import { createEditor } from "./editor.js";
 import { createNotes } from "./notes.js";
+import { createCompanion } from "./companion.js";
+import { createWorkspace } from "./workspace.js";
+import { createKnowledgeView } from "./knowledge.js";
 import { createEntrance } from "./entrance.js";
 import { followBoston } from "./ecosystem.js";
 
@@ -35,6 +38,8 @@ let renderer = null;
 let walker = null;
 let editor = null;
 let notes = null;
+let knowledge = null;
+let companion = null;
 const sound = createSound();
 
 const camera = new THREE.PerspectiveCamera(66, 1, 0.1, 220);
@@ -61,11 +66,7 @@ async function start() {
 
   // fewer points on small screens: a phone draws them with less to spare
   world = buildWorld({ density: Math.min(innerWidth, innerHeight) < 700 ? 0.45 : 1.3 });
-  if (!embed) followBoston(world.ecosystem, ({ source, weather }) => {
-    const label = $("ecosystem-weather");
-    label.textContent = source === "simulation" ? "boston · simulated tide" : `boston · ${Math.round(weather.temperature)}° · ${Math.round(weather.wind)} km/h wind${source === "cached" ? " · last weather" : ""}`;
-    label.title = weather ? `Weather by Open-Meteo · ${new Date(weather.observedAt).toLocaleString()} · ${weather.rain} mm rain · ${weather.cloud}% cloud. Currents and tides are artistically modelled.` : "Weather offline. The ecosystem continues with modelled currents and tides.";
-  });
+  if (!embed) followBoston(world.ecosystem, () => {});
   walker = createWalker(camera, canvas, world, { onPress, reducedMotion });
   walker.setEnabled(!entrance?.open);
   window.agentsWorld = { world, camera, walker, sound, soundManifest: () => soundManifest(world) };
@@ -75,8 +76,13 @@ async function start() {
     window.agentsWorld.controls = editor.controls;
     $("edit-button").disabled = false;
     notes = createNotes({ world, camera, walker, canvas, reducedMotion,
-      beforeOpen() { closePanel(); closeMenu(); if (editor?.open) editor.close(); } });
+      beforeOpen() { knowledge?.close(); closePanel(); closeMenu(); if (editor?.open) editor.close(); } });
     $("notes-button").disabled = false;
+    knowledge = createKnowledgeView({ notes,
+      beforeOpen() { notes?.close(); closePanel(); closeMenu(); if (editor?.open) editor.close(); } });
+    $("graph-button").disabled = false;
+    createWorkspace({ notes, knowledge, editor, region: () => region });
+    companion = createCompanion({ scene: world.scene, camera, onTalk: () => knowledge.talk(), reducedMotion });
   }
 
   // If the font arrived after the labels were drawn, draw them again.
@@ -129,7 +135,9 @@ function frame(now) {
   world.update(reducedMotion() ? 0 : dt, camera);
   if (entrance?.open) for (const object of world.scene.children) if (object.userData.fade) object.visible = false;
   notes?.update(dt);
-  sound.update(camera, dt);
+  companion?.update(dt);
+  sound.setFocus(notes?.focus || 0);
+  sound.update(camera, dt, companion);
 
   const at = walker.regionAt(camera.position.x, camera.position.y, camera.position.z);
   if (!notes?.opened && at !== region) changeRegion(at);
@@ -191,6 +199,9 @@ function pick(e) {
 /* A click on a room's words goes there and reads; a double-click on the ground goes to that spot. */
 function onPress(e, double) {
   if (sound.diagnostics().wanted) sound.start();
+  if (companion?.hit(e)) { companion.talk(); return; }
+  { const note = notes?.pick(e); if (note) { knowledge?.inspectNote(note); return; } }
+  const link = notes?.pickLink(e); if (link) { knowledge?.inspectLink(link); return; }
   if (notes?.press(e)) return;
   const hit = pick(e);
   if (!hit) return;
@@ -203,7 +214,7 @@ let hoverAt = 0;
 canvas.addEventListener("pointermove", (e) => {
   if (!world || e.buttons || e.timeStamp - hoverAt < 80) return;
   hoverAt = e.timeStamp;
-  canvas.style.cursor = notes?.hover(e) || pick(e)?.object.userData.roomId ? "pointer" : "grab";
+  canvas.style.cursor = companion?.hit(e) || notes?.hover(e) || notes?.pickLink(e) || pick(e)?.object.userData.roomId ? "pointer" : "grab";
 });
 
 /* Walk to a room and, if it has a page, open it on arrival. */
@@ -252,6 +263,7 @@ $("menu-button").addEventListener("click", () => {
 
 $("edit-button").addEventListener("click", closeMenu);
 $("notes-button").addEventListener("click", () => notes?.open(region));
+$("graph-button").addEventListener("click", () => knowledge?.open());
 
 $("here-read").addEventListener("click", () => world.rooms.find((r) => r.id === region)?.open && openPanel(region));
 
@@ -261,7 +273,11 @@ const soundButton = $("sound-button");
 const SOUND_LABEL = { idle: "enable sound", loading: "loading sound…", starting: "starting sound…", ready: "start sound", on: "sound on", off: "sound off", unavailable: "retry sound" };
 sound.onChange((now) => {
   for (const button of [soundButton, $("nav-sound")]) {
-    button.textContent = SOUND_LABEL[now];
+    if (button.id === "nav-sound") {
+      const waves = now === "on" ? '<path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/>' : '<path d="m16 9 5 6m0-6-5 6"/>';
+      button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/>${waves}</svg>`;
+      button.setAttribute("aria-label", SOUND_LABEL[now]);
+    } else button.textContent = SOUND_LABEL[now];
     button.setAttribute("aria-pressed", String(now === "on"));
     button.disabled = now === "loading" || now === "starting";
     button.setAttribute("aria-busy", String(button.disabled));
@@ -285,6 +301,7 @@ document.addEventListener("click", (e) => e.target.closest?.("button, a") && sou
 let returnFocus = null;
 
 async function openPanel(id) {
+  knowledge?.close();
   if (notes?.opened) notes.close();
   if (editor?.open) editor.close();
   const room = world?.rooms.find((r) => r.id === id);
@@ -329,9 +346,10 @@ $("panel-close").addEventListener("click", closePanel);
 addEventListener("keydown", (e) => {
   if (entrance?.open) return;
   if (e.key === "Escape") {
+    knowledge?.close();
     closePanel();
     closeMenu();
-  } else if (e.key === "Enter" && !notes?.opened && $("panel").hidden && !e.target.closest?.("button, a, input, textarea, select, summary")) {
+  } else if (e.key === "Enter" && !notes?.opened && !knowledge?.opened && $("panel").hidden && !e.target.closest?.("button, a, input, textarea, select, summary")) {
     const room = world?.rooms.find((r) => r.id === region);
     if (room?.open) openPanel(room.id);
   }
@@ -354,3 +372,6 @@ if (embed) start();
 // pagehide left restored pages holding a destroyed audio engine.
 addEventListener("pagehide", () => { void sound.scene?.engine.audioContext.suspend(); });
 addEventListener("pageshow", () => { if (sound.diagnostics().wanted) sound.start(); });
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && sound.diagnostics().wanted) sound.start();
+});

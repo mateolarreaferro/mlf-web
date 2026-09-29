@@ -74,11 +74,11 @@ export function createEditor(world, sound) {
     panel.hidden = true; toggle.setAttribute('aria-expanded', 'false');
     delete document.documentElement.dataset.editing; toggle.focus({ preventScroll: true });
   }
-  toggle.addEventListener('click', () => {
-    if (!panel.hidden) return close();
+  function show() {
     panel.hidden = false; toggle.setAttribute('aria-expanded', 'true'); document.documentElement.dataset.editing = '';
     $('editor-close').focus({ preventScroll: true }); void connect();
-  });
+  }
+  toggle.addEventListener('click', () => panel.hidden ? show() : close());
   $('editor-close').addEventListener('click', close);
   panel.addEventListener('keydown', event => { if (event.key === 'Escape') { event.stopPropagation(); close(); } });
   for (const [id, fn] of [['scene-undo', () => controls.undo()], ['scene-reset', () => controls.reset()]]) {
@@ -107,5 +107,5 @@ export function createEditor(world, sound) {
     } catch (error) { status(error.message); }
   });
 
-  return { controls, close, get open() { return !panel.hidden; } };
+  return { controls, close, show, get open() { return !panel.hidden; } };
 }

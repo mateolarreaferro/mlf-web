@@ -84,3 +84,7 @@ browser suspension can resume the same voices.
 Earlier automated review: `review.json` records that revision’s script and audition
 hashes. All 19 events were accepted by loaded voices; the playthrough audit
 reported no issues or warnings, and Satie accepted the recorded vocal mix.
+
+The local `mateo_drone` bed uses the user-supplied Drone.wav (SHA-256 `780461f8e472952750cff170a02aa26fe89fb9ce76e91e82f734788564993713`), at original pitch. It shares the drone mixer control, reading state, and gradual note-focus ducking. This local addition is not part of the original Satie composition lock.
+
+Larry uses the same swimming-water recording and filter/reverb settings as the player, bound to his world-space position. The `larry_speed` signal follows his own velocity, so listener movement does not trigger his voice. It shares ambience volume, mute, and focus ducking; no extra audio asset is downloaded.

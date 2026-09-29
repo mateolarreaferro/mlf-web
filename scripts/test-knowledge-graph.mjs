@@ -1,0 +1,91 @@
+// Integrated UI test with synthetic API fixtures. No model response is faked as evidence.
+import assert from 'node:assert/strict';
+import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { noteConnections } from '../agents2026-mateo/website/js/note-links.js';
+import { chromium } from 'playwright-core';
+import { emptyKnowledge, projectKnowledge } from '../src/lib/knowledge-graph.ts';
+
+const base = process.env.AGENTS_URL || 'http://127.0.0.1:3001/agents';
+const week2 = 'agents2026-mateo/weekly_builds/week02';
+const graph = JSON.parse(readFileSync(`${week2}/evidence/graph.json`, 'utf8'));
+const notes = ['tool-use', 'reflection'].map(id => ({ id, week: 'week02', text: readFileSync(`${week2}/examples/${id}.md`, 'utf8'), revision: 'fixture', color: 'sea', x: id === 'tool-use' ? -2.65 : 0, y: 1.45, updatedAt: '' }));
+const extraNotes = Array.from({ length: 25 }, (_, i) => ({ ...notes[0], id: `extra-${i}`, text: i === 24 ? 'unique later thought\n' + 'A long reflection worth scrolling through.\n'.repeat(75) : `Other note ${i}`, x: ((i + 2) % 3 - 1) * 2.65, y: (Math.floor((i + 2) % 6 / 3) === 0 ? 1 : -1) * 1.45 }));
+const allNotes = [...notes, ...extraNotes];
+const projectedLinks = noteConnections(graph, allNotes);
+assert(projectedLinks.length > 0, 'Evidence creates links between notes');
+assert.equal(noteConnections(graph, []).length, 0);
+assert.equal(noteConnections(graph, notes.map(n => ({ ...n, text: 'replaced' }))).length, 0, 'Stale quotes cannot connect revised notes');
+const original = { ...emptyKnowledge(), graph, notes: notes.map(n => ({ ...n, title: n.id, extraction: { fixture: true } })) };
+assert.equal(projectKnowledge(original, notes).graph.nodes.length, graph.nodes.length);
+const edited = [{ ...notes[0], text: 'A completely revised note.' }, notes[1]];
+const filtered = projectKnowledge(original, edited);
+assert(filtered.graph.nodes.some(n => n.id === 'note-tool-use'));
+assert(filtered.graph.edges.every(e => e.evidence.note_id !== 'tool-use'));
+assert(filtered.graph.papers.every(p => p.note_id !== 'tool-use'));
+assert(projectKnowledge(original, []).graph.nodes.length === 0);
+
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || '/Users/mateolarreaferro/Library/Caches/ms-playwright/chromium_headless_shell-1217/chrome-headless-shell-mac-arm64/chrome-headless-shell', args: ['--use-angle=swiftshader', '--enable-webgl'] });
+const context = await browser.newContext({ viewport: { width: 1440, height: 960 }, reducedMotion: 'reduce' });
+const page = await context.newPage();
+const errors = []; page.on('pageerror', error => errors.push(error.message));
+let canEdit = true, fail = false, asked = 0, lastBody = null;
+const permission = graph.nodes.find(n => n.label === 'permission boundaries');
+const fixture = () => ({ ready: true, private: false, canEdit, pending: 0, notes: allNotes, graph });
+try {
+  await page.route('**/api/weekly-notes', route => route.fulfill({ json: { ready: true, canEdit: true, notes: allNotes } }));
+  await page.route('**/api/weekly-notes/graph', route => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: fixture() });
+    asked++; lastBody = route.request().postDataJSON();
+    if (fail) return route.fulfill({ status: 502, json: { error: 'The notes agent could not complete this request.' } });
+    return route.fulfill({ json: { ...fixture(), answer: 'UI fixture: your notes connect permission boundaries to tool safety. [tool-use:L8-L8]', matches: [permission.id], run: {events: [{tool_calls: [{function: {name: 'load_skill'}}, {function: {name: 'trace_thought'}}, {function: {name: 'read_notes'}}]}]} } });
+  });
+  await page.goto(base);
+  await page.getByRole('button', { name: 'join as guest' }).click();
+  await page.getByRole('button', { name: 'enter quietly', exact: true }).click();
+  await page.locator('#thread-input').waitFor();
+  await page.waitForFunction(() => { let count=0; agentsWorld.world.scene.traverse(o=>{if(o.userData.noteId)count++;}); return count===27; });
+  assert.equal(await page.getByRole('tab').count(), 4);
+  const search=page.locator('#thread-input');
+  const before=await page.evaluate(()=>agentsWorld.walker.position.toArray());
+  await search.fill('permission');
+  await page.waitForFunction(()=>{let lit=false;agentsWorld.world.scene.traverse(o=>{if(o.userData.noteConnection&&o.userData.highlighted)lit=true;});return lit;});
+  assert.deepEqual(await page.evaluate(()=>agentsWorld.walker.position.toArray()),before);
+  await search.fill('What do my notes say about permission?'); await search.press('Enter');
+  await page.locator('.thread-assistant .knowledge-citation').first().waitFor();
+  assert.equal(asked,1); assert.equal(lastBody.history.length,0);
+  await search.fill('How does that relate to safety?'); await search.press('Enter');
+  await page.waitForFunction(()=>document.querySelectorAll('.thread-activity').length===2);
+  assert.equal(lastBody.history.length,2);
+  await page.locator('.thread-assistant .knowledge-citation').first().click();
+  await page.locator('#knowledge-answer-panel').waitFor();
+  assert.notDeepEqual(await page.evaluate(()=>agentsWorld.walker.position.toArray()),before,'Citation navigates to note');
+  assert((await page.locator('#knowledge-answer').textContent()).includes('Tool safety means validating arguments'));
+  await page.locator('#workspace-close').click();
+  assert(await page.locator('#workspace').isHidden());
+  assert.equal(await page.evaluate(()=>document.documentElement.hasAttribute('data-note-search')),false);
+  await page.locator('#workspace-open').click();
+  assert(await page.locator('#knowledge-answer-panel').isHidden());
+  assert.equal(await search.inputValue(),'');
+  fail=true; await search.fill('reflection'); await search.press('Enter');
+  await page.getByText('The notes agent could not complete this request.',{exact:true}).waitFor();
+  assert(await page.locator('#thread-send').isEnabled());
+  await page.getByRole('tab',{name:'notes',exact:true}).click();
+  await page.locator('#notes-week').selectOption('week02');
+  assert.equal(await page.locator('.notes-index-item').count(),27);
+  assert(await page.locator('#notes-add').isHidden(), 'Guest has no editing controls');
+  await page.locator('[data-note-id="extra-24"]').click();
+  await page.locator('#knowledge-answer-title').filter({hasText:'unique later thought'}).waitFor();
+  assert((await page.locator('#knowledge-answer').textContent()).includes('A long reflection'));
+  assert(await page.locator('#workspace-content').evaluate(el=>el.scrollHeight>el.clientHeight));
+  for(const name of ['controls','rooms','notes','larry']) {
+    await page.getByRole('tab',{name,exact:true}).click();
+    assert.equal(await page.locator('#workspace [role="tabpanel"]:visible').count(),1);
+  }
+  await page.setViewportSize({width:390,height:844});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  assert(await page.locator('#nav-sound').isVisible());
+  assert.deepEqual(errors,[]);
+  const evidence=`${week2}/evidence`;mkdirSync(evidence,{recursive:true});
+  writeFileSync(`${evidence}/website-ui-checks.json`,JSON.stringify({fixture:true,checks:['stale evidence filtered','27 notes','in-scene graph highlights','typing preserves camera','chat history','citations navigate','close clears selection','error recovery','scrollable notes','four tabs','mobile layout'],errors},null,2));
+  console.log('PASS: current Larry UI, graph provenance, note navigation, conversation, closing, and mobile layout');
+} finally { await browser.close(); }

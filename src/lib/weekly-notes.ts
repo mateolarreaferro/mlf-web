@@ -67,7 +67,6 @@ export async function changeNote(body: unknown) {
     const current = board.notes.find(n => n.id === change.id);
     if ((current?.revision ?? null) !== change.revision) throw new NoteError("This note changed on another device.", 409, current ?? null);
     if (change.action === "delete" && !current) throw new NoteError("This note was already removed.", 409, null);
-    if (change.action === "save" && !current && (board.notes.length >= 288 || board.notes.filter(n => n.week === change.week).length >= 24)) throw new NoteError("This week has 24 notes. Remove one to make room.");
     const note: Note | null = change.action === "delete" ? null : {
       id: change.id, week: change.week, text: change.text, color: change.color, x: change.x, y: change.y,
       revision: randomUUID(), updatedAt: new Date().toISOString(),
