@@ -291,8 +291,8 @@ for (const button of [soundButton, $("nav-sound")]) button.addEventListener("cli
 });
 // Match Satie's field-study integration: a gesture resumes the loaded scene.
 // The sound button owns its own click so one press cannot start then immediately mute.
-addEventListener("pointerdown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.start(), { capture: true });
-addEventListener("keydown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.start(), { capture: true });
+addEventListener("pointerdown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.state !== "on" && sound.start(), { capture: true });
+addEventListener("keydown", (e) => !entrance?.open && !e.target.closest?.("#sound-button, #nav-sound") && sound.diagnostics().wanted && sound.state !== "on" && sound.start(), { capture: true });
 document.addEventListener("pointerover", (e) => e.target.closest?.("button, a") && !e.relatedTarget?.closest?.("button, a") && sound.event("ui.hover"));
 document.addEventListener("click", (e) => e.target.closest?.("button, a") && sound.event("ui.press"));
 

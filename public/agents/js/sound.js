@@ -202,6 +202,7 @@ export function createSound() {
   const listeners = new Set();
   const levels = { 'audio.ambience': 1, 'audio.voices': 1, 'audio.drone': 1, 'audio.rain': 1 };
   const trims = new Map();
+  const skippedTrims = new WeakSet();
   let focus = 0;
   const focusGain = () => 1 - .65 * focus;
   const category = statement => {
@@ -220,12 +221,21 @@ export function createSound() {
       if (engine.tracks.get(track.key) !== track) { trim.node.disconnect(); trims.delete(track); }
     }
     for (const track of engine.tracks.values()) {
+      if (track.stopping || !track.sourceNode || skippedTrims.has(track)) continue;
       let trim = trims.get(track);
       if (!trim) {
         const node = engine.audioContext.createGain();
         const group = category(track.statement);
         node.gain.value = levels[group] * focusGain();
-        track.gainNode.disconnect(track.scaleGain);
+        // A short-lived voice may already be tearing down. Its trim must not
+        // take down the entire soundscape if its original edge is unavailable.
+        try {
+          track.gainNode.disconnect(track.scaleGain);
+        } catch (error) {
+          node.disconnect(); skippedTrims.add(track);
+          logDiagnostic("trim.skipped", { source: track.statement.sourceId, message: String(error?.message ?? error) });
+          continue;
+        }
         track.gainNode.connect(node); node.connect(track.scaleGain);
         trim = { node, group, target: levels[group] * focusGain() }; trims.set(track, trim);
       }
@@ -389,9 +399,9 @@ export function createSound() {
   let greeted = false;
   function start() {
     wanted = true;
+    if (!muted && audio?.engine.audioContext.state === "running" && audio.engine.isPlaying) { playing = true; return; }
     logDiagnostic("start.request", { context: audio?.engine?.audioContext?.state ?? null, playing: audio?.engine?.isPlaying ?? false, muted });
     if (muted || failed || !audio || starting) return;
-    if (audio.engine.audioContext.state === "running" && audio.engine.isPlaying) { playing = true; tell(); return; }
     // Satie's browser integration resumes synchronously on the gesture, then
     // starts the already-loaded scene. Calling start before load completes is
     // unreliable in Brave and Safari and can produce a brief one-shot then silence.
