@@ -38,5 +38,7 @@ if (existsSync(path.join(week2, "bridge.py"))) {
   for (const file of ["agent.py", "graph.py", "bridge.py", "requirements.lock.txt", "skills"]) {
     cpSync(path.join(week2, file), path.join(runtime, file), { recursive: true });
   }
+  // Vercel's Python dependency scanner needs the pins in the root file.
+  cpSync(path.join(week2, "requirements.lock.txt"), path.join(root, "requirements.txt"));
   console.log("sync-agents: Python notes agent source synchronized");
 }
