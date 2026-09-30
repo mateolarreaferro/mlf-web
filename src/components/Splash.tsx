@@ -11,7 +11,9 @@ import { markSplashSeen, splashSeen } from "@/lib/intro";
   the header wordmark (same face, same weight, so the hand-off is invisible)
   while the paper behind it thins away, and the page is simply there.
 
-  Server-rendered so it covers the page from the first frame. Whether it plays
+  Server-rendered from the layout (outside template.tsx, whose transform would
+  pin it to the page instead of the viewport) so it covers everything from the
+  first frame, on every route; INTRO_SCRIPT hides it everywhere but "/". Whether it plays
   at all is settled before paint by INTRO_SCRIPT in lib/intro.ts. A press or
   a key skips straight to the glide.
 */

@@ -8,6 +8,7 @@ import MoodToggle from "@/components/MoodToggle";
 import { BOOT_SCRIPT } from "@/lib/mood";
 import { INTRO_SCRIPT } from "@/lib/intro";
 import TourButton from "@/components/TourButton";
+import Splash from "@/components/Splash";
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn, FaSoundcloud } from "react-icons/fa6";
 
 const inter = Inter({
@@ -40,6 +41,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         {/* decides before paint whether the splash plays (see lib/intro.ts) */}
         <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
+        {/* here and not in the home page: template.tsx slides every page in with a
+            transform, and a transformed ancestor turns position: fixed into absolute */}
+        <Splash />
         <SoundEffects />
         <header data-tour="room" className="mx-auto w-full max-w-[88rem] px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
           <HomeLink className="text-xl font-light tracking-tight transition-colors hover:text-accent sm:text-2xl">

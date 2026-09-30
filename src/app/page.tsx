@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import HeroGraph from "@/components/HeroGraph";
-import Splash from "@/components/Splash";
 import Tour from "@/components/Tour";
 import CVTabs from "@/components/CVTabs";
 import { Reveal, Stagger, Item } from "@/components/motion";
@@ -16,7 +15,6 @@ export default function Home() {
 
   return (
     <div className="pt-10 lg:pt-0">
-      <Splash />
       <Tour />
       <Suspense fallback={null}>
         <HeroGraph projects={projects} />
