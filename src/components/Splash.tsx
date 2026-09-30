@@ -7,15 +7,15 @@ import { markSplashSeen, splashSeen } from "@/lib/intro";
 
 /*
   The name, alone on the paper, before the page. The words rise in CSS so they
-  start at first paint rather than at hydration; then the name glides up into
-  the header wordmark (same face, same weight, so the hand-off is invisible)
-  while the paper behind it thins away, and the page is simply there.
+  start at first paint rather than at hydration; then the name blurs away in
+  place, the paper behind it thins out, and the page is simply there. (It
+  used to glide diagonally into the header wordmark; Mateo didn't like the
+  movement.)
 
   Server-rendered from the layout (outside template.tsx, whose transform would
   pin it to the page instead of the viewport) so it covers everything from the
-  first frame, on every route; INTRO_SCRIPT hides it everywhere but "/". Whether it plays
-  at all is settled before paint by INTRO_SCRIPT in lib/intro.ts. A press or
-  a key skips straight to the glide.
+  first frame, on every route; INTRO_SCRIPT (lib/intro.ts) hides it before
+  paint everywhere but "/" and once seen. A press or a key skips to the fade.
 */
 const WORDS = ["mateo", "larrea", "ferro"];
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
@@ -42,34 +42,22 @@ export default function Splash() {
       setGone(true);
     };
 
+    // no travel: the name thins out in place a beat ahead of the paper
     const leave = () => {
       if (leaving) return;
       leaving = true;
       window.clearTimeout(hold);
-      const target = document.querySelector<HTMLElement>("[data-wordmark]");
-      const to = target?.getBoundingClientRect();
-      const from = name.getBoundingClientRect();
-
-      if (still || !to || to.width === 0) {
-        const fade = 450 * tempo;
-        paper.parentElement?.animate({ opacity: [1, 0] }, { duration: fade, easing: ease, fill: "forwards" });
-        finish = window.setTimeout(done, fade);
-        return;
-      }
-
-      const glide = 900 * tempo;
-      const dx = to.left + to.width / 2 - (from.left + from.width / 2);
-      const dy = to.top + to.height / 2 - (from.top + from.height / 2);
-      const scale = to.width / from.width;
-      name.animate(
-        { transform: ["none", `translate(${dx}px, ${dy}px) scale(${scale})`] },
-        { duration: glide, easing: ease, fill: "forwards" },
-      );
-      paper.animate(
+      const fade = (still ? 450 : 800) * tempo;
+      if (!still)
+        name.animate(
+          { opacity: [1, 0], filter: ["blur(0px)", "blur(6px)"] },
+          { duration: fade * 0.7, easing: ease, fill: "forwards" },
+        );
+      paper.parentElement?.animate(
         { opacity: [1, 0] },
-        { duration: 700 * tempo, delay: 250 * tempo, easing: ease, fill: "forwards" },
+        { duration: fade, delay: still ? 0 : 150 * tempo, easing: ease, fill: "forwards" },
       );
-      finish = window.setTimeout(done, glide + 60);
+      finish = window.setTimeout(done, fade + (still ? 0 : 150 * tempo));
     };
 
     // the words finish rising at ~1.2s; let the name sit a moment before leaving

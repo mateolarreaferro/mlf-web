@@ -231,8 +231,8 @@ One page (`src/app/page.tsx`):
 3. **Thoughts** — reverse-numbered list; posts at `/thoughts/[slug]`.
 
 **The way in.** On a fresh tab that lands on "/", `Splash.tsx` shows the name
-alone, then glides it into the header wordmark (`data-wordmark` on
-`HomeLink`) while the paper fades. Whether it plays is decided before paint by
+alone, then fades it out in place with the paper (a diagonal glide into the
+header wordmark was tried and rejected: no travel). Whether it plays is decided before paint by
 `INTRO_SCRIPT` (`src/lib/intro.ts`, inlined in `layout.tsx`); entering on any
 other page counts as seen. After it, first-time visitors get `Tour.tsx`: a
 spotlight (a rounded hole in a paper-coloured box-shadow, document
