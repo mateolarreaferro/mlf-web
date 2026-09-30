@@ -690,8 +690,8 @@ export default function KnowledgeGraph({
         : 1;
 
   return (
-    <figure className="my-6 lg:my-0">
-      <div className="relative h-[var(--graph-h)] w-full">
+    <figure className="my-6 lg:my-0" data-tour="graph">
+      <div className="relative h-[var(--graph-h)] w-full" data-tour="graph-box">
         <canvas
           ref={canvasRef}
           className={`h-full w-full touch-pan-y transition-opacity duration-500 ${

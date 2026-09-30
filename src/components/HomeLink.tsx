@@ -16,7 +16,7 @@ export default function HomeLink({
   children: ReactNode;
 }) {
   return (
-    <Link href="/" className={className}>
+    <Link href="/" className={className} data-wordmark>
       {children}
     </Link>
   );

@@ -230,6 +230,16 @@ One page (`src/app/page.tsx`):
    `onSelect`. Esc closes. Deep link: `/?project=<slug>`.
 3. **Thoughts** — reverse-numbered list; posts at `/thoughts/[slug]`.
 
+**The way in.** On a fresh tab that lands on "/", `Splash.tsx` shows the name
+alone, then glides it into the header wordmark (`data-wordmark` on
+`HomeLink`) while the paper fades. Whether it plays is decided before paint by
+`INTRO_SCRIPT` (`src/lib/intro.ts`, inlined in `layout.tsx`); entering on any
+other page counts as seen. After it, first-time visitors get `Tour.tsx`: a
+spotlight (a rounded hole in a paper-coloured box-shadow, document
+coordinates so it rides the scroll) over each `data-tour` target: `graph`,
+`graph-box` (the photo), `research`, `thoughts`, `room` (the header). Copy
+lives in `STEPS`. The nav's "tour" replays it.
+
 ## Content model (the important part)
 
 **Projects** — one file per project in `content/projects/<slug>.md`:
@@ -284,7 +294,10 @@ the agent side is `src/lib/agent-context.ts`.
 `number / title / date / lang ("en"|"es") / summary` frontmatter. Body is
 real MDX: markdown plus React components registered in
 `src/components/mdx.tsx` (`<SoundCloud url>`, `<Vimeo id>`,
-`<HarmonicsDemo>`). Ordering is by `number`, descending. Dates on the five
+`<HarmonicsDemo>`). Ordering is by `number`, descending. An optional `password:` holds the sha-256 of a password: the post
+then renders per request and shows `ThoughtLock` until the password is
+entered (checked in a server action, remembered in an httpOnly cookie for 30
+days). The repo is public, so this hides a post from the site, not from git. Dates on the five
 migrated posts are approximate — Mateo may still correct them.
 
 ## /agents (the class site)
