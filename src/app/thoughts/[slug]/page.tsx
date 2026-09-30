@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { Reveal } from "@/components/motion";
 import { mdxComponents } from "@/components/mdx";
-import { getThought, getThoughts, formatDate } from "@/lib/thoughts";
+import { ThoughtLock } from "@/components/ThoughtLock";
+import {
+  getThought,
+  getThoughts,
+  formatDate,
+  unlockCookie,
+} from "@/lib/thoughts";
 
 export function generateStaticParams() {
   return getThoughts().map((t) => ({ slug: t.slug }));
@@ -27,6 +34,11 @@ export default async function ThoughtPage({
   const thought = getThought(slug);
   if (!thought) notFound();
 
+  // A locked post is rendered per request, and its body only for the cookie.
+  const locked =
+    !!thought.password &&
+    (await cookies()).get(unlockCookie(slug))?.value !== thought.password;
+
   return (
     <article className="mx-auto max-w-2xl pt-20" lang={thought.lang}>
       <Reveal>
@@ -42,11 +54,15 @@ export default async function ThoughtPage({
       </Reveal>
 
       <div className="thought-body mt-10 max-w-xl">
-        <MDXRemote
-          source={thought.content}
-          components={mdxComponents}
-          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
-        />
+        {locked ? (
+          <ThoughtLock slug={slug} lang={thought.lang} />
+        ) : (
+          <MDXRemote
+            source={thought.content}
+            components={mdxComponents}
+            options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          />
+        )}
       </div>
 
       <p className="mt-20">

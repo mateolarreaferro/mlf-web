@@ -9,6 +9,7 @@ export type Thought = {
   date: string; // YYYY-MM-DD
   lang: "en" | "es";
   summary: string;
+  password?: string; // sha-256 hex; set → the post asks for it first
   content: string;
 };
 
@@ -30,6 +31,7 @@ export function getThoughts(): Thought[] {
         date: data.date as string,
         lang: (data.lang ?? "en") as "en" | "es",
         summary: (data.summary ?? "") as string,
+        password: data.password as string | undefined,
         content,
       };
     })
@@ -38,6 +40,11 @@ export function getThoughts(): Thought[] {
 
 export function getThought(slug: string): Thought | undefined {
   return getThoughts().find((t) => t.slug === slug);
+}
+
+/* Holds the password hash once a visitor has entered it (see thoughts/[slug]/actions.ts). */
+export function unlockCookie(slug: string): string {
+  return `mlf-thought-${slug}`;
 }
 
 /* Numeric and language-neutral, so an EN and an ES post read the same. */
