@@ -5,6 +5,7 @@ import WeatherAtmosphere from "@/components/WeatherAtmosphere";
 import HomeLink from "@/components/HomeLink";
 import SoundEffects from "@/components/SoundEffects";
 import MoodToggle from "@/components/MoodToggle";
+import Script from "next/script";
 import { BOOT_SCRIPT } from "@/lib/mood";
 import { INTRO_SCRIPT } from "@/lib/intro";
 import TourButton from "@/components/TourButton";
@@ -41,6 +42,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         {/* decides before paint whether the splash plays (see lib/intro.ts) */}
         <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
+        {/* The password box past the three free model calls; wraps fetch, so it loads first. */}
+        <Script src="/unlock.js" strategy="beforeInteractive" />
         {/* here and not in the home page: template.tsx slides every page in with a
             transform, and a transformed ancestor turns position: fixed into absolute */}
         <Splash />

@@ -44,5 +44,9 @@ next-env.d.ts
 # made by `npm run sync:agents`
 /agents2026-mateo/
 
+# projects hosted on this site, each its own git repo; public/<slug> and
+# python/<slug>/src are their published copies, made by `npm run sync:demos`
+/hosted/
+
 # Python knowledge-graph runtime caches
 __pycache__/

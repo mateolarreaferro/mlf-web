@@ -17,6 +17,11 @@ const eslintConfig = defineConfig([
     // `npm run sync:agents` writes (vendored three.js included).
     "agents2026-mateo/**",
     "public/agents/**",
+    // Hosted projects: their own repos, and the built copies that
+    // `npm run sync:demos` writes.
+    "hosted/**",
+    "public/theo/**",
+    "public/headwave/**",
   ]),
 ]);
 

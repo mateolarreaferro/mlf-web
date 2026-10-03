@@ -1,0 +1,2651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HeadWave - Neural Audio Interface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+  <script src="/unlock.js"></script>
+  <script>window.HEADWAVE_API = "/api/headwave";</script>
+  <script src="/headwave/static/web.js"></script>
+  <script src="/headwave/static/sketch.js"></script>
+  <script src="/headwave/static/engine.js?v=31"></script>
+  <script src="/headwave/static/visual.js?v=12"></script>
+  <script src="/headwave/static/patcher.js?v=31"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Notion-inspired Warm & Friendly Theme */
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F7F6F3;
+      --bg-tertiary: #EFEEEB;
+      --bg-elevated: #FFFFFF;
+      --bg-hover: #F1F0ED;
+
+      /* Accent colors - warm and approachable */
+      --accent-blue: #0F7EF3;
+      --accent-green: #00A461;
+      --accent-purple: #9B51E0;
+      --accent-orange: #FFA344;
+      --accent-red: #F97066;
+
+      /* Warm neutrals - Notion style */
+      --neutral-900: #37352F;
+      --neutral-800: #37352F;
+      --neutral-700: #37352FE6;
+      --neutral-600: #37352FB3;
+      --neutral-500: #37352F80;
+      --neutral-400: #37352F59;
+      --neutral-300: #37352F40;
+      --neutral-200: #37352F1A;
+      --neutral-100: #37352F0D;
+
+      /* Semantic colors */
+      --text-primary: #37352F;
+      --text-secondary: #787774;
+      --text-tertiary: #9B9A97;
+      --success: #00A461;
+      --error: #E03E3E;
+      --warning: #FFA344;
+
+      /* Borders & shadows - softer */
+      --border-light: rgba(55, 53, 47, 0.09);
+      --border-medium: rgba(55, 53, 47, 0.16);
+      --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.06);
+      --shadow-md: 0 2px 8px rgba(15, 15, 15, 0.08);
+      --shadow-lg: 0 4px 16px rgba(15, 15, 15, 0.10);
+      --shadow-xl: 0 8px 32px rgba(15, 15, 15, 0.12);
+
+      /* Radius - more rounded */
+      --radius-sm: 3px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+      --radius-full: 9999px;
+
+      /* Spacing - more generous */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 24px;
+      --space-2xl: 32px;
+    }
+
+    /* Dark Theme */
+    body.dark {
+      --bg-primary: #0d1117;
+      --bg-secondary: #161b22;
+      --bg-tertiary: #21262d;
+      --bg-elevated: #1c2128;
+      --bg-hover: #30363d;
+
+      /* Accent colors - slightly brighter for dark mode */
+      --accent-blue: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-purple: #a371f7;
+      --accent-orange: #d29922;
+      --accent-red: #f85149;
+
+      /* Dark neutrals */
+      --neutral-900: #f0f6fc;
+      --neutral-800: #c9d1d9;
+      --neutral-700: #b1bac4;
+      --neutral-600: #8b949e;
+      --neutral-500: #6e7681;
+      --neutral-400: #484f58;
+      --neutral-300: #30363d;
+      --neutral-200: #21262d;
+      --neutral-100: #161b22;
+
+      /* Semantic colors */
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-tertiary: #6e7681;
+      --success: #3fb950;
+      --error: #f85149;
+      --warning: #d29922;
+
+      /* Borders & shadows */
+      --border-light: rgba(240, 246, 252, 0.1);
+      --border-medium: rgba(240, 246, 252, 0.2);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      height: 100vh;
+      width: 100vw;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Full-screen Patcher Background */
+    .patcher-fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      background: var(--bg-secondary);
+    }
+
+    .patcher-fullscreen .patcher-area {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: var(--bg-secondary);
+    }
+
+    /* Left Sidebar - Floating Panel */
+    .sidebar {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: 220px;
+      background: var(--bg-elevated);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Minimal Panel Styles */
+    .panel-section {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .panel-section:last-child {
+      border-bottom: none;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .panel-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+    .input-minimal {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 13px;
+      border: 1px solid var(--border-medium);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .input-minimal:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      background: var(--bg-elevated);
+    }
+    .btn-row {
+      display: flex;
+      gap: 6px;
+    }
+    .btn-minimal {
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border-medium);
+      border-radius: 6px;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-minimal:hover {
+      background: var(--bg-hover);
+      border-color: var(--border-medium);
+    }
+    .btn-minimal.btn-primary {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+    .btn-minimal.btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .status-dot-small {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neutral-400);
+      overflow: hidden;
+      text-indent: -9999px;
+      flex-shrink: 0;
+    }
+    .status-dot-small.active {
+      background: var(--accent-green);
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(55, 53, 47, 0.08), rgba(55, 53, 47, 0.03));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--text-primary);
+      border: 1px solid rgba(55, 53, 47, 0.08);
+    }
+
+    .brand-text h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .brand-text .tagline {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .brand-credit {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 400;
+      margin-top: var(--space-xs);
+      letter-spacing: 0.02em;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: 0 1px 3px rgba(15, 15, 15, 0.04);
+      transition: all 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 6px rgba(15, 15, 15, 0.06);
+      border-color: rgba(55, 53, 47, 0.14);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .step-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-primary);
+      flex-shrink: 0;
+    }
+
+    .card-title-group {
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--radius-full);
+      background: var(--neutral-300);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .status-indicator.connected {
+      background: var(--text-primary);
+      box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .info-box {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+    }
+
+    .info-box strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .field-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .field-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-light);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.12s ease;
+    }
+
+    input:hover {
+      background: var(--bg-hover);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--neutral-400);
+      background: var(--bg-primary);
+      box-shadow: 0 0 0 1px rgba(55, 53, 47, 0.16) inset, 0 0 0 1px transparent;
+    }
+
+    input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .input-row {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border: 1px solid transparent;
+      box-shadow: 0 1px 2px rgba(15, 15, 15, 0.1);
+    }
+
+    .btn-primary:hover {
+      background: var(--neutral-700);
+      box-shadow: 0 1px 3px rgba(15, 15, 15, 0.12);
+    }
+
+    .btn-primary:active {
+      background: var(--neutral-800);
+      box-shadow: 0 1px 2px rgba(15, 15, 15, 0.08);
+    }
+
+    .btn-secondary {
+      background: rgba(55, 53, 47, 0.055);
+      color: var(--text-primary);
+      border: 1px solid transparent;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(55, 53, 47, 0.08);
+    }
+
+    .btn-secondary:active {
+      background: rgba(55, 53, 47, 0.10);
+    }
+
+    .btn-danger {
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 13px;
+    }
+
+    .toggle-group {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      background: rgba(55, 53, 47, 0.055);
+      color: var(--text-primary);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+
+    .toggle-btn:hover {
+      background: rgba(55, 53, 47, 0.08);
+    }
+
+    .toggle-btn.active {
+      background: rgba(55, 53, 47, 0.08);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--neutral-200);
+      color: var(--text-secondary);
+    }
+
+    .status-pill.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: var(--space-md) 0;
+    }
+
+    .helper-text {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      margin-top: var(--space-sm);
+    }
+
+    /* Main Content */
+    .main {
+      flex: 1;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .main-title-group h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .main-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 600px;
+    }
+
+    .mode-tabs {
+      display: inline-flex;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mode-tab {
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .mode-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .mode-tab.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: var(--space-md);
+      flex: 1;
+      min-height: 0;
+    }
+
+    .main-grid > .section {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .main-grid > .section > .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .chart-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .chart-description {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .chart-meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      text-align: right;
+    }
+
+    .chart-container {
+      flex: 1;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm);
+      position: relative;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* p5.js canvas styling */
+    #p5-container {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    
+    #p5-container canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    #timeseriesChart,
+    #fftChart,
+    #bandsChart {
+      width: 100%;
+      height: 100%;
+      flex: 1;
+    }
+
+    .chart-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--border-light);
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: currentColor;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      max-width: 400px;
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.6;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .alert-error {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    .alert-success {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-light);
+      transition: 0.2s;
+      border-radius: 20px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 2px;
+      bottom: 2px;
+      background-color: var(--text-secondary);
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--text-primary);
+    }
+
+    input:checked + .toggle-slider:before {
+      background-color: var(--bg-primary);
+      transform: translateX(16px);
+    }
+
+    /* Custom Range Slider */
+    .custom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: var(--border-light);
+      border-radius: var(--radius-full);
+      outline: none;
+    }
+
+    .custom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--text-primary);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .custom-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .custom-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: var(--text-primary);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .custom-slider::-moz-range-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .custom-slider::-moz-range-track {
+      background: var(--border-light);
+      border-radius: var(--radius-full);
+      height: 4px;
+    }
+
+    /* Camera/FaceSynth Feature Meters */
+    .feature-meter {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--text-primary);
+      border-radius: var(--radius-full);
+      transition: width 0.1s ease-out;
+      width: 0%;
+    }
+
+    .feature-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-light);
+        padding: var(--space-lg);
+      }
+
+      .main {
+        padding: var(--space-lg);
+      }
+
+      .main-title-group h2 {
+        font-size: 24px;
+      }
+
+      .chart-container {
+        height: 320px;
+      }
+    }
+
+    /* Visual preview container - offscreen but with size for p5 rendering */
+    #visual-preview-wrapper {
+      position: fixed;
+      left: -9999px;
+      top: -9999px;
+      width: 800px;
+      height: 600px;
+      overflow: hidden;
+    }
+    #visual-preview-container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Full-screen Patcher Background -->
+  <div class="patcher-fullscreen">
+    <div class="patcher-area">
+      <div id="patcher-container" style="width: 100%; height: 100%;"></div>
+    </div>
+  </div>
+
+  <!-- Floating Left Panel -->
+  <aside class="sidebar">
+    <div style="margin-bottom: 8px;">
+      <div style="font-size: 15px; font-weight: 600; color: var(--text-primary);">HeadWave</div>
+      <div style="font-size: 11px; color: var(--text-tertiary);">EEG · CV · OSC</div>
+    </div>
+
+    <!-- Global Messages -->
+    <div id="global-error" class="alert alert-error"></div>
+    <div id="global-success" class="alert alert-success"></div>
+
+    <!-- EEG Connection -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">EEG</span>
+        <div class="status-indicator" id="status-dot"></div>
+      </div>
+      <input id="serial-input" type="text" placeholder="Serial port (optional)" class="input-minimal" />
+      <div class="btn-row">
+        <button id="btn-connect" class="btn-minimal btn-primary">Connect</button>
+        <button id="btn-disconnect" class="btn-minimal">Disconnect</button>
+      </div>
+      <div class="btn-row" style="margin-top: 8px;">
+        <button id="btn-start" class="btn-minimal btn-primary" style="flex: 1;">Start Stream</button>
+        <button id="btn-stop" class="btn-minimal">Stop</button>
+      </div>
+      <span id="stream-pill" class="status-pill" style="display: none;">Ready</span>
+      <span id="status-subtext" style="display: none;"></span>
+    </div>
+
+    <!-- Simulator -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">Simulator</span>
+      </div>
+      <button id="toggle-simulator" class="btn-minimal" style="width: 100%;">Enable</button>
+      <select id="simulator-mode" class="input-minimal" style="display:none; margin-top: 8px;">
+        <option value="normal">Normal</option>
+        <option value="meditation">Meditation</option>
+        <option value="focused">Focused</option>
+        <option value="drowsy">Drowsy</option>
+      </select>
+      <div id="simulator-controls" style="display:none;"></div>
+    </div>
+
+    <!-- Camera -->
+    <div class="panel-section">
+      <div class="panel-header">
+        <span class="panel-title">Camera</span>
+        <span id="camera-pill" class="status-dot-small"></span>
+      </div>
+      <div class="btn-row">
+        <button id="btn-camera-start" class="btn-minimal btn-primary" style="flex: 1;">Start</button>
+        <button id="btn-camera-stop" class="btn-minimal">Stop</button>
+      </div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="panel-section" style="border-bottom: none; margin-top: auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span class="panel-title">Theme</span>
+        <button id="theme-toggle" class="btn-minimal" style="padding: 4px 10px; font-size: 11px;">Dark</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- Hidden elements for JavaScript compatibility -->
+  <div style="display: none !important;">
+    <button id="tab-audio"></button>
+    <button id="tab-timeseries"></button>
+    <button id="tab-fft"></button>
+    <button id="tab-bands"></button>
+    <button id="tab-camera"></button>
+    <button id="tab-sketch"></button>
+    <div id="visual-title"></div>
+    <div id="visual-subtitle"></div>
+    <div id="visual-meta"></div>
+    <canvas id="timeseriesChart"></canvas>
+    <canvas id="fftChart"></canvas>
+    <canvas id="bandsChart"></canvas>
+    <div id="cameraView"><img id="cameraFeed" /></div>
+    <div id="sketchView"><div id="p5-container"></div></div>
+    <div id="audioView">
+      <div id="visual-preview-wrapper">
+        <div id="visual-preview-container"></div>
+      </div>
+    </div>
+    <div id="cameraFeatures">
+      <div id="cv-features-toggle"></div>
+      <div id="cv-features-arrow"></div>
+      <div id="cv-features-content"></div>
+      <span id="val-mouth">0</span>
+      <span id="val-smile">0</span>
+      <span id="val-roll">0</span>
+      <span id="val-gaze-x">0</span>
+      <span id="val-gaze-y">0</span>
+      <span id="left-hand-status"></span>
+      <span id="left-hand-gesture"></span>
+      <span id="val-left-pinch">0</span>
+      <span id="right-hand-status"></span>
+      <span id="right-hand-gesture"></span>
+      <span id="val-right-pinch">0</span>
+      <div id="meter-mouth"></div>
+      <div id="meter-smile"></div>
+      <div id="meter-roll"></div>
+      <div id="meter-gaze-x"></div>
+      <div id="meter-gaze-y"></div>
+      <div id="meter-left-pinch"></div>
+      <div id="meter-right-pinch"></div>
+    </div>
+    <span id="chip-mode"></span>
+    <span id="chip-osc"></span>
+    <input type="checkbox" id="auto-scale-toggle">
+    <input type="range" id="scale-slider">
+    <span id="scale-value"></span>
+    <div id="error-msg"></div>
+    <div id="viz-controls">
+      <button id="viz-toggle"></button>
+      <div id="viz-controls-content"></div>
+      <select id="viz-mode"></select>
+      <input id="viz-count"><span id="viz-count-val"></span>
+      <input id="viz-size"><span id="viz-size-val"></span>
+      <input id="viz-speed"><span id="viz-speed-val"></span>
+      <input id="viz-trails"><span id="viz-trails-val"></span>
+      <select id="map-movement-source"></select>
+      <select id="map-movement-param"></select>
+      <select id="map-hue-source"></select>
+      <select id="map-hue-param"></select>
+      <select id="map-size-source"></select>
+      <select id="map-size-param"></select>
+      <select id="map-brightness-source"></select>
+      <select id="map-brightness-param"></select>
+      <select id="viz-colorscheme"></select>
+    </div>
+  </div>
+
+
+  <script>
+    // Stream configuration constants - optimized for real-time EEG visualization
+    const WINDOW_SEC = 4.0;  // 4 seconds provides good balance of temporal/frequency resolution
+    const UPDATE_INTERVAL_MS = 50;  // 50ms = 20 updates/second for smooth visualization
+
+    let ws = null;
+    let cameraWs = null;
+    let currentMode = "audio";
+    let connected = false;
+    let streaming = false;
+    let cameraRunning = false;
+    let oscEnabled = false;
+    let oscSendRaw = true;
+    let oscSendBands = false;
+
+    const statusDot = document.getElementById("status-dot");
+    const statusSub = document.getElementById("status-subtext");
+    const streamPill = document.getElementById("stream-pill");
+    const cameraPill = document.getElementById("camera-pill");
+    const chipMode = document.getElementById("chip-mode");
+    const chipOsc = document.getElementById("chip-osc");
+    const globalError = document.getElementById("global-error");
+    const globalSuccess = document.getElementById("global-success");
+    const errorMsg = document.getElementById("error-msg");
+    const visualTitle = document.getElementById("visual-title");
+    const visualSubtitle = document.getElementById("visual-subtitle");
+    const visualMeta = document.getElementById("visual-meta");
+
+    // -------- Theme Toggle --------
+    const themeToggle = document.getElementById("theme-toggle");
+
+    function setTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark');
+        themeToggle.textContent = 'Light';
+        localStorage.setItem('theme', 'dark');
+        // Update Patcher theme if available
+        if (typeof Patcher !== 'undefined' && Patcher.theme) {
+          Patcher.theme.bg = {
+            primary: '#0d1117',
+            secondary: '#161b22',
+            tertiary: '#21262d'
+          };
+          Patcher.theme.text = {
+            primary: '#e6edf3',
+            secondary: '#8b949e',
+            muted: '#6e7681'
+          };
+          Patcher.theme.port = {
+            input: '#58a6ff',
+            output: '#f97316',
+            hover: '#ffffff'
+          };
+          Patcher.theme.cable = {
+            default: '#58a6ff',
+            active: '#a371f7',
+            glow: 'rgba(88, 166, 255, 0.3)'
+          };
+          Patcher.theme.node = {
+            bg: '#1c2128',
+            bgSelected: '#21262d',
+            border: '#30363d',
+            borderSelected: '#58a6ff'
+          };
+          if (Patcher.redraw) Patcher.redraw();
+        }
+      } else {
+        document.body.classList.remove('dark');
+        themeToggle.textContent = 'Dark';
+        localStorage.setItem('theme', 'light');
+        // Reset Patcher theme if available
+        if (typeof Patcher !== 'undefined' && Patcher.theme) {
+          Patcher.theme.bg = {
+            primary: '#fafafa',
+            secondary: '#f0f0f0',
+            tertiary: '#e5e5e5'
+          };
+          Patcher.theme.text = {
+            primary: '#1a1a1a',
+            secondary: '#666666',
+            muted: '#999999'
+          };
+          Patcher.theme.port = {
+            input: '#2563eb',
+            output: '#f97316',
+            hover: '#000000'
+          };
+          Patcher.theme.cable = {
+            default: '#2563eb',
+            active: '#9333ea',
+            glow: 'rgba(37, 99, 235, 0.2)'
+          };
+          Patcher.theme.node = {
+            bg: '#ffffff',
+            bgSelected: '#f3f4f6',
+            border: '#e5e5e5',
+            borderSelected: '#2563eb'
+          };
+          if (Patcher.redraw) Patcher.redraw();
+        }
+      }
+    }
+
+    // Initialize theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setTheme(true);
+    }
+
+    themeToggle.onclick = () => {
+      const isDark = document.body.classList.contains('dark');
+      setTheme(!isDark);
+    };
+
+    function showError(message) {
+      globalError.textContent = message;
+      globalError.style.display = "block";
+      globalSuccess.style.display = "none";
+      setTimeout(() => {
+        globalError.style.display = "none";
+      }, 8000);
+    }
+
+    function showSuccess(message) {
+      globalSuccess.textContent = message;
+      globalSuccess.style.display = "block";
+      globalError.style.display = "none";
+      setTimeout(() => {
+        globalSuccess.style.display = "none";
+      }, 5000);
+    }
+
+    function hideMessages() {
+      globalError.style.display = "none";
+      globalSuccess.style.display = "none";
+    }
+
+    function setStatus() {
+      if (connected) {
+        statusDot.classList.add("connected");
+        statusSub.textContent = streaming ? "Streaming active" : "Connected";
+      } else {
+        statusDot.classList.remove("connected");
+        statusSub.textContent = "Ready to connect";
+      }
+      if (streaming) {
+        streamPill.textContent = "Streaming";
+        streamPill.classList.add("active");
+      } else {
+        streamPill.textContent = connected ? "Ready" : "Idle";
+        streamPill.classList.remove("active");
+      }
+      if (cameraRunning) {
+        cameraPill.classList.add("active");
+      } else {
+        cameraPill.classList.remove("active");
+      }
+      chipMode.textContent = streaming
+        ? `Streaming: ${currentMode === "timeseries" ? "time series" : currentMode === "fft" ? "FFT" : currentMode === "camera" ? "camera" : "frequency bands"}`
+        : "Streaming: stopped";
+    }
+
+    function setOscChip() {
+      chipOsc.textContent = oscEnabled
+        ? `enabled (${[
+            oscSendRaw ? "raw" : null,
+            oscSendBands ? "bands" : null,
+          ].filter(Boolean).join(" + ")})`
+        : "disabled";
+    }
+
+    async function postJSON(url, data) {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data || {}),
+      });
+      return res.json();
+    }
+
+    async function refreshStatus() {
+      const res = await fetch("/api/status");
+      const json = await res.json();
+      connected = json.connected;
+      streaming = json.streaming;
+      setStatus();
+    }
+
+    // Connect button
+    document.getElementById("btn-connect").onclick = async () => {
+      const input = document.getElementById("serial-input").value.trim();
+      const btn = document.getElementById("btn-connect");
+
+      hideMessages();
+
+      let payload, deviceType;
+      if (!input) {
+        payload = { serial_port: "", mac_address: "" };
+        deviceType = "Native Bluetooth";
+      } else if (input.includes(":")) {
+        payload = { serial_port: "", mac_address: input };
+        deviceType = "Bluetooth (MAC)";
+      } else {
+        payload = { serial_port: input, mac_address: "" };
+        deviceType = "Serial (BLED112)";
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Connecting...";
+
+      try {
+        const json = await postJSON("/api/connect", payload);
+
+        if (json.status === "ok") {
+          connected = true;
+          showSuccess(`Connected via ${deviceType}! Now click 'Start Stream' to begin.`);
+        } else {
+          connected = false;
+          let troubleshoot = input.includes("/dev/")
+            ? "Check that EEG device is powered on and USB dongle is connected."
+            : "Turn on EEG device and ensure Bluetooth is enabled.";
+          showError(`Connection failed: ${json.message || "Unknown error"}\n\n${troubleshoot}`);
+        }
+      } catch (error) {
+        showError(`Failed to connect: ${error.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Connect";
+        setStatus();
+      }
+    };
+
+    document.getElementById("btn-disconnect").onclick = async () => {
+      await postJSON("/api/disconnect", {});
+      connected = false;
+      streaming = false;
+      closeWS();
+      showSuccess("Disconnected successfully");
+      setStatus();
+    };
+
+    document.getElementById("btn-start").onclick = async () => {
+      if (!connected) {
+        showError("Please connect to the device first");
+        return;
+      }
+
+      hideMessages();
+      const json = await postJSON("/api/start", {});
+      if (json.status === "ok") {
+        streaming = true;
+        openWS();
+        showSuccess("Streaming started successfully");
+      } else {
+        showError(`Failed to start stream: ${json.message || "Unknown error"}`);
+      }
+      setStatus();
+    };
+
+    document.getElementById("btn-stop").onclick = async () => {
+      await postJSON("/api/stop", {});
+      streaming = false;
+      closeWS();
+      showSuccess("Stream stopped");
+      setStatus();
+    };
+
+    // Camera buttons
+    document.getElementById("btn-camera-start").onclick = async () => {
+      hideMessages();
+      try {
+        const json = await postJSON("/api/camera/start", { camera_index: 0 });
+        if (json.status === "ok") {
+          cameraRunning = true;
+          openCameraWS();
+          showSuccess("Camera started successfully");
+        } else {
+          showError(`Failed to start camera: ${json.message || "Unknown error"}`);
+        }
+      } catch (error) {
+        showError(`Failed to start camera: ${error.message}`);
+      }
+      setStatus();
+    };
+
+    document.getElementById("btn-camera-stop").onclick = async () => {
+      await postJSON("/api/camera/stop", {});
+      cameraRunning = false;
+      closeCameraWS();
+      showSuccess("Camera stopped");
+      setStatus();
+    };
+
+    // OSC toggles (elements removed in patcher-focused UI)
+    const oscRawToggle = document.getElementById("osc-raw-toggle");
+    const oscBandsToggle = document.getElementById("osc-bands-toggle");
+    const oscEnableBtn = document.getElementById("osc-enable-btn");
+
+    if (oscRawToggle) oscRawToggle.onclick = () => {
+      oscSendRaw = !oscSendRaw;
+      oscRawToggle.classList.toggle("active", oscSendRaw);
+      pushOscConfig();
+    };
+
+    if (oscBandsToggle) oscBandsToggle.onclick = () => {
+      oscSendBands = !oscSendBands;
+      oscBandsToggle.classList.toggle("active", oscSendBands);
+      pushOscConfig();
+    };
+
+    if (oscEnableBtn) oscEnableBtn.onclick = () => {
+      oscEnabled = !oscEnabled;
+      oscEnableBtn.textContent = oscEnabled ? "Disable OSC" : "Enable OSC";
+      pushOscConfig();
+    };
+
+    async function pushOscConfig() {
+      const ipEl = document.getElementById("osc-ip");
+      const portEl = document.getElementById("osc-port");
+      const ip = ipEl ? ipEl.value.trim() || "127.0.0.1" : "127.0.0.1";
+      const port = portEl ? parseInt(portEl.value.trim() || "9000", 10) : 9000;
+      await postJSON("/api/osc_config", {
+        ip,
+        port,
+        enabled: oscEnabled,
+        send_raw: oscSendRaw,
+        send_bands: oscSendBands,
+      });
+      setOscChip();
+    }
+
+    // Mode tabs (hidden in patcher-focused UI)
+    const tabTS = document.getElementById("tab-timeseries");
+    const tabFFT = document.getElementById("tab-fft");
+    const tabBands = document.getElementById("tab-bands");
+    const tabCamera = document.getElementById("tab-camera");
+    const tabSketch = document.getElementById("tab-sketch");
+    const tabAudio = document.getElementById("tab-audio");
+    if (tabTS) tabTS.onclick = () => switchMode("timeseries");
+    if (tabFFT) tabFFT.onclick = () => switchMode("fft");
+    if (tabBands) tabBands.onclick = () => switchMode("bands");
+    if (tabCamera) tabCamera.onclick = () => switchMode("camera");
+    if (tabSketch) tabSketch.onclick = () => switchMode("sketch");
+    if (tabAudio) tabAudio.onclick = () => switchMode("audio");
+
+    function switchMode(mode) {
+      if (mode === currentMode) return;
+      currentMode = mode;
+      tabTS.classList.toggle("active", mode === "timeseries");
+      tabFFT.classList.toggle("active", mode === "fft");
+      tabBands.classList.toggle("active", mode === "bands");
+      tabCamera.classList.toggle("active", mode === "camera");
+      tabSketch.classList.toggle("active", mode === "sketch");
+      tabAudio.classList.toggle("active", mode === "audio");
+
+      // Show/hide scale controls based on mode
+      const scaleControls = document.getElementById("scale-controls");
+      if (scaleControls) {
+        scaleControls.style.display = (mode === "camera" || mode === "sketch" || mode === "audio") ? "none" : "flex";
+      }
+
+      // Hide all views
+      document.getElementById("timeseriesChart").style.display = "none";
+      document.getElementById("fftChart").style.display = "none";
+      document.getElementById("bandsChart").style.display = "none";
+      document.getElementById("cameraView").style.display = "none";
+      document.getElementById("cameraFeatures").style.display = "none";
+      document.getElementById("sketchView").style.display = "none";
+      document.getElementById("audioView").style.display = "none";
+
+      if (mode === "timeseries") {
+        visualTitle.textContent = "Time Series";
+        visualSubtitle.textContent = "Real-time biosignal traces with temporal dynamics";
+        document.getElementById("timeseriesChart").style.display = "block";
+      } else if (mode === "fft") {
+        visualTitle.textContent = "FFT Spectrum";
+        visualSubtitle.textContent = "Real-time frequency domain analysis using Fast Fourier Transform";
+        document.getElementById("fftChart").style.display = "block";
+      } else if (mode === "camera") {
+        visualTitle.textContent = "Camera / FaceSynth";
+        visualSubtitle.textContent = "Real-time facial feature tracking with OSC output";
+        document.getElementById("cameraView").style.display = "block";
+        document.getElementById("cameraFeatures").style.display = "block";
+      } else if (mode === "sketch") {
+        visualTitle.textContent = "Sketch";
+        visualSubtitle.textContent = "Generative art visualization driven by EEG frequency bands";
+        document.getElementById("sketchView").style.display = "block";
+        // Initialize or resume p5 sketch
+        if (typeof p5Sketch !== 'undefined' && !p5Sketch.isLooping()) {
+          p5Sketch.loop();
+        }
+      } else if (mode === "audio") {
+        visualTitle.textContent = "Audio Patcher";
+        visualSubtitle.textContent = "Modular synthesis controlled by EEG and CV data";
+        document.getElementById("audioView").style.display = "block";
+        // Initialize patcher if available (with delay to ensure container is visible)
+        setTimeout(() => {
+          if (typeof Patcher !== 'undefined') {
+            if (!patcherInitialized) {
+              initAudioPatcher();
+            } else {
+              Patcher.resize();
+            }
+          }
+        }, 100);
+      } else {
+        visualTitle.textContent = "Frequency Bands";
+        visualSubtitle.textContent = "Per-channel power distribution across delta, theta, alpha, beta, and gamma bands";
+        document.getElementById("bandsChart").style.display = "block";
+      }
+
+      visualMeta.textContent = `Mode: ${mode} · Window: ${WINDOW_SEC.toFixed(1)}s`;
+
+      if (ws && mode !== "camera" && mode !== "assistant" && mode !== "sketch" && mode !== "audio") {
+        ws.send(
+          JSON.stringify({
+            mode,
+            window_sec: WINDOW_SEC,
+            interval_ms: UPDATE_INTERVAL_MS,
+          })
+        );
+      }
+      setStatus();
+    }
+
+    // Charts with Eleven Labs inspired colors
+    const tsCtx = document.getElementById("timeseriesChart").getContext("2d");
+    const fftCtx = document.getElementById("fftChart").getContext("2d");
+    const bandsCtx = document.getElementById("bandsChart").getContext("2d");
+
+    const chartColors = [
+      "#2AA3FE", // Blue
+      "#10B978", // Green
+      "#B743C6", // Purple
+      "#F58633", // Orange
+    ];
+
+    // Smart adaptive scaling with smoothing to reduce jitter
+    let tsYMin = -100, tsYMax = 100;
+    let fftYMin = -40, fftYMax = 10;
+    let bandsYMax = 50;
+
+    let tsChart = new Chart(tsCtx, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 100,
+          easing: 'linear'
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter' }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+          },
+          y: {
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter' }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+          },
+        },
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: "#999999",
+              usePointStyle: true,
+              font: { family: 'Inter', weight: '500' }
+            },
+          },
+          decimation: {
+            enabled: true,
+            algorithm: 'lttb',
+            samples: 500
+          }
+        },
+        elements: {
+          line: {
+            tension: 0.4,
+            borderWidth: 2.5,
+          },
+          point: { radius: 0 },
+        },
+      },
+    });
+
+    let fftChart = new Chart(fftCtx, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 150,
+          easing: 'linear'
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter' }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+            title: {
+              display: true,
+              text: 'Frequency (Hz)',
+              color: "#999999",
+              font: { family: 'Inter', weight: '500' }
+            }
+          },
+          y: {
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter' }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+            title: {
+              display: true,
+              text: 'Power Spectral Density (dB)',
+              color: "#999999",
+              font: { family: 'Inter', weight: '500' }
+            }
+          },
+        },
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: "#999999",
+              usePointStyle: true,
+              font: { family: 'Inter', weight: '500' }
+            },
+          },
+        },
+        elements: {
+          line: {
+            tension: 0.1,
+            borderWidth: 2,
+          },
+          point: { radius: 0 },
+        },
+      },
+    });
+
+    let bandsChart = new Chart(bandsCtx, {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 200,
+          easing: 'easeInOutQuad'
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter', size: 11 }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+          },
+          y: {
+            type: 'logarithmic',
+            min: 1,
+            max: 10000,
+            ticks: {
+              color: "#666666",
+              font: { family: 'Inter' },
+              callback: function(value) {
+                // Show clean labels at powers of 10 and key values
+                if ([1, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000].includes(value)) {
+                  return value;
+                }
+                return '';
+              }
+            },
+            grid: { color: "rgba(0, 0, 0, 0.06)" },
+            title: {
+              display: true,
+              text: 'Power (log scale)',
+              color: "#999999",
+              font: { family: 'Inter', weight: '500' }
+            }
+          },
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: "#999999",
+              usePointStyle: true,
+              font: { family: 'Inter', weight: '500' }
+            },
+          },
+        },
+      },
+    });
+
+    // Scale mode state
+    let autoScaleEnabled = false;
+    let scaleValue = 100; // Default to ±100
+
+    const scaleSlider = document.getElementById('scale-slider');
+    const scaleValueDisplay = document.getElementById('scale-value');
+    const autoScaleToggle = document.getElementById('auto-scale-toggle');
+
+    // Slider handler
+    if (scaleSlider && scaleValueDisplay) {
+      scaleSlider.addEventListener('input', (e) => {
+        scaleValue = parseInt(e.target.value);
+        scaleValueDisplay.textContent = `±${scaleValue}`;
+      });
+    }
+
+    // Auto-scale toggle handler
+    if (autoScaleToggle && scaleSlider) {
+      autoScaleToggle.addEventListener('change', (e) => {
+        autoScaleEnabled = e.target.checked;
+        scaleSlider.disabled = autoScaleEnabled;
+        scaleSlider.style.opacity = autoScaleEnabled ? '0.5' : '1';
+      });
+    }
+
+    function updateTimeSeriesChart(channels, data) {
+      if (!data || data.length === 0) return;
+      const n = data[0].length;
+      const labels = Array.from({ length: n }, (_, i) => i.toString());
+
+      // Apply scaling based on auto-scale toggle
+      if (autoScaleEnabled) {
+        // Calculate adaptive range with smoothing
+        let dataMin = Infinity, dataMax = -Infinity;
+        data.forEach(channelData => {
+          channelData.forEach(val => {
+            if (val < dataMin) dataMin = val;
+            if (val > dataMax) dataMax = val;
+          });
+        });
+
+        // Smooth the min/max with exponential moving average (reduces jitter)
+        const alpha = 0.15; // Lower = smoother, higher = more responsive
+        tsYMin = tsYMin * (1 - alpha) + dataMin * alpha;
+        tsYMax = tsYMax * (1 - alpha) + dataMax * alpha;
+
+        // Add 10% padding
+        const range = tsYMax - tsYMin;
+        const padding = range * 0.1;
+
+        tsChart.options.scales.y.min = tsYMin - padding;
+        tsChart.options.scales.y.max = tsYMax + padding;
+      } else {
+        // Fixed scale mode using slider value
+        tsChart.options.scales.y.min = -scaleValue;
+        tsChart.options.scales.y.max = scaleValue;
+      }
+
+      tsChart.data.labels = labels;
+
+      if (tsChart.data.datasets.length !== channels.length) {
+        tsChart.data.datasets = channels.map((chName, idx) => ({
+          label: chName,
+          data: data[idx],
+          borderColor: chartColors[idx % chartColors.length],
+          backgroundColor: "transparent",
+        }));
+      } else {
+        channels.forEach((_, idx) => {
+          tsChart.data.datasets[idx].data = data[idx];
+        });
+      }
+      tsChart.update("none");
+      
+      // Feed timeseries data to Sketch
+      if (typeof Sketch !== 'undefined') {
+        Sketch.updateTimeSeries(channels, data);
+      }
+    }
+
+    function updateFFTChart(channels, freqs, psd) {
+      if (!psd || psd.length === 0 || !freqs || freqs.length === 0) return;
+
+      // Apply scaling based on auto-scale toggle
+      if (autoScaleEnabled) {
+        // Calculate adaptive range with smoothing
+        let dataMin = Infinity, dataMax = -Infinity;
+        psd.forEach(channelData => {
+          channelData.forEach(val => {
+            if (val < dataMin) dataMin = val;
+            if (val > dataMax) dataMax = val;
+          });
+        });
+
+        // Smooth the min/max
+        const alpha = 0.15;
+        fftYMin = fftYMin * (1 - alpha) + dataMin * alpha;
+        fftYMax = fftYMax * (1 - alpha) + dataMax * alpha;
+
+        // Add padding
+        const range = fftYMax - fftYMin;
+        const padding = range * 0.1;
+
+        fftChart.options.scales.y.min = fftYMin - padding;
+        fftChart.options.scales.y.max = fftYMax + padding;
+      } else {
+        // Fixed scale mode for FFT using slider value
+        fftChart.options.scales.y.min = 0;
+        fftChart.options.scales.y.max = scaleValue;
+      }
+
+      fftChart.data.labels = freqs.map(f => f.toFixed(1));
+
+      if (fftChart.data.datasets.length !== channels.length) {
+        fftChart.data.datasets = channels.map((chName, idx) => ({
+          label: chName,
+          data: psd[idx],
+          borderColor: chartColors[idx % chartColors.length],
+          backgroundColor: "transparent",
+        }));
+      } else {
+        channels.forEach((_, idx) => {
+          fftChart.data.datasets[idx].data = psd[idx];
+        });
+      }
+      fftChart.update("none");
+      
+      // Feed FFT data to Sketch (use first channel for average)
+      if (typeof Sketch !== 'undefined' && psd && psd[0]) {
+        Sketch.updateFFT(freqs, psd[0]);
+      }
+    }
+
+    function updateBandsChart(channels, bandNames, values) {
+      if (!values || values.length === 0) return;
+
+      // Apply scaling based on auto-scale toggle
+      if (autoScaleEnabled) {
+        // Calculate adaptive max with smoothing
+        let dataMax = 0;
+        values.forEach(channelData => {
+          channelData.forEach(val => {
+            if (val > dataMax) dataMax = val;
+          });
+        });
+
+        // Smooth the max
+        const alpha = 0.15;
+        bandsYMax = bandsYMax * (1 - alpha) + dataMax * alpha;
+
+        // Add padding and ensure minimum range
+        const paddedMax = Math.max(bandsYMax * 1.2, 10);
+
+        bandsChart.options.scales.y.max = paddedMax;
+      } else {
+        // Fixed scale mode for bands using slider value
+        bandsChart.options.scales.y.min = 0;
+        bandsChart.options.scales.y.max = scaleValue;
+      }
+
+      bandsChart.data.labels = bandNames;
+
+      if (bandsChart.data.datasets.length !== channels.length) {
+        bandsChart.data.datasets = channels.map((chName, idx) => ({
+          label: chName,
+          data: values[idx],
+          backgroundColor: chartColors[idx % chartColors.length] + "B3", // 70% opacity
+        }));
+      } else {
+        channels.forEach((_, idx) => {
+          bandsChart.data.datasets[idx].data = values[idx];
+        });
+      }
+      bandsChart.update("none");
+    }
+
+    // WebSocket
+    function openWS() {
+      if (ws) return;
+      const proto = window.location.protocol === "https:" ? "wss" : "ws";
+      const url = `${proto}://${window.location.host}/ws/stream`;
+      ws = new WebSocket(url);
+
+      ws.onopen = () => {
+        // Map non-streaming modes to "bands" for the WS protocol
+        const streamMode = (currentMode === "audio" || currentMode === "sketch" || currentMode === "camera")
+          ? "bands" : currentMode;
+        ws.send(
+          JSON.stringify({
+            mode: streamMode,
+            window_sec: WINDOW_SEC,
+            interval_ms: UPDATE_INTERVAL_MS,
+          })
+        );
+        errorMsg.style.display = "none";
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "timeseries") {
+          updateTimeSeriesChart(msg.channels, msg.data);
+          // Push to AudioEngine vizData for node visualization
+          if (typeof AudioEngine !== 'undefined' && AudioEngine.pushTimeSeries) {
+            AudioEngine.pushTimeSeries(msg.data);
+          }
+        } else if (msg.type === "fft") {
+          updateFFTChart(msg.channels, msg.freqs, msg.psd);
+          // Push to AudioEngine vizData for node visualization
+          if (typeof AudioEngine !== 'undefined' && AudioEngine.pushFFT) {
+            AudioEngine.pushFFT(msg.freqs, msg.psd);
+          }
+        } else if (msg.type === "bands") {
+          updateBandsChart(msg.channels, msg.bands, msg.values);
+          // Send EEG data to audio engine for modulation (always feed data, not gated by audioEnabled)
+          if (typeof AudioEngine !== 'undefined') {
+            // Send engagement index
+            if (msg.engagement !== undefined) {
+              AudioEngine.updateData('engagement', msg.engagement);
+            }
+            // Send band powers (use channel 0 or average)
+            if (msg.values && msg.values.length > 0 && msg.bands) {
+              const bandData = {};
+              msg.bands.forEach((band, i) => {
+                // Average across channels for this band
+                let sum = 0;
+                msg.values.forEach(chValues => {
+                  if (chValues[i] !== undefined) sum += chValues[i];
+                });
+                const rawValue = sum / msg.values.length;
+                // Normalize using log scale: raw values ~25-800 -> 0-100
+                // log10(25)≈1.4, log10(800)≈2.9, range≈1.5
+                const logValue = rawValue > 1 ? Math.log10(rawValue) : 0;
+                const normalized = Math.max(0, Math.min(100, ((logValue - 1.4) / 1.5) * 100));
+                bandData[band.toLowerCase()] = normalized;
+              });
+              AudioEngine.updateData('bands', bandData);
+            }
+          }
+        } else if (msg.type === "error") {
+          errorMsg.textContent = msg.message || "Stream error.";
+          errorMsg.style.display = "block";
+        }
+      };
+
+      ws.onclose = () => {
+        ws = null;
+      };
+
+      ws.onerror = () => {
+        errorMsg.textContent = "WebSocket error.";
+        errorMsg.style.display = "block";
+      };
+    }
+
+    function closeWS() {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+    }
+
+    // Camera WebSocket
+    function openCameraWS() {
+      if (cameraWs) return;
+      const proto = window.location.protocol === "https:" ? "wss" : "ws";
+      const url = `${proto}://${window.location.host}/ws/camera`;
+      cameraWs = new WebSocket(url);
+
+      cameraWs.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "camera") {
+          // Update camera feed
+          const img = document.getElementById("cameraFeed");
+          img.src = "data:image/jpeg;base64," + msg.frame;
+
+          // Update facial features
+          const features = msg.features || {};
+          updateFeatureMeter("mouth", features.mouth_openness || 0);
+          // Invert smile: high value = smiling, low value = neutral
+          const smileInverted = 1 - (features.smile_curvature || 0);
+          updateFeatureMeter("smile", smileInverted);
+          updateFeatureMeter("roll", (features.head_roll || 0) / 30 + 0.5); // Map -15 to 15 -> 0 to 1
+
+          // Update eye gaze
+          const gaze = msg.gaze || {};
+          if (gaze.gaze_x !== undefined) {
+            updateFeatureMeter("gaze-x", (gaze.gaze_x + 1) / 2); // Map -1 to 1 -> 0 to 1
+            document.getElementById("val-gaze-x").textContent = gaze.gaze_x.toFixed(2);
+          }
+          if (gaze.gaze_y !== undefined) {
+            updateFeatureMeter("gaze-y", (gaze.gaze_y + 1) / 2); // Map -1 to 1 -> 0 to 1
+            document.getElementById("val-gaze-y").textContent = gaze.gaze_y.toFixed(2);
+          }
+
+          // Update hands
+          const hands = msg.hands || {};
+          updateHandDisplay("left", hands.left);
+          updateHandDisplay("right", hands.right);
+
+          // Feed camera data to Sketch
+          if (typeof Sketch !== 'undefined') {
+            Sketch.updateCamera(features);
+          }
+
+          // Feed CV data to Audio Engine
+          if (typeof updateAudioWithCVData === 'function') {
+            updateAudioWithCVData(features, gaze, hands);
+          }
+        } else if (msg.type === "error") {
+          errorMsg.textContent = msg.message || "Camera error.";
+          errorMsg.style.display = "block";
+        }
+      };
+
+      cameraWs.onclose = () => {
+        cameraWs = null;
+      };
+
+      cameraWs.onerror = () => {
+        errorMsg.textContent = "Camera WebSocket error.";
+        errorMsg.style.display = "block";
+      };
+    }
+
+    function closeCameraWS() {
+      if (cameraWs) {
+        cameraWs.close();
+        cameraWs = null;
+      }
+    }
+
+    function updateFeatureMeter(name, value) {
+      // Clamp value between 0 and 1
+      value = Math.max(0, Math.min(1, value));
+
+      const meter = document.getElementById(`meter-${name}`);
+      const valueSpan = document.getElementById(`val-${name}`);
+
+      if (meter) {
+        meter.style.width = `${value * 100}%`;
+      }
+      if (valueSpan) {
+        valueSpan.textContent = value.toFixed(2);
+      }
+    }
+
+    function updateHandDisplay(side, handData) {
+      const statusEl = document.getElementById(`${side}-hand-status`);
+      const gestureEl = document.getElementById(`${side}-hand-gesture`);
+      const pinchMeter = document.getElementById(`meter-${side}-pinch`);
+      const pinchVal = document.getElementById(`val-${side}-pinch`);
+
+      if (!handData || !handData.present) {
+        if (statusEl) {
+          statusEl.textContent = "Not detected";
+          statusEl.style.background = "var(--bg-tertiary)";
+        }
+        if (gestureEl) gestureEl.textContent = "--";
+        if (pinchMeter) pinchMeter.style.width = "0%";
+        if (pinchVal) pinchVal.textContent = "0.00";
+        return;
+      }
+
+      // Hand detected
+      if (statusEl) {
+        statusEl.textContent = "Detected";
+        statusEl.style.background = "var(--accent-green)";
+      }
+
+      // Gesture
+      if (gestureEl && handData.gesture) {
+        gestureEl.textContent = handData.gesture;
+      }
+
+      // Pinch distance (normalize 0-100 to 0-1)
+      if (handData.pinch_distance !== undefined) {
+        const pinchNorm = Math.max(0, Math.min(1, 1 - handData.pinch_distance / 100));
+        if (pinchMeter) pinchMeter.style.width = `${pinchNorm * 100}%`;
+        if (pinchVal) pinchVal.textContent = pinchNorm.toFixed(2);
+      }
+    }
+
+    // -------- Simulator Controls --------
+    let useSimulator = false;
+    const toggleSimBtn = document.getElementById('toggle-simulator');
+    const simControls = document.getElementById('simulator-controls');
+    const simMode = document.getElementById('simulator-mode');
+
+    toggleSimBtn.onclick = async () => {
+      useSimulator = !useSimulator;
+      toggleSimBtn.classList.toggle('active', useSimulator);
+      toggleSimBtn.textContent = useSimulator ? 'Disable' : 'Enable';
+      simMode.style.display = useSimulator ? 'block' : 'none';
+
+      // Update backend
+      await postJSON('/api/use_simulator', { enabled: useSimulator });
+
+      // Auto-connect and start streaming when enabling simulator
+      if (useSimulator) {
+        try {
+          await postJSON('/api/connect', {});
+          await postJSON('/api/start', {});
+          streaming = true;
+          connected = true;
+          openWS();
+          setStatus();
+        } catch (err) {
+          console.warn('Auto-connect failed:', err);
+        }
+      }
+
+      // Update UI message
+      const mode = useSimulator ? 'Simulator' : 'Real Hardware';
+      showSuccess(`Switched to ${mode} mode`);
+    };
+
+    simMode.onchange = async () => {
+      const mode = simMode.value;
+      await postJSON('/api/simulator/mode', { mode });
+      showSuccess(`Simulator mode: ${mode}`);
+    };
+
+    // Initial status check
+    refreshStatus();
+    setOscChip();
+
+    // Initialize sketch on page load
+    setTimeout(() => {
+      initP5Sketch();
+    }, 1000);
+
+    // Visualization controls panel toggle
+    const vizToggle = document.getElementById('viz-toggle');
+    const vizContent = document.getElementById('viz-controls-content');
+    if (vizToggle && vizContent) {
+      vizToggle.addEventListener('click', () => {
+        const isVisible = vizContent.style.display !== 'none';
+        vizContent.style.display = isVisible ? 'none' : 'block';
+        vizToggle.textContent = isVisible ? '▶' : '▼';
+      });
+    }
+
+    // OSC Output section collapse toggle
+    const oscHeader = document.getElementById('osc-section-header');
+    const oscContent = document.getElementById('osc-section-content');
+    const oscToggleIcon = document.getElementById('osc-toggle-icon');
+    if (oscHeader && oscContent && oscToggleIcon) {
+      oscHeader.addEventListener('click', () => {
+        const isVisible = oscContent.style.display !== 'none';
+        oscContent.style.display = isVisible ? 'none' : 'block';
+        oscToggleIcon.textContent = isVisible ? '▶' : '▼';
+      });
+    }
+
+    // CV Features section collapse toggle
+    const cvFeaturesToggle = document.getElementById('cv-features-toggle');
+    const cvFeaturesContent = document.getElementById('cv-features-content');
+    const cvFeaturesArrow = document.getElementById('cv-features-arrow');
+    if (cvFeaturesToggle && cvFeaturesContent && cvFeaturesArrow) {
+      cvFeaturesToggle.addEventListener('click', () => {
+        const isVisible = cvFeaturesContent.style.display !== 'none';
+        cvFeaturesContent.style.display = isVisible ? 'none' : 'block';
+        cvFeaturesArrow.textContent = isVisible ? '▶' : '▼';
+      });
+    }
+
+    // MIDI section collapse toggle (starts collapsed)
+    const midiHeader = document.getElementById('midi-section-header');
+    const midiContent = document.getElementById('midi-section-content');
+    const midiToggleIcon = document.getElementById('midi-toggle-icon');
+    if (midiHeader && midiContent && midiToggleIcon) {
+      midiHeader.addEventListener('click', () => {
+        const isVisible = midiContent.style.display !== 'none';
+        midiContent.style.display = isVisible ? 'none' : 'block';
+        midiToggleIcon.textContent = isVisible ? '▶' : '▼';
+      });
+    }
+
+    // Recording section collapse toggle (starts collapsed)
+    const recordingHeader = document.getElementById('recording-section-header');
+    const recordingContent = document.getElementById('recording-section-content');
+    const recordingToggleIcon = document.getElementById('recording-toggle-icon');
+    if (recordingHeader && recordingContent && recordingToggleIcon) {
+      recordingHeader.addEventListener('click', () => {
+        const isVisible = recordingContent.style.display !== 'none';
+        recordingContent.style.display = isVisible ? 'none' : 'block';
+        recordingToggleIcon.textContent = isVisible ? '▶' : '▼';
+      });
+    }
+
+    // -------- p5.js Enhanced Sketch --------
+    let p5Sketch = null;
+    let sketchInitialized = false;
+
+    function initP5Sketch() {
+      if (sketchInitialized || p5Sketch) {
+        return;
+      }
+
+      const sketch = (p) => {
+        p.setup = function() {
+          const container = document.getElementById('p5-container');
+          if (!container) return;
+
+          const parent = container.parentElement;
+          const rect = parent ? parent.getBoundingClientRect() : container.getBoundingClientRect();
+          const width = rect.width || window.innerWidth * 0.7;
+          const height = rect.height || window.innerHeight * 0.7;
+
+          const canvas = p.createCanvas(width, height);
+          canvas.parent('p5-container');
+          p.background(15, 15, 25);
+
+          // Initialize the Sketch system
+          Sketch.init(p);
+          Sketch.modes.particles.init(Sketch.config.count);
+        };
+
+        p.draw = function() {
+          Sketch.draw();
+        };
+
+        p.windowResized = function() {
+          const container = document.getElementById('p5-container');
+          if (container) {
+            const parent = container.parentElement;
+            const rect = parent ? parent.getBoundingClientRect() : container.getBoundingClientRect();
+            const width = rect.width || window.innerWidth * 0.7;
+            const height = rect.height || window.innerHeight * 0.7;
+
+            p.resizeCanvas(width, height);
+            Sketch.modes[Sketch.config.mode].init(Sketch.config.count);
+          }
+        };
+      };
+
+      p5Sketch = new p5(sketch);
+      sketchInitialized = true;
+    }
+
+    // Update bands data for enhanced p5 sketch
+    const originalUpdateBandsChart = updateBandsChart;
+    updateBandsChart = function(channels, bandNames, values) {
+      originalUpdateBandsChart(channels, bandNames, values);
+      
+      // Calculate average across all channels for each band and feed to Sketch
+      if (values && values.length > 0 && bandNames) {
+        const bands = {};
+        bandNames.forEach((band, idx) => {
+          const avg = values.reduce((sum, channelValues) => sum + (channelValues[idx] || 0), 0) / values.length;
+          bands[band.toLowerCase()] = avg;
+        });
+        Sketch.updateBands(bands);
+      }
+    };
+
+    // Request bands data when on sketch tab
+    const originalSwitchMode = switchMode;
+    switchMode = function(mode) {
+      originalSwitchMode(mode);
+
+      // When switching to sketch mode, initialize p5 and request bands data
+      if (mode === "sketch") {
+        if (!sketchInitialized) {
+          setTimeout(() => {
+            initP5Sketch();
+          }, 200);
+        }
+
+        // Request bands data if streaming
+        if (ws && streaming) {
+          ws.send(
+            JSON.stringify({
+              mode: "bands",
+              window_sec: WINDOW_SEC,
+              interval_ms: UPDATE_INTERVAL_MS,
+            })
+          );
+        }
+      }
+
+      // When switching to audio/patcher mode, also request bands data
+      if (mode === "audio") {
+        if (ws && streaming) {
+          ws.send(
+            JSON.stringify({
+              mode: "bands",
+              window_sec: WINDOW_SEC,
+              interval_ms: UPDATE_INTERVAL_MS,
+            })
+          );
+        }
+      }
+    };
+
+    // -------- MIDI Controls --------
+    let midiConnected = false;
+    const midiPill = document.getElementById('midi-pill');
+    const midiPortSelect = document.getElementById('midi-port');
+    const btnMidiConnect = document.getElementById('btn-midi-connect');
+    const btnMidiDisconnect = document.getElementById('btn-midi-disconnect');
+
+    // Load MIDI ports on page load
+    async function loadMidiPorts() {
+      if (!midiPortSelect) return;
+      try {
+        const res = await fetch('/api/midi/ports');
+        const data = await res.json();
+        if (data.available && data.ports) {
+          midiPortSelect.innerHTML = '<option value="">Auto-detect IAC</option>';
+          data.ports.forEach(port => {
+            const opt = document.createElement('option');
+            opt.value = port;
+            opt.textContent = port;
+            if (data.iac_port === port) {
+              opt.textContent += ' (IAC)';
+            }
+            midiPortSelect.appendChild(opt);
+          });
+        }
+      } catch (e) {
+        // MIDI ports unavailable
+      }
+    }
+    loadMidiPorts();
+
+    if (btnMidiConnect) {
+      btnMidiConnect.onclick = async () => {
+        const portName = midiPortSelect ? midiPortSelect.value : null;
+        try {
+          const res = await postJSON('/api/midi/connect', { port_name: portName });
+          if (res.status === 'ok') {
+            midiConnected = true;
+            if (midiPill) {
+              midiPill.textContent = 'Connected';
+              midiPill.classList.add('active');
+            }
+            showSuccess(`MIDI connected to ${res.port}`);
+          } else {
+            showError(res.message || 'Failed to connect MIDI');
+          }
+        } catch (e) {
+          showError('MIDI connection failed: ' + e.message);
+        }
+      };
+    }
+
+    if (btnMidiDisconnect) {
+      btnMidiDisconnect.onclick = async () => {
+        await postJSON('/api/midi/disconnect', {});
+        midiConnected = false;
+        if (midiPill) {
+          midiPill.textContent = 'Disconnected';
+          midiPill.classList.remove('active');
+        }
+        showSuccess('MIDI disconnected');
+      };
+    }
+
+    // -------- Recording Controls --------
+    let recording = false;
+    let recordingStartTime = null;
+    let recordingTimer = null;
+    let lastSessionId = null;
+    const recordingPill = document.getElementById('recording-pill');
+    const btnRecordStart = document.getElementById('btn-record-start');
+    const btnRecordStop = document.getElementById('btn-record-stop');
+    const recordingDuration = document.getElementById('recording-duration');
+    const recDurationSpan = document.getElementById('rec-duration');
+    const recordingDownload = document.getElementById('recording-download');
+    const btnDownloadJson = document.getElementById('btn-download-json');
+    const btnDownloadCsv = document.getElementById('btn-download-csv');
+
+    if (btnRecordStart) {
+      btnRecordStart.onclick = async () => {
+        try {
+          const res = await postJSON('/api/recording/start', { metadata: { source: 'web' } });
+          if (res.status === 'ok') {
+            recording = true;
+            recordingStartTime = Date.now();
+            lastSessionId = res.session_id;
+            if (recordingPill) {
+              recordingPill.textContent = 'Recording';
+              recordingPill.classList.add('active');
+              recordingPill.style.background = 'var(--error)';
+              recordingPill.style.color = 'white';
+            }
+            if (recordingDuration) recordingDuration.style.display = 'block';
+            if (recordingDownload) recordingDownload.style.display = 'none';
+
+            // Update duration timer
+            recordingTimer = setInterval(() => {
+              const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+              const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+              const secs = (elapsed % 60).toString().padStart(2, '0');
+              if (recDurationSpan) recDurationSpan.textContent = `${mins}:${secs}`;
+            }, 1000);
+
+            showSuccess(`Recording started: ${res.session_id}`);
+          }
+        } catch (e) {
+          showError('Failed to start recording: ' + e.message);
+        }
+      };
+    }
+
+    if (btnRecordStop) {
+      btnRecordStop.onclick = async () => {
+        try {
+          const res = await postJSON('/api/recording/stop', {});
+          recording = false;
+          clearInterval(recordingTimer);
+          if (recordingPill) {
+            recordingPill.textContent = 'Saved';
+            recordingPill.classList.remove('active');
+            recordingPill.style.background = '';
+            recordingPill.style.color = '';
+          }
+          if (recordingDuration) recordingDuration.style.display = 'none';
+
+          // Show download buttons
+          if (recordingDownload) recordingDownload.style.display = 'block';
+
+          if (res.summary) {
+            showSuccess(`Recording saved: ${res.summary.eeg_samples || 0} EEG samples, ${res.summary.cv_samples || 0} CV samples`);
+          } else {
+            showSuccess('Recording saved');
+          }
+
+          // Reset pill after delay
+          setTimeout(() => {
+            if (recordingPill) recordingPill.textContent = 'Ready';
+          }, 2000);
+        } catch (e) {
+          showError('Failed to stop recording: ' + e.message);
+        }
+      };
+    }
+
+    // Download handlers
+    if (btnDownloadJson) {
+      btnDownloadJson.onclick = () => {
+        if (lastSessionId) {
+          window.open(`/api/recording/export/${lastSessionId}?format=json`, '_blank');
+        } else {
+          showError('No recording available');
+        }
+      };
+    }
+
+    if (btnDownloadCsv) {
+      btnDownloadCsv.onclick = () => {
+        if (lastSessionId) {
+          window.open(`/api/recording/export/${lastSessionId}?format=csv`, '_blank');
+        } else {
+          showError('No recording available');
+        }
+      };
+    }
+
+    // -------- Audio Patcher --------
+    let patcherInitialized = false;
+    let audioEnabled = true; // Auto-enabled
+
+    function initAudioPatcher() {
+      if (patcherInitialized) return;
+
+      const container = document.getElementById('patcher-container');
+      if (!container) return;
+
+      if (typeof Patcher !== 'undefined') {
+        Patcher.init(container);
+        patcherInitialized = true;
+      }
+
+      if (typeof VisualRenderer !== 'undefined') {
+        VisualRenderer.init('visual-preview-container');
+
+        const visualFsBtn = document.getElementById('visual-fullscreen-btn');
+        if (visualFsBtn) {
+          visualFsBtn.onclick = () => VisualRenderer.toggleFullscreen();
+        }
+      }
+
+      // Auto-start audio and visual engines
+      if (typeof AudioEngine !== 'undefined') {
+        AudioEngine.start();
+      }
+      if (typeof VisualRenderer !== 'undefined') {
+        VisualRenderer.enable();
+      }
+    }
+
+    // Audio controls
+    const audioEnabledCheckbox = document.getElementById('audio-enabled');
+    const masterVolumeSlider = document.getElementById('master-volume');
+    const masterVolVal = document.getElementById('master-vol-val');
+
+    if (audioEnabledCheckbox) {
+      audioEnabledCheckbox.onchange = () => {
+        audioEnabled = audioEnabledCheckbox.checked;
+        if (typeof AudioEngine !== 'undefined') {
+          if (audioEnabled) {
+            AudioEngine.start();
+          } else {
+            AudioEngine.stop();
+          }
+        }
+        if (typeof VisualRenderer !== 'undefined') {
+          if (audioEnabled) {
+            VisualRenderer.enable();
+          } else {
+            VisualRenderer.disable();
+          }
+        }
+      };
+    }
+
+    if (masterVolumeSlider && masterVolVal) {
+      masterVolumeSlider.oninput = () => {
+        const vol = masterVolumeSlider.value;
+        masterVolVal.textContent = `${vol}%`;
+        if (typeof AudioEngine !== 'undefined') {
+          AudioEngine.setMasterVolume(vol / 100);
+        }
+      };
+    }
+
+    // Add node buttons
+    const addOscBtn = document.getElementById('audio-add-osc');
+    const addNoiseBtn = document.getElementById('audio-add-noise');
+    const addFilterBtn = document.getElementById('audio-add-filter');
+
+    if (addOscBtn) {
+      addOscBtn.onclick = () => {
+        if (typeof AudioEngine !== 'undefined') {
+          AudioEngine.createNode('oscillator', 100, 100);
+        }
+      };
+    }
+
+    if (addNoiseBtn) {
+      addNoiseBtn.onclick = () => {
+        if (typeof AudioEngine !== 'undefined') {
+          AudioEngine.createNode('noise', 100, 200);
+        }
+      };
+    }
+
+    if (addFilterBtn) {
+      addFilterBtn.onclick = () => {
+        if (typeof AudioEngine !== 'undefined') {
+          AudioEngine.createNode('filter', 250, 150);
+        }
+      };
+    }
+
+    // Feed EEG data to audio engine when in audio mode
+    const originalUpdateBandsForAudio = updateBandsChart;
+    updateBandsChart = function(channels, bandNames, values) {
+      originalUpdateBandsForAudio(channels, bandNames, values);
+
+      // Send to audio engine if available and enabled
+      if (audioEnabled && typeof AudioEngine !== 'undefined' && values && values.length > 0) {
+        const bands = {};
+        bandNames.forEach((band, idx) => {
+          const avg = values.reduce((sum, ch) => sum + (ch[idx] || 0), 0) / values.length;
+          bands[band.toLowerCase()] = avg; // Keep as 0-100 range, normalized in AudioEngine
+        });
+        AudioEngine.updateData('bands', bands);
+      }
+    };
+
+    // Feed CV data to audio engine
+    function updateAudioWithCVData(features, gaze, hands) {
+      if (!audioEnabled || typeof AudioEngine === 'undefined') return;
+
+      if (features) {
+        AudioEngine.updateData('cv', {
+          mouth: features.mouth_openness || 0,
+          yaw: features.head_yaw || 0,
+          roll: features.head_roll_relative || 0,
+          smile: 1 - (features.smile_curvature || 0) // Inverted: high = smiling
+        });
+      }
+
+      if (gaze) {
+        AudioEngine.updateData('gaze', gaze);
+      }
+
+      if (hands) {
+        // Format hand data for AudioEngine
+        const handData = {
+          left: hands.left ? {
+            detected: hands.left.detected ? 1 : 0,
+            pinch_distance: hands.left.pinch_distance || 0,
+            openness: hands.left.openness || 0,
+            palm_x: hands.left.palm_x || 0.5,
+            palm_y: hands.left.palm_y || 0.5,
+            palm_z: hands.left.palm_z || 0
+          } : { detected: 0 },
+          right: hands.right ? {
+            detected: hands.right.detected ? 1 : 0,
+            pinch_distance: hands.right.pinch_distance || 0,
+            openness: hands.right.openness || 0,
+            palm_x: hands.right.palm_x || 0.5,
+            palm_y: hands.right.palm_y || 0.5,
+            palm_z: hands.right.palm_z || 0
+          } : { detected: 0 }
+        };
+        AudioEngine.updateData('hands', handData);
+      }
+    }
+
+    // Initialize patcher on page load (since it's the default view)
+    initAudioPatcher();
+  </script>
+</body>
+</html>

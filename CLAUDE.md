@@ -13,8 +13,10 @@ questions about the work.
   `/api/chat`
 - Content as markdown files (gray-matter frontmatter) — no CMS
 - `motion` (framer-motion successor) for all animation
-- AI SDK v6 + `@ai-sdk/openai` for the agent (model: `gpt-5.1`,
-  `OPENAI_API_KEY` in `.env.local` — never commit it)
+- AI SDK v7 + `@ai-sdk/anthropic` for the agent (model: `claude-opus-5-5`).
+  **One key, `ANTHROPIC_API_KEY`, pays for the agent, Theo and HeadWave**
+  (`.env.local`, never commit it). `OPENAI_API_KEY` is still read by the
+  /agents class site's scene agent and notes agent, nothing else.
 
 ## Design
 
@@ -271,6 +273,8 @@ video: "https://vimeo.com/..."     # optional → "watch video" pill
 repo: "https://github.com/..."     # optional → "repository" pill
 paper: "https://..."               # optional → "read paper" pill
 link: "https://attractor.live"     # optional → "visit" pill
+demo: "/theo"                      # optional → "interactive demo" pill, first in the
+                                   # row; a path on this site (see Hosted projects)
 ---
 
 Brief description — the card body (plain text, no markdown rendering).
@@ -349,9 +353,85 @@ a page ducks the scene. Its underwater appearance is always dark. Course policy 
 disclosing AI use, so keep the disclosure lines in the README and the weekly
 pages truthful when you change things.
 
+## Hosted projects (/theo, /headwave)
+
+Some projects run on the site itself: the card's "interactive demo" pill
+(`demo:` in the frontmatter) opens the real app in a new tab. Same shape as
+/agents: **the source is not in this repo.** Each project keeps its own
+repository, cloned into `hosted/` (git-ignored), and `npm run sync:demos`
+(`scripts/sync-demos.mjs`) builds it and mirrors the result into
+`public/<slug>/` (front end) and `python/<slug>/src/` (backend), which are
+committed. Never edit those copies by hand; change the project's repo and sync.
+
+Theo is the first. Its Studio is a Vite app built with `--base=/theo/` and
+`VITE_THEO_API=/api/theo`; `next.config.ts` rewrites `/theo` to the built
+index. Its backend is the FastAPI module the desktop app spawns, but no server
+runs here: `python/theo/bridge.py` (site-owned, not synced) calls the endpoint
+functions directly. The path of a request is browser →
+`src/app/api/theo/[...op]/route.ts` (same-origin check, size caps, budgets) →
+`api/demo-worker.py` on Vercel over a signed request, or a spawned interpreter
+under `next dev`. Parsing is free and runs on every edit; the other six
+operations are Claude calls, budgeted at 40 an hour per visitor and 400 per
+instance. Without the key the demo still opens, parses and draws the graph, and
+says the model is not connected. Theo runs on `claude-sonnet-4-6` (`THEO_MODEL`)
+because its temperature slider is rejected by the newer models.
+
+HeadWave is the second, and almost all of it runs in the visitor's browser.
+Its front end is plain files with no build step, written against a Python
+server that owns the EEG headset, the camera, MIDI and OSC. On the web,
+HeadWave's own `static/web.js` (in its repo, loaded first by the synced page)
+answers what that server would: it patches `fetch` and `WebSocket` for the
+page's `/api/...` and `/ws/...` calls and serves them from a port of the EEG
+simulator and from MediaPipe face/gaze/hand tracking on the visitor's webcam
+(no frame leaves the browser; the models load from jsdelivr and Google storage
+only when the camera is started). It opens with the simulator running and a
+stored starter patch (`static/web-starter.json`), so a visit costs no model
+call. MIDI, OSC, recording and a real headset answer "desktop only". Only
+`/api/ai/*` reaches the site: `src/app/api/headwave/[...op]/route.ts` →
+worker → HeadWave's assistant service, on `claude-opus-5-5`
+(`HEADWAVE_MODEL`), budgeted at 60 an hour per visitor (one generation is two
+calls). The sync rewrites the page's `/static/` paths to `/headwave/static/`.
+
+What the routes share is `src/lib/hosted.ts`: `sameOrigin`, `budget`,
+`readBody`, and `runWorker(slug, op, body)`. One Python function serves every
+project (`api/demo-worker.py` loads `python/<slug>/bridge.py`, which is
+site-owned and not synced). Under `next dev` the same bridge is spawned with
+`hosted/.venv/bin/python` (`DEMO_PYTHON` overrides); create it once with
+`uv venv hosted/.venv && uv pip install --python hosted/.venv/bin/python -r
+python/theo/requirements.lock.txt -r python/headwave/requirements.lock.txt`.
+The budgets live in memory, so they are a brake, not a spend cap: the cap
+belongs on the key itself. The chat agent draws on the same kind of budget.
+The worker signature uses `DEMO_WORKER_KEY`, falling back to
+`WEEKLY_NOTES_EDIT_KEY`. To add a project: clone it into `hosted/`, add a
+function to `sync-demos.mjs`, a bridge, a route, a rewrite in `next.config.ts`,
+its slug in the worker's `SLUGS`, and `demo:` in its project file.
+
+**Three free calls, then a password.** Every visitor gets three model calls
+in total, shared by the agent chat, Theo and HeadWave (`spendUse` in
+`src/lib/hosted.ts`; a HeadWave generation counts once, its parameters call
+rides along; Theo's "render all" is one per section; parsing is free). Past
+that a route answers 401 with `x-mlf-locked`, and `public/unlock.js` (loaded
+by the layout and injected into both demo pages by the sync) shows a password
+box, posts to `/api/unlock`, and repeats the held call. The password is
+`MODEL_PASSWORD`; a correct one sets an httpOnly cookie keyed on it, so
+changing the password signs everyone out. Uses are counted per IP in Upstash
+Redis (Vercel Marketplace, `KV_REST_API_URL` / `KV_REST_API_TOKEN`, keys are a
+keyed hash of the address, thirty-day expiry) and in a signed cookie; the
+higher wins, so neither clearing cookies nor a new instance resets it. Without
+the Redis variables (local dev) the IP count falls back to memory. Failed calls
+are refunded. `DEMO_WORKER_KEY` signs both the worker calls and the cookie. Locally, an `ANTHROPIC_API_KEY`
+exported in the shell wins over `.env.local` (Next does not override existing
+environment variables).
+
+Vercel installs one root `requirements.txt` for every Python function, so each
+runtime keeps its pins in `python/<name>/requirements.lock.txt` and
+`scripts/requirements.mjs` writes their union; both sync scripts call it. Add
+a runtime's pins there, never to the root file.
+
 ## The agent
 
-`src/app/api/chat/route.ts` streams via AI SDK; the system prompt is built
+`src/app/api/chat/route.ts` streams via AI SDK (Claude, with the system
+prompt cached and effort low); the system prompt is built
 at request time by `src/lib/agent-context.ts` from the same project/thought
 files that render the site, plus Mateo's bio (CEO of Attractor; previously
 Stanford CCRMA, Shape Lab / Neuromusic Lab; Prisms VR; MIT teaching;

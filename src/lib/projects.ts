@@ -66,6 +66,8 @@ export type Project = {
   repo?: string;
   link?: string;
   paper?: string;
+  /** Path on this site where the project itself runs, e.g. "/theo". */
+  demo?: string;
 };
 
 const IMAGE_EXT = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
@@ -234,6 +236,7 @@ export function getProjects(): Project[] {
         repo: data.repo as string | undefined,
         link: data.link as string | undefined,
         paper: data.paper as string | undefined,
+        demo: data.demo as string | undefined,
       };
     })
     .filter((p) => !p.hidden)

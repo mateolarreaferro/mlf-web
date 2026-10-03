@@ -2,7 +2,11 @@
   "functions": {
     "api/notes-agent.py": {
       "maxDuration": 300,
-      "excludeFiles": "{node_modules,public,agents2026-mateo,.next,.git,.satie}/**"
+      "excludeFiles": "{node_modules,public,agents2026-mateo,hosted,.next,.git,.satie}/**"
+    },
+    "api/demo-worker.py": {
+      "maxDuration": 120,
+      "excludeFiles": "{node_modules,public,agents2026-mateo,hosted,.next,.git,.satie}/**"
     }
   }
 }

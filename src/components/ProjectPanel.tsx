@@ -19,6 +19,7 @@ export default function ProjectPanel({
 }) {
   const tempo = useTempo();
   const links = [
+    project.demo ? { href: project.demo, text: "interactive demo" } : null,
     project.link ? { href: project.link, text: "visit" } : null,
     project.video ? { href: project.video, text: "watch video" } : null,
     project.repo ? { href: project.repo, text: "repository" } : null,

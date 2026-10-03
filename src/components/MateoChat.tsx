@@ -134,8 +134,10 @@ export default function MateoChat({
               ) : null}
               {error ? (
                 <p className="text-sm text-faint">
-                  The agent is unreachable right now. You can always email Mateo
-                  directly instead.
+                  {/* the free tries ran out and the password box was closed (public/unlock.js) */}
+                  {error.message.includes("free tries")
+                    ? "The three free messages are used up. Ask again to enter the password, or email Mateo directly."
+                    : "The agent is unreachable right now. You can always email Mateo directly instead."}
                 </p>
               ) : null}
             </div>

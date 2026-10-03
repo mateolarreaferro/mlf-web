@@ -12,6 +12,7 @@
 
 import { cpSync, existsSync, mkdirSync, rmSync } from "node:fs";
 import path from "node:path";
+import { writeRequirements } from "./requirements.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const from = path.join(root, "agents2026-mateo", "website");
@@ -38,7 +39,8 @@ if (existsSync(path.join(week2, "bridge.py"))) {
   for (const file of ["agent.py", "graph.py", "bridge.py", "requirements.lock.txt", "skills"]) {
     cpSync(path.join(week2, file), path.join(runtime, file), { recursive: true });
   }
-  // Vercel's Python dependency scanner needs the pins in the root file.
-  cpSync(path.join(week2, "requirements.lock.txt"), path.join(root, "requirements.txt"));
+  // Vercel's Python dependency scanner needs the pins in the root file,
+  // alongside those of every other Python runtime here.
+  writeRequirements(root);
   console.log("sync-agents: Python notes agent source synchronized");
 }

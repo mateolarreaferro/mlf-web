@@ -16,6 +16,7 @@ export function buildSystemPrompt(): string {
         .join("; ");
       const links = [
         p.link ? `site: ${p.link}` : null,
+        p.demo ? `runs on this site at mateolarreaferro.com${p.demo}` : null,
         p.repo ? `repo: ${p.repo}` : null,
         p.video ? `video: ${p.video}` : null,
         p.paper ? `paper: ${p.paper}` : null,

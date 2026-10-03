@@ -5,6 +5,7 @@ group: "experiments / tools"
 tags: [neuro, tools for creativity, agents]
 order: 18
 repo: "https://github.com/mateolarreaferro/HeadWave"
+demo: "/headwave"
 image: "/projects/headwave-a.png"
 ---
 HeadWave is a human-in-the-loop system for creating generative visuals driven by biosignals. Artists generate visual sketches with AI and then shape them through EEG, face tracking, hand tracking, and other real-time signals. A node-based interface exposes the parameters of the generated code as explicit controls that can be connected to biosignals, LFOs, and other transformations. Rather than treating the body as an input to a fixed system, HeadWave makes physiological activity part of the generative process itself, a continuous feedback loop between intention, computation, and embodied experience.
@@ -26,3 +27,9 @@ Checked Aug 2026: /projects/headwave.png does match this description: it shows
 the node interface with an EEG source, prompt→gen nodes and the generated
 sketch's parameters exposed as sliders. The old site has two further screenshots
 if a second panel slide is ever wanted.
+
+HeadWave runs on this site: the "interactive demo" button on its card opens it
+at mateolarreaferro.com/headwave. The web version starts with a simulated EEG
+signal (a real headset needs the desktop app), can use the visitor's own webcam
+for face, gaze and hand tracking, entirely inside their browser, and generates
+sketches from prompts. MIDI, OSC and session recording are desktop only.

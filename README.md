@@ -22,6 +22,6 @@ owner access, storage, and verification.
 
 ```bash
 npm install
-echo "OPENAI_API_KEY=sk-..." > .env.local   # powers the agent chat
+echo "ANTHROPIC_API_KEY=sk-ant-..." > .env.local   # powers the agent chat, Theo and HeadWave
 npm run dev
 ```
