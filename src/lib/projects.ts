@@ -24,7 +24,7 @@ import matter from "gray-matter";
   images, a video, a p5 sketch, whatever the project needs.
 */
 export type MediaItem = {
-  type: "image" | "vimeo" | "youtube" | "embed" | "sketch";
+  type: "image" | "clip" | "vimeo" | "youtube" | "embed" | "sketch";
   src: string;
   caption?: string;
   /** images only; defaults to cover */
@@ -71,6 +71,8 @@ export type Project = {
 };
 
 const IMAGE_EXT = /\.(png|jpe?g|gif|webp|avif|svg)$/i;
+// A local recording, played silently on a loop in the card (record at 16:9).
+const CLIP_EXT = /\.(mp4|webm)$/i;
 
 /*
   Intrinsic size of a local image, read straight out of the file header —
@@ -149,6 +151,7 @@ function fromString(src: string): MediaItem | null {
   if (vimeo) return { type: "vimeo", src: vimeo[1] };
   const yt = s.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]+)/);
   if (yt) return { type: "youtube", src: yt[1] };
+  if (s.startsWith("/") && CLIP_EXT.test(s)) return { type: "clip", src: s };
   if (s.startsWith("/") || IMAGE_EXT.test(s)) return { type: "image", src: s, fit: "cover" };
   if (/^https?:\/\//.test(s)) return { type: "embed", src: s };
   return { type: "sketch", src: s };
@@ -170,12 +173,12 @@ function toMediaItem(raw: unknown): MediaItem | null {
   }
 
   // shorthand: { image: "...", caption: "..." } / { vimeo: "..." } / { sketch: "lorenz" }
-  for (const key of ["image", "vimeo", "youtube", "embed", "sketch"] as const) {
+  for (const key of ["image", "clip", "vimeo", "youtube", "embed", "sketch"] as const) {
     const v = o[key];
     if (typeof v === "string") {
-      const base = key === "image" ? fromString(v) : { type: key, src: v };
+      const base = key === "image" || key === "clip" ? fromString(v) : { type: key, src: v };
       if (!base) return null;
-      const item = key === "image" ? (base as MediaItem) : ({ ...base } as MediaItem);
+      const item = key === "image" || key === "clip" ? (base as MediaItem) : ({ ...base } as MediaItem);
       if (key === "vimeo") item.src = fromString(v)?.src ?? v;
       if (typeof o.caption === "string") item.caption = o.caption;
       if (o.fit === "contain" || o.fit === "cover") item.fit = o.fit;

@@ -4,7 +4,8 @@ category: "generative interfaces"
 group: "experiments / tools"
 tags: [agents, tools for creativity]
 order: 12
-image: "/projects/ansantuario.png"
+media:
+  - { clip: "/projects/sticky-notes-demo.mp4" }
 repo: "https://github.com/mateolarreaferro/Ansantuario"
 demo: "/sticky-notes"
 video: "https://vimeo.com/1165906210"

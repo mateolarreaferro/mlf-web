@@ -2,11 +2,14 @@
 
 import Image from "next/image";
 import type { MediaItem } from "@/lib/projects";
+import { useEffect, useRef } from "react";
 import LorenzThumb from "./LorenzThumb";
 
 /*
-  The right-hand panel: exactly one piece of media per project — an image,
-  a video, an embed, or a local sketch. A project's `media` list may hold
+  The right-hand panel: exactly one piece of media per project: an image,
+  a local clip (a recording of the project in use, muted and looping, held
+  still for visitors who prefer reduced motion), a video, an embed, or a
+  local sketch. A project's `media` list may hold
   more, but only the first is shown; multi-slide cards were tried and cut.
   A project with none draws a live Lorenz attractor instead.
 
@@ -31,6 +34,10 @@ function Slide({ item, alt }: { item: MediaItem; alt: string }) {
     );
   }
 
+  if (item.type === "clip") {
+    return <Clip src={item.src} label={item.caption ?? alt} />;
+  }
+
   if (item.type === "sketch") {
     const Sketch = sketches[item.src];
     return Sketch ? <Sketch /> : <LorenzThumb />;
@@ -51,6 +58,30 @@ function Slide({ item, alt }: { item: MediaItem; alt: string }) {
       allow="autoplay; fullscreen; picture-in-picture; xr-spatial-tracking"
       allowFullScreen
       className="size-full border-0 bg-ink"
+    />
+  );
+}
+
+function Clip({ src, label }: { src: string; label: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  // Reduced motion: hold the clip on its first frame and hand over the controls.
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    video.pause();
+    video.controls = true;
+  }, [src]);
+  return (
+    <video
+      ref={ref}
+      src={src}
+      aria-label={label}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      className="size-full bg-ink object-cover"
     />
   );
 }

@@ -267,6 +267,8 @@ media:                             # optional; the right-hand panel. ONE item â€
                                    # anything past the first is ignored
   - { image: "/projects/b.png", fit: contain, caption: "what this shows" }
   # other shapes: a bare "/projects/a.png" string (type inferred),
+  # { clip: "/projects/theo-demo.mp4" } (a local recording, muted and looping;
+  # record it at 16:9, see "Demo clips" below),
   # { vimeo: "..." } or { youtube: "..." }, { embed: "<any iframe-able URL>" },
   # { sketch: "lorenz" } (local component, see ProjectMedia)
 video: "https://vimeo.com/..."     # optional â†’ "watch video" pill
@@ -418,6 +420,16 @@ hash; they edit, move and delete their own notes only.
 (`x-mlf-locked-copy: moderate`), and the password cookie lets you delete any
 note. No model is called, so the wall spends none of the free uses. The sync
 turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
+
+**Demo clips.** The three hosted projects' cards play a recording of the
+project in use (`public/projects/theo-demo.mp4`, `headwave-demo.mp4`,
+`sticky-notes-demo.mp4`), the way the Agents card plays its own site. They
+were recorded on 2026-10-04 with Playwright against `next dev` at 1280x720,
+waits for the model sped up, then encoded with ffmpeg (H.264, CRF 24, no
+audio, faststart): about 20 to 30 seconds and under 1.2 MB each. Record
+sticky notes against the local wall (`wall:dev`), never production, and
+delete the sample notes afterwards. Visitors who prefer reduced motion get
+the clip paused, with controls.
 
 What the routes share is `src/lib/hosted.ts`: `sameOrigin`, `budget`,
 `readBody`, and `runWorker(slug, op, body)`. One Python function serves every
