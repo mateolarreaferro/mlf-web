@@ -5,17 +5,22 @@ import type { Project } from "@/lib/projects";
 import { hoverSpring, useTempo } from "./motion";
 
 /*
-  When a project is selected, this takes over the left column — where the
-  hero bio normally sits — so the card on the right can be all image.
+  When a project is selected, this takes over the left column (where the
+  hero bio normally sits) so the card on the right can be all image.
   Category, name, year/role, description, and every link the project has.
+  On a phone the same copy sits under the picture in ProjectSheet, and the
+  links grow to a thumb's size.
 */
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function ProjectPanel({
   project,
+  className = "col-start-1 row-start-1 self-center",
 }: {
   project: Project;
+  /* where it sits: the hero's grid cell when wide, the sheet's column on a phone */
+  className?: string;
 }) {
   const tempo = useTempo();
   const links = [
@@ -33,7 +38,7 @@ export default function ProjectPanel({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0, transition: { duration: 0.5 * tempo, ease, delay: 0.2 * tempo } }}
       exit={{ opacity: 0, y: -12, transition: { duration: 0.22 * tempo, ease } }}
-      className="col-start-1 row-start-1 self-center"
+      className={className}
     >
       <motion.p
         className="label !text-ochre"
@@ -91,7 +96,7 @@ export default function ProjectPanel({
             href={a.href}
             target="_blank"
             rel="noreferrer"
-            className="label whitespace-nowrap rounded-full bg-ink px-4 py-1.5 !text-paper"
+            className="label inline-flex min-h-11 items-center whitespace-nowrap rounded-full bg-ink px-5 !text-paper lg:min-h-0 lg:px-4 lg:py-1.5"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             transition={hoverSpring(tempo)}

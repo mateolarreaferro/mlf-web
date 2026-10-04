@@ -230,6 +230,24 @@ One page (`src/app/page.tsx`):
    because both columns need it. `HeroGraph.tsx` owns the selected
    state for both columns; `KnowledgeGraph` is controlled via `selected` /
    `onSelect`. Esc closes. Deep link: `/?project=<slug>`.
+   **Phones are their own layout.** The split above only exists from `lg`
+   (1024px, `useWide()` in `src/lib/viewport.ts`). Below it the page is one
+   column, and stacking the two halves failed (Mateo found it clunky and hard to use,
+   2026-10-04): a tapped project put its words a screen and a half above
+   its picture, and twenty-odd nodes on a canvas a thumb wide overlapped and
+   could not be hit. So on a phone: a project opens as `ProjectSheet.tsx`, a
+   full-screen page sliding up (back, picture, then the copy from
+   `ProjectPanel`, one scroll) that leaves the page underneath where it was;
+   `ProjectIndex.tsx` lists every project under the graph as tappable rows,
+   grouped and coloured like the graph, and replaces the legend; the chat
+   takes the whole screen. The sheet and the phone chat are portalled to
+   `<body>` because the route template's transform and Reveal's filter turn
+   `position: fixed` into absolute. The graph itself counts a press on a
+   label as a press on its node, gives touch a wider reach, and widens its
+   ring on narrow canvases. The section must stay `grid-cols-1` below `lg`: an
+   implicit column grows to its widest content and the phone page went
+   560px wide. Inputs are 16px on phones (`text-base lg:text-sm`) or iOS
+   zooms on focus.
 3. **Thoughts** — reverse-numbered list; posts at `/thoughts/[slug]`.
 
 **The way in.** On a fresh tab that lands on "/", `Splash.tsx` shows the name

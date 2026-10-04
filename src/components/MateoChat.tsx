@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { useChat } from "@ai-sdk/react";
@@ -11,9 +12,12 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function MateoChat({
   open,
   onClose,
+  fullScreen = false,
 }: {
   open: boolean;
   onClose: () => void;
+  /* on a phone the graph box is too small to talk in: take the whole screen */
+  fullScreen?: boolean;
 }) {
   const tempo = useTempo();
   const [input, setInput] = useState("");
@@ -26,13 +30,25 @@ export default function MateoChat({
   }, [messages, status]);
 
   useEffect(() => {
-    if (open) inputRef.current?.focus();
+    // not on a phone: the keyboard would cover the suggested questions
+    if (open && !fullScreen) inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  }, [open, onClose, fullScreen]);
+
+  // full screen holds the page still underneath, like ProjectSheet
+  useEffect(() => {
+    if (!open || !fullScreen) return;
+    const root = document.documentElement;
+    const before = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      root.style.overflow = before;
+    };
+  }, [open, fullScreen]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,14 +58,16 @@ export default function MateoChat({
     setInput("");
   };
 
-  return (
+  const chat = (
     <AnimatePresence>
       {open ? (
         <motion.div
           /* absolute, not fixed: this sits on the graph card and matches it
              exactly, rather than floating over the whole viewport at a size
-             that never quite lined up with the square underneath */
-          className="absolute inset-0 z-30"
+             that never quite lined up with the square underneath. A phone is
+             the exception (fullScreen), portalled to <body> because the
+             template's transform would turn fixed into absolute. */
+          className={fullScreen ? "fixed inset-0 z-50 h-dvh" : "absolute inset-0 z-30"}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -58,7 +76,11 @@ export default function MateoChat({
           <motion.div
             role="dialog"
             aria-label="Chat with Mateo's agent"
-            className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-paper shadow-2xl"
+            className={`flex h-full w-full flex-col overflow-hidden bg-paper ${
+              fullScreen
+                ? "pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+                : "rounded-3xl shadow-2xl"
+            }`}
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.97 }}
@@ -78,7 +100,7 @@ export default function MateoChat({
               </div>
               <button
                 onClick={onClose}
-                className="label ml-auto cursor-pointer rounded-full bg-soft px-3.5 py-1.5 hover:!text-accent"
+                className="label ml-auto inline-flex min-h-11 cursor-pointer items-center rounded-full bg-soft px-4 hover:!text-accent lg:min-h-0 lg:px-3.5 lg:py-1.5"
               >
                 close
               </button>
@@ -97,7 +119,7 @@ export default function MateoChat({
                         <button
                           key={q}
                           onClick={() => sendMessage({ text: q })}
-                          className="label cursor-pointer rounded-full bg-soft px-3.5 py-1.5 hover:!text-accent"
+                          className="label cursor-pointer rounded-full bg-soft px-4 py-2.5 hover:!text-accent lg:px-3.5 lg:py-1.5"
                         >
                           {q}
                         </button>
@@ -149,7 +171,7 @@ export default function MateoChat({
                   value={input}
                   onChange={(e) => setInput(e.currentTarget.value)}
                   placeholder="ask about the work…"
-                  className="min-w-0 flex-1 bg-transparent text-sm outline-none focus-visible:outline-none placeholder:text-faint"
+                  className="min-w-0 flex-1 bg-transparent text-base outline-none lg:text-sm focus-visible:outline-none placeholder:text-faint"
                 />
                 <motion.button
                   type="submit"
@@ -168,4 +190,6 @@ export default function MateoChat({
       ) : null}
     </AnimatePresence>
   );
+
+  return fullScreen && typeof document !== "undefined" ? createPortal(chat, document.body) : chat;
 }

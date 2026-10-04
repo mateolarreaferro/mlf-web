@@ -6,7 +6,7 @@ import type { Project } from "@/lib/projects";
 import { sfxHover, sfxPress } from "@/lib/sfx";
 import { FADE_MS, subscribe as onMoodChange } from "@/lib/mood";
 import { ATMOSPHERE_EVENT } from "./WeatherAtmosphere";
-import ProjectMedia from "./ProjectMedia";
+import ProjectMedia, { mediaRatio } from "./ProjectMedia";
 import MateoChat from "./MateoChat";
 
 /*
@@ -71,10 +71,13 @@ export default function KnowledgeGraph({
   projects,
   selected,
   onSelect,
+  inlineCard = true,
 }: {
   projects: Project[];
   selected: Project | null;
   onSelect: (p: Project | null) => void;
+  /* the project card inside the graph box; off on a phone, where it opens as ProjectSheet */
+  inlineCard?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [chatOpen, setChatOpen] = useState(false);
@@ -281,7 +284,9 @@ export default function KnowledgeGraph({
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      orbitX = width / 2 - 96;
+      // on a phone the canvas is a thumb wide: a ring inset by a fixed 96px
+      // left 75px of room and stacked every label into one column
+      orbitX = Math.max(width / 2 - 96, width * 0.34);
       orbitY = height / 2 - 64;
       me.r = Math.min(width, height) > 700 ? 74 : Math.min(width, height) > 540 ? 64 : 46;
       labelFont = `${width < 480 ? 10 : 11}px var(--font-inter), system-ui, sans-serif`;
@@ -586,17 +591,26 @@ export default function KnowledgeGraph({
       };
     };
 
-    const hit = (x: number, y: number): Node | null => {
+    /*
+      What a press lands on. The photo, else the nearest project whose dot or
+      label was touched: the name is as good a target as the dot, and a
+      fingertip gets a wider reach than a cursor.
+    */
+    const hit = (x: number, y: number, touch = false): Node | null => {
       const dm = Math.hypot(x - me.x, y - me.y);
       if (dm < me.r + 8) return me;
+      const reach = touch ? 26 : 16;
       let best: Node | null = null;
-      let bestD = 16 * 16;
+      let bestD = Infinity;
       for (const n of nodes) {
         if (n.kind !== "project") continue;
         const dx = n.x - x;
         const dy = n.y - y;
         const d = dx * dx + dy * dy;
-        if (d < bestD) {
+        // the label box hangs below the dot (see the wall in tick())
+        const onLabel =
+          Math.abs(dx) <= n.halfW && y >= n.y - n.r - 4 && y <= n.y + n.halfH + 2;
+        if ((d < reach * reach || onLabel) && d < bestD) {
           bestD = d;
           best = n;
         }
@@ -606,7 +620,7 @@ export default function KnowledgeGraph({
 
     const onDown = (e: PointerEvent) => {
       const { x, y } = toLocal(e);
-      const n = hit(x, y);
+      const n = hit(x, y, e.pointerType !== "mouse");
       if (n) {
         dragging = n;
         dragMoved = 0;
@@ -627,7 +641,7 @@ export default function KnowledgeGraph({
           draw();
         }
       } else {
-        const n = hit(x, y);
+        const n = hit(x, y, e.pointerType !== "mouse");
         if (n !== hovered) {
           hovered = n;
           canvas.style.cursor = n ? "pointer" : "default";
@@ -648,6 +662,13 @@ export default function KnowledgeGraph({
       dragging = null;
       if (reduceMotion) draw();
     };
+    // a swipe that began on a node becomes a page scroll (touch-pan-y) and the
+    // browser cancels the pointer: let go, or the node stays held forever
+    const onCancel = () => {
+      dragging = null;
+      hovered = null;
+      if (reduceMotion) draw();
+    };
     const onLeave = () => {
       hovered = null;
       if (reduceMotion) draw();
@@ -657,6 +678,7 @@ export default function KnowledgeGraph({
     canvas.addEventListener("pointermove", onMove);
     canvas.addEventListener("pointerup", onUp);
     canvas.addEventListener("pointerleave", onLeave);
+    canvas.addEventListener("pointercancel", onCancel);
     window.addEventListener("resize", resize);
     // the palette lives in CSS variables; pick the new set up the moment the
     // mood flips or the weather colours land, not 90 frames later
@@ -670,24 +692,15 @@ export default function KnowledgeGraph({
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerup", onUp);
       canvas.removeEventListener("pointerleave", onLeave);
+      canvas.removeEventListener("pointercancel", onCancel);
       window.removeEventListener("resize", resize);
       unsubscribeMood();
       window.removeEventListener(ATMOSPHERE_EVENT, onAtmosphere);
     };
   }, [projects]);
 
-  /*
-    The card takes the shape of whatever it holds: a measured image's own
-    ratio (see `measure` in lib/projects), 16:9 for video and embeds, square
-    for a sketch or for anything we couldn't measure.
-  */
-  const item = selected?.media[0];
-  const cardRatio =
-    item?.width && item.height
-      ? item.width / item.height
-      : item && item.type !== "sketch" && item.type !== "image"
-        ? 16 / 9
-        : 1;
+  // the card takes the shape of whatever it holds (mediaRatio)
+  const cardRatio = selected ? mediaRatio(selected.media) : 1;
 
   return (
     <figure className="my-6 lg:my-0" data-tour="graph">
@@ -695,13 +708,13 @@ export default function KnowledgeGraph({
         <canvas
           ref={canvasRef}
           className={`h-full w-full touch-pan-y transition-opacity duration-500 ${
-            selected ? "pointer-events-none opacity-0" : "opacity-100"
+            selected && inlineCard ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
           aria-label="A living graph of all projects with Mateo at the center. Press the photo to chat with his agent; press a project to open its card."
         />
 
         <AnimatePresence>
-          {selected ? (
+          {selected && inlineCard ? (
             <motion.div
               key={selected.slug}
               role="dialog"
@@ -740,15 +753,15 @@ export default function KnowledgeGraph({
           ) : null}
         </AnimatePresence>
 
-        <MateoChat open={chatOpen} onClose={() => setChatOpen(false)} />
+        <MateoChat open={chatOpen} onClose={() => setChatOpen(false)} fullScreen={!inlineCard} />
       </div>
 
-      {/* the legend only explains the graph — fade it whenever the graph is
+      {/* the legend only explains the graph: fade it whenever the graph is
           covered, by a project or by the chat, but keep its box so nothing
-          below it jumps */}
+          below it jumps. On a phone ProjectIndex's group headings say the same. */}
       <figcaption
         aria-hidden={selected || chatOpen ? true : undefined}
-        className={`mt-3 flex min-h-10 flex-wrap items-center justify-center gap-x-5 gap-y-2 transition-opacity duration-500 ${
+        className={`mt-3 hidden min-h-10 flex-wrap items-center justify-center gap-x-5 gap-y-2 transition-opacity lg:flex duration-500 ${
           selected || chatOpen ? "pointer-events-none opacity-0" : "opacity-100"
         }`}
       >

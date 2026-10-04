@@ -42,7 +42,7 @@ const STEPS: Step[] = [
   {
     target: "graph",
     title: "the work",
-    body: "every dot is a project, coloured by kind. press one to open it; ✕ or esc brings you back.",
+    body: "every dot is a project, coloured by kind. press one, or its name, to open it.",
   },
   {
     target: "graph-box",

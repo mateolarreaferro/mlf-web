@@ -17,6 +17,17 @@ import LorenzThumb from "./LorenzThumb";
   frontmatter as `{ sketch: "lorenz" }`.
 */
 
+/*
+  The shape a project's picture wants: a measured image's own ratio (see
+  `measure` in lib/projects), 16:9 for clips, video and embeds, square for a
+  sketch or for anything we couldn't measure.
+*/
+export function mediaRatio(items: MediaItem[]): number {
+  const item = items[0];
+  if (item?.width && item.height) return item.width / item.height;
+  return item && item.type !== "sketch" && item.type !== "image" ? 16 / 9 : 1;
+}
+
 const sketches: Record<string, React.ComponentType> = {
   lorenz: LorenzThumb,
 };
