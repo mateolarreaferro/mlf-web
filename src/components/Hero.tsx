@@ -82,7 +82,8 @@ export default function Hero() {
           <BioLink href="https://open.spotify.com/artist/7z2V70xnAEDEk9Ip0YKvcn">
             Juancho Lagartos
           </BioLink>
-          .
+          . You can{" "}
+          <BioLink href="/sticky-notes">leave me a note here</BioLink>.
         </p>
       </Reveal>
 
