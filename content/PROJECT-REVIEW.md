@@ -21,7 +21,7 @@ Order below is the `order` field, lowest first.
 - [x] `love-simulations` — LoveSims
 - [x] `icebreaker` — Icebreakers
 - [x] `dr-c` — Dr. C
-- [x] `ansantuario` — Ansantuario
+- [x] `sticky-notes`: Sticky Notes (the open version of Ansantuario)
 - [x] `headwave` — HeadWave
 - [x] `cusketch` — cuSketch
 - [ ] `instrument-prototyping` — Instrument Prototyping (hidden; Rats & Children split out)

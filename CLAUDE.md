@@ -395,7 +395,9 @@ worker → HeadWave's assistant service, on `claude-opus-5-5`
 calls). The sync rewrites the page's `/static/` paths to `/headwave/static/`.
 
 Ansantuario is the third, as an **open wall called "sticky notes"** at
-`/sticky-notes`: anyone leaves a text note, signed or anonymous. The page
+`/sticky-notes` (its graph node and card are `content/projects/sticky-notes.md`,
+"Sticky Notes", written for any visiting friend; the private app is its origin
+story in the notes): anyone leaves a text note, signed or anonymous. The page
 never names Ansantuario or its song (Mateo asked for that): the title is
 "sticky notes", the music is an untitled `audio/music.mp3` behind a single
 music-note button, and the private app's password screen is stubbed out. It
