@@ -1,9 +1,9 @@
 import { hmac, redis, usesSecret } from "@/lib/hosted";
 
 /*
-  The Ansantuario open wall at /ansantuario: anyone may leave a text note,
-  signed with a name or anonymous. This is the whole store and its rules;
-  src/app/api/ansantuario/[...op]/route.ts is the HTTP face. It has nothing
+  The open wall at /sticky-notes: anyone may leave a text note, signed with
+  a name or anonymous. This is the whole store and its rules;
+  src/app/api/sticky-notes/[...op]/route.ts is the HTTP face. It has nothing
   to do with Mateo and Marielisa's private wall, which lives in Firebase and
   is never reached from here.
 
@@ -36,9 +36,44 @@ type Stored = {
   reactions: Record<string, string[]>;
 };
 
+/** Everything the wall can refuse with, in English and Spanish. */
+const MESSAGES = {
+  empty: ["Write something on the note.", "Escribe algo en la nota."],
+  tooLong: ["A note holds {n} characters.", "Una nota cabe en {n} caracteres."],
+  badPosition: ["That position does not work.", "Posición no válida."],
+  badSize: ["That size does not work.", "Tamaño no válido."],
+  badColor: ["That color does not work.", "Color no válido."],
+  badNote: ["That note does not work.", "Nota no válida."],
+  badName: ["That name does not work.", "Nombre no válido."],
+  badChange: ["That change does not work.", "Cambio no válido."],
+  badReaction: ["That reaction does not work.", "Reacción no válida."],
+  full: ["The wall is full for now.", "El muro está lleno por ahora."],
+  tooManyNotes: ["You have left several notes. Come back in a while.", "Ya dejaste varias notas. Vuelve en un rato."],
+  tooManyChanges: ["Too many changes. Wait a little.", "Demasiados cambios. Espera un poco."],
+  tooManyReactions: ["Too many reactions. Wait a little.", "Demasiadas reacciones. Espera un poco."],
+  exists: ["That note already exists.", "Esa nota ya existe."],
+  gone: ["That note is gone.", "Esa nota ya no está."],
+  notYoursChange: ["Only the person who wrote a note can change it.", "Solo quien escribió la nota puede cambiarla."],
+  notYoursDelete: ["Only the person who wrote a note can delete it.", "Solo quien escribió la nota puede borrarla."],
+  offsite: ["Do that from the site.", "Hazlo desde el sitio."],
+  reload: ["Reload the page and try again.", "Recarga la página e intenta otra vez."],
+  notFound: ["Not found.", "No encontrado."],
+  down: ["The wall is not answering right now. Try again.", "El muro no responde ahora mismo. Intenta otra vez."],
+  moderate: ["Moderate sticky notes", "Moderar sticky notes"],
+} as const;
+
+export type MessageKey = keyof typeof MESSAGES;
+
+/** A refusal in the visitor's language: Spanish when the page says es, English otherwise. */
+export function say(request: Request, key: MessageKey, vars: Record<string, string | number> = {}): string {
+  const [en, es] = MESSAGES[key];
+  const text = request.headers.get("x-wall-lang") === "es" ? es : en;
+  return text.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ""));
+}
+
 export class WallError extends Error {
-  constructor(message: string, public status = 400) {
-    super(message);
+  constructor(public key: MessageKey, public status = 400, public vars: Record<string, string | number> = {}) {
+    super(key);
   }
 }
 
@@ -124,10 +159,10 @@ const finite = (v: unknown, limit: number) => typeof v === "number" && Number.is
 const clean = (v: string) => v.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "");
 
 function text(v: unknown): string {
-  if (typeof v !== "string") throw new WallError("Escribe algo en la nota.");
+  if (typeof v !== "string") throw new WallError("empty");
   const content = clean(v).trim();
-  if (!content) throw new WallError("Escribe algo en la nota.");
-  if (content.length > LIMITS.content) throw new WallError(`Una nota cabe en ${LIMITS.content} caracteres.`);
+  if (!content) throw new WallError("empty");
+  if (content.length > LIMITS.content) throw new WallError("tooLong", 400, { n: LIMITS.content });
   return content;
 }
 
@@ -135,18 +170,18 @@ function placement(body: Record<string, unknown>, partial: boolean) {
   const out: Partial<Stored> = {};
   for (const key of ["x", "y"] as const) {
     if (key in body) {
-      if (!finite(body[key], 1e6)) throw new WallError("Posición no válida.");
+      if (!finite(body[key], 1e6)) throw new WallError("badPosition");
       out[key] = body[key] as number;
-    } else if (!partial) throw new WallError("Posición no válida.");
+    } else if (!partial) throw new WallError("badPosition");
   }
   for (const key of ["width", "height"] as const) {
     if (key in body) {
-      if (!SIZES.includes(body[key] as number)) throw new WallError("Tamaño no válido.");
+      if (!SIZES.includes(body[key] as number)) throw new WallError("badSize");
       out[key] = body[key] as number;
     } else if (!partial) out[key] = 240;
   }
   if ("color" in body) {
-    if (!COLORS.includes(body.color as string)) throw new WallError("Color no válido.");
+    if (!COLORS.includes(body.color as string)) throw new WallError("badColor");
     out.color = body.color as string;
   } else if (!partial) out.color = COLORS[0];
   return out;
@@ -154,16 +189,16 @@ function placement(body: Record<string, unknown>, partial: boolean) {
 
 export async function createNote(me: string, ipKey: string, body: Record<string, unknown>) {
   const id = body.id;
-  if (typeof id !== "string" || !/^[0-9a-f]{24}$/.test(id)) throw new WallError("Nota no válida.");
+  if (typeof id !== "string" || !/^[0-9a-f]{24}$/.test(id)) throw new WallError("badNote");
   const content = text(body.content);
   let authorName: string | undefined;
   if (body.authorName !== undefined && body.authorName !== null) {
-    if (typeof body.authorName !== "string") throw new WallError("Nombre no válido.");
+    if (typeof body.authorName !== "string") throw new WallError("badName");
     authorName = clean(body.authorName).replace(/\s+/g, " ").trim().slice(0, LIMITS.name) || undefined;
   }
   const replyTo = typeof body.replyTo === "string" && /^[0-9a-f]{24}$/.test(body.replyTo) ? body.replyTo : undefined;
-  if ((await store.count()) >= LIMITS.notes) throw new WallError("El muro está lleno por ahora.", 507);
-  if (!(await store.rate(`create:${ipKey}`, LIMITS.createsPerHour))) throw new WallError("Ya dejaste varias notas. Vuelve en un rato.", 429);
+  if ((await store.count()) >= LIMITS.notes) throw new WallError("full", 507);
+  if (!(await store.rate(`create:${ipKey}`, LIMITS.createsPerHour))) throw new WallError("tooManyNotes", 429);
   const now = Date.now();
   const note: Stored = {
     id, content, authorName, replyTo,
@@ -171,14 +206,14 @@ export async function createNote(me: string, ipKey: string, body: Record<string,
     rotation: finite(body.rotation, 6) ? (body.rotation as number) : 0,
     createdAt: now, updatedAt: now, owner: me, reactions: {},
   };
-  if (!(await store.put(note, true))) throw new WallError("Esa nota ya existe.", 409);
+  if (!(await store.put(note, true))) throw new WallError("exists", 409);
   return view(note, me);
 }
 
 export async function updateNote(me: string, id: string, body: Record<string, unknown>) {
   const note = await store.get(id);
-  if (!note) throw new WallError("Esa nota ya no está.", 404);
-  if (note.owner !== me) throw new WallError("Solo quien escribió la nota puede cambiarla.", 403);
+  if (!note) throw new WallError("gone", 404);
+  if (note.owner !== me) throw new WallError("notYoursChange", 403);
   const next: Stored = { ...note, ...placement(body, true), updatedAt: Date.now() };
   if ("content" in body) next.content = text(body.content);
   await store.put(next);
@@ -188,14 +223,14 @@ export async function updateNote(me: string, id: string, body: Record<string, un
 export async function deleteNote(me: string | null, id: string, moderator: boolean) {
   const note = await store.get(id);
   if (!note) return;
-  if (!moderator && note.owner !== me) throw new WallError("Solo quien escribió la nota puede borrarla.", 403);
+  if (!moderator && note.owner !== me) throw new WallError("notYoursDelete", 403);
   await store.remove(id);
 }
 
 export async function react(me: string, id: string, type: unknown) {
-  if (typeof type !== "string" || !REACTIONS.includes(type)) throw new WallError("Reacción no válida.");
+  if (typeof type !== "string" || !REACTIONS.includes(type)) throw new WallError("badReaction");
   const note = await store.get(id);
-  if (!note) throw new WallError("Esa nota ya no está.", 404);
+  if (!note) throw new WallError("gone", 404);
   const ids = note.reactions?.[type] ?? [];
   const reactions = { ...note.reactions, [type]: ids.includes(me) ? ids.filter((v) => v !== me) : [...ids, me] };
   if (!reactions[type].length) delete reactions[type];

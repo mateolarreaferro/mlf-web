@@ -21,10 +21,11 @@
   stands in for the Python server inside the browser, so only the assistant
   service (prompt to p5 sketch) is copied as a backend.
 
-  Ansantuario: the open wall, its renderer built for the web by its own
-  npm run build:web (vite.web.config.ts swaps out every Firebase module, so
-  the private wall is never reachable). There is no Python here: notes go to
-  src/app/api/ansantuario. The 57 MB wav becomes a 128 kbps mp3.
+  Sticky notes: Ansantuario's renderer built for the web as an open wall by
+  its own npm run build:web (vite.web.config.ts swaps out every Firebase
+  module, so the private wall is never reachable, and names neither the app
+  nor its song). There is no Python here: notes go to src/app/api/sticky-notes.
+  The 57 MB wav becomes a 128 kbps mp3 called music.mp3.
 */
 
 import { execFileSync } from "node:child_process";
@@ -108,7 +109,7 @@ function headwave() {
   console.log("sync-demos: python/headwave/src now matches hosted/HeadWave");
 }
 
-function ansantuario() {
+function stickyNotes() {
   const repo = path.join(root, "hosted", "Ansantuario");
   if (!existsSync(path.join(repo, "vite.web.config.ts"))) {
     console.error(`sync-demos: nothing at ${repo}. Clone github.com/mateolarreaferro/Ansantuario into hosted/ first.`);
@@ -120,8 +121,8 @@ function ansantuario() {
   }
   execFileSync("npm", ["run", "build:web"], { cwd: repo, stdio: "inherit" });
 
-  const site = path.join(root, "public", "ansantuario");
-  const music = path.join(site, "audio", "bicho.mp3");
+  const site = path.join(root, "public", "sticky-notes");
+  const music = path.join(site, "audio", "music.mp3");
   const keep = existsSync(music) ? readFileSync(music) : null;
   rmSync(site, { recursive: true, force: true });
   cpSync(path.join(repo, "dist-web"), site, { recursive: true, filter: junk });
@@ -135,10 +136,10 @@ function ansantuario() {
     execFileSync("ffmpeg", ["-v", "error", "-y", "-i", path.join(repo, "src", "renderer", "public", "audio", "bicho.wav"),
       "-codec:a", "libmp3lame", "-b:a", "128k", music], { stdio: "inherit" });
   }
-  console.log("sync-demos: public/ansantuario now matches hosted/Ansantuario");
+  console.log("sync-demos: public/sticky-notes now matches hosted/Ansantuario");
 }
 
 theo();
 headwave();
-ansantuario();
+stickyNotes();
 writeRequirements(root);

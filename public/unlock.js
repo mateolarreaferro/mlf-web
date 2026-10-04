@@ -9,7 +9,7 @@
   never sees the refusal. Closing the box hands the page the original 401,
   whose message says what happened. Calls that arrive locked while the box is
   open wait on the same answer, so "render all" asks once. The same box
-  guards moderation of the open wall (/ansantuario?moderar).
+  guards moderation of the open wall (/sticky-notes?moderate).
 
   Site-owned: this is not a copy of anything and the sync does not replace it.
 */
@@ -42,7 +42,7 @@
 
   const COPY = {
     uses: ["The three free tries are used up.", "Each one is a real call to the model. If Mateo gave you the password, enter it to keep going."],
-    moderate: ["Moderate the wall.", "With the site password you can delete any note on the open wall."],
+    moderate: ["Moderate sticky notes.", "With the site password you can delete any note on the wall."],
   };
 
   function ask(kind) {

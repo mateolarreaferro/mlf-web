@@ -22,7 +22,7 @@ const eslintConfig = defineConfig([
     "hosted/**",
     "public/theo/**",
     "public/headwave/**",
-    "public/ansantuario/**",
+    "public/sticky-notes/**",
   ]),
 ]);
 
