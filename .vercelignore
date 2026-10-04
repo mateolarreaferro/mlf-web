@@ -1,0 +1,6 @@
+# Local-only checkouts and secrets; the deploy uses their committed copies
+# (public/<slug>, python/<slug>, public/agents) and the project's env vars.
+/hosted
+/agents2026-mateo
+.env*
+/.claude

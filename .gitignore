@@ -53,3 +53,4 @@ __pycache__/
 
 # Claude Code local settings (per machine)
 .claude/settings.local.json
+.claude/skills/
