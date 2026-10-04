@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Python knowledge-graph runtime caches
 __pycache__/
+
+# Claude Code local settings (per machine)
+.claude/settings.local.json
