@@ -353,7 +353,7 @@ a page ducks the scene. Its underwater appearance is always dark. Course policy 
 disclosing AI use, so keep the disclosure lines in the README and the weekly
 pages truthful when you change things.
 
-## Hosted projects (/theo, /headwave)
+## Hosted projects (/theo, /headwave, /ansantuario)
 
 Some projects run on the site itself: the card's "interactive demo" pill
 (`demo:` in the frontmatter) opens the real app in a new tab. Same shape as
@@ -391,6 +391,23 @@ call. MIDI, OSC, recording and a real headset answer "desktop only". Only
 worker → HeadWave's assistant service, on `claude-opus-5-5`
 (`HEADWAVE_MODEL`), budgeted at 60 an hour per visitor (one generation is two
 calls). The sync rewrites the page's `/static/` paths to `/headwave/static/`.
+
+Ansantuario is the third, as an **open wall**: anyone leaves a text note,
+signed or anonymous. It is not Mateo and Marielisa's private wall, which lives
+in Firebase and must never be reachable from the site. Its repo's
+`npm run build:web` (`vite.web.config.ts`) builds the renderer with every
+Firebase module swapped for `src/web/*` (the build fails if anything imports
+`firebase/*`) and reads no `.env`; after a sync, grep the bundle for
+`firebase` and expect zero. Notes go to `src/app/api/ansantuario/[...op]`,
+whose rules are all in `src/lib/open-wall.ts`: Redis hash
+`wall:<VERCEL_ENV|dev>:notes` (production, preview and dev never share a
+wall), a version counter the page polls every 4s, text only, 1000
+characters, 10 new notes an hour per IP, 1000 notes in all. A visitor is a
+random token in their browser, stored only as a keyed hash; they edit, move
+and delete their own notes only. `/ansantuario?moderar` raises the password
+box (`x-mlf-locked-copy: moderate`), and the password cookie lets you delete
+any note. No model is called, so the wall spends none of the free uses. The
+sync turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
 
 What the routes share is `src/lib/hosted.ts`: `sameOrigin`, `budget`,
 `readBody`, and `runWorker(slug, op, body)`. One Python function serves every

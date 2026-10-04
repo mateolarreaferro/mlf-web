@@ -66,12 +66,16 @@ const USES_COOKIE = "mlf_uses";
 export const UNLOCK_COOKIE = "mlf_unlock";
 const MONTH = 30 * 24 * 3600;
 
-/** The per-IP counter: Redis when connected, this instance's memory otherwise. */
-const counter = (() => {
+/** Upstash Redis (Vercel Marketplace), or null when it is not connected, as in local dev without its variables. */
+export const redis = (() => {
   const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (url && token) {
-    const redis = new Redis({ url, token });
+  return url && token ? new Redis({ url, token }) : null;
+})();
+
+/** The per-IP counter: Redis when connected, this instance's memory otherwise. */
+const counter = (() => {
+  if (redis) {
     return {
       get: async (key: string) => Number(await redis.get(key)) || 0,
       // Atomic, so two calls arriving together cannot both take the last use.
@@ -100,8 +104,8 @@ const counter = (() => {
 export const lockedHeaders = { ...noStore, "x-mlf-locked": "1" };
 export const lockedMessage = "The three free tries are used up. Enter the password to keep going.";
 
-const hmac = (key: string, value: string) => createHmac("sha256", key).update(value).digest("hex");
-const usesSecret = () => process.env.DEMO_WORKER_KEY || process.env.WEEKLY_NOTES_EDIT_KEY || process.env.MODEL_PASSWORD || "";
+export const hmac = (key: string, value: string) => createHmac("sha256", key).update(value).digest("hex");
+export const usesSecret = () => process.env.DEMO_WORKER_KEY || process.env.WEEKLY_NOTES_EDIT_KEY || process.env.MODEL_PASSWORD || "";
 // The address never reaches the database, only a keyed hash of it.
 const ipKey = (request: Request) => `mlf:uses:${hmac(usesSecret() || "mlf", visitor(request))}`;
 

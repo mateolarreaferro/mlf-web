@@ -8,7 +8,8 @@
   /api/unlock, and on success repeats the call, so the page that made it
   never sees the refusal. Closing the box hands the page the original 401,
   whose message says what happened. Calls that arrive locked while the box is
-  open wait on the same answer, so "render all" asks once.
+  open wait on the same answer, so "render all" asks once. The same box
+  guards moderation of the open wall (/ansantuario?moderar).
 
   Site-owned: this is not a copy of anything and the sync does not replace it.
 */
@@ -39,18 +40,26 @@
     @keyframes mlf-in{from{opacity:0}}
     @media (prefers-reduced-motion:reduce){.mlf-unlock{animation:none}}`;
 
-  function ask() {
+  const COPY = {
+    uses: ["The three free tries are used up.", "Each one is a real call to the model. If Mateo gave you the password, enter it to keep going."],
+    moderate: ["Moderate the wall.", "With the site password you can delete any note on the open wall."],
+  };
+
+  function ask(kind) {
+    const [title, detail] = COPY[kind] || COPY.uses;
     return new Promise((resolve) => {
       const root = document.createElement("div");
       root.className = "mlf-unlock";
       root.innerHTML = `<style>${css}</style>
         <form role="dialog" aria-modal="true" aria-labelledby="mlf-unlock-title">
-          <p id="mlf-unlock-title">The three free tries are used up.</p>
-          <small>Each one is a real call to the model. If Mateo gave you the password, enter it to keep going.</small>
+          <p id="mlf-unlock-title"></p>
+          <small></small>
           <input type="password" autocomplete="current-password" aria-label="password" placeholder="password" required>
           <div class="error" role="status"></div>
           <div class="row"><button type="button">not now</button><button type="submit">unlock</button></div>
         </form>`;
+      root.querySelector("#mlf-unlock-title").textContent = title;
+      root.querySelector("small").textContent = detail;
       const form = root.querySelector("form");
       const input = root.querySelector("input");
       const error = root.querySelector(".error");
@@ -91,7 +100,8 @@
     const response = await realFetch(request);
     const sameOrigin = new URL(request.url).origin === window.location.origin;
     if (!sameOrigin || response.status !== 401 || !response.headers.get("x-mlf-locked")) return response;
-    if (!pending) pending = ask().finally(() => { pending = null; });
+    // x-mlf-locked-copy picks the wording: "moderate" for the open wall's moderation.
+    if (!pending) pending = ask(response.headers.get("x-mlf-locked-copy")).finally(() => { pending = null; });
     return (await pending) ? realFetch(retry) : response;
   };
 })();

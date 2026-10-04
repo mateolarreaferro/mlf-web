@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
     not a folder's index, so name it. The page sets its own <base>, which is
     what lets its relative URLs work without a trailing slash.
 
-    /theo and /headwave are hosted projects, copied into public/ by
+    /theo, /headwave and /ansantuario are hosted projects, copied into public/ by
     `npm run sync:demos` with their asset URLs already rooted at /<slug>/.
   */
   async rewrites() {
@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
       { source: "/agents", destination: "/agents/index.html" },
       { source: "/theo", destination: "/theo/index.html" },
       { source: "/headwave", destination: "/headwave/index.html" },
+      { source: "/ansantuario", destination: "/ansantuario/index.html" },
     ];
   },
 };

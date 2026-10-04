@@ -20,6 +20,11 @@
   HeadWave: the front end is plain files with no build step. Its static/web.js
   stands in for the Python server inside the browser, so only the assistant
   service (prompt to p5 sketch) is copied as a backend.
+
+  Ansantuario: the open wall, its renderer built for the web by its own
+  npm run build:web (vite.web.config.ts swaps out every Firebase module, so
+  the private wall is never reachable). There is no Python here: notes go to
+  src/app/api/ansantuario. The 57 MB wav becomes a 128 kbps mp3.
 */
 
 import { execFileSync } from "node:child_process";
@@ -103,6 +108,37 @@ function headwave() {
   console.log("sync-demos: python/headwave/src now matches hosted/HeadWave");
 }
 
+function ansantuario() {
+  const repo = path.join(root, "hosted", "Ansantuario");
+  if (!existsSync(path.join(repo, "vite.web.config.ts"))) {
+    console.error(`sync-demos: nothing at ${repo}. Clone github.com/mateolarreaferro/Ansantuario into hosted/ first.`);
+    process.exit(1);
+  }
+  // Electron's postinstall downloads native builds the web page never uses.
+  if (!existsSync(path.join(repo, "node_modules"))) {
+    execFileSync("npm", ["ci", "--ignore-scripts"], { cwd: repo, stdio: "inherit" });
+  }
+  execFileSync("npm", ["run", "build:web"], { cwd: repo, stdio: "inherit" });
+
+  const site = path.join(root, "public", "ansantuario");
+  const music = path.join(site, "audio", "bicho.mp3");
+  const keep = existsSync(music) ? readFileSync(music) : null;
+  rmSync(site, { recursive: true, force: true });
+  cpSync(path.join(repo, "dist-web"), site, { recursive: true, filter: junk });
+  // The password box guards moderation (public/unlock.js); it loads first.
+  const index = path.join(site, "index.html");
+  writeFileSync(index, readFileSync(index, "utf8").replace("<head>", '<head>\n    <script src="/unlock.js"></script>'));
+
+  mkdirSync(path.dirname(music), { recursive: true });
+  if (keep) writeFileSync(music, keep);
+  else {
+    execFileSync("ffmpeg", ["-v", "error", "-y", "-i", path.join(repo, "src", "renderer", "public", "audio", "bicho.wav"),
+      "-codec:a", "libmp3lame", "-b:a", "128k", music], { stdio: "inherit" });
+  }
+  console.log("sync-demos: public/ansantuario now matches hosted/Ansantuario");
+}
+
 theo();
 headwave();
+ansantuario();
 writeRequirements(root);
