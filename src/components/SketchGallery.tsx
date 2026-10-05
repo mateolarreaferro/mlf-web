@@ -10,12 +10,14 @@ import { useTempo } from "./motion";
   running the real thing. It closes when the pointer leaves the card (it
   covers every tile while it plays), so a sketch only opens after the
   pointer has rested on a tile a moment, not while crossing the grid.
+  Until the sketch has drawn (run.html posts a message after its first
+  frames) its still shows dimmed under a turning arc.
 
   Each sketch is his code, unmodified, in public/sketches/<name>.js, run by
   public/sketches/run.html in an iframe (global-mode sketches would trample
-  each other on one page). Only the open one runs. The frame is a fixed
-  1000x1000 scaled down to the panel, so a sketch written for a full window
-  keeps its composition. The stills are frames of the same sketches,
+  each other on one page). Only the open one runs. The frame is 1000
+  wide and shaped like the grid, scaled down to it, so a sketch written for
+  a full window keeps its composition. The stills are frames of the same sketches,
   rendered headless (see CLAUDE.md, "Sketches").
 
   The iframe takes no pointer events: hover is tracked here, in the page,
@@ -23,8 +25,8 @@ import { useTempo } from "./motion";
   reduced motion, a tap opens a sketch and another closes it.
 */
 
-/* fifteen sketches and a link: a 4x4 grid of square tiles */
-export const GALLERY_RATIO = 1;
+/* fifteen sketches: a 5x3 grid of square tiles */
+export const GALLERY_RATIO = 5 / 3;
 
 const SKETCHES: { name: string; title: string }[] = [
   { name: "poincare", title: "poincaré disk" },
@@ -57,7 +59,18 @@ export default function SketchGallery() {
   const [live, setLive] = useState(false);
   const intent = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  const frame = useRef<HTMLIFrameElement>(null);
+
   useEffect(() => () => clearTimeout(intent.current), []);
+
+  // the sketch page says when it has drawn (run.html); until then it is loading
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.source && e.source === frame.current?.contentWindow && e.data?.ready) setLive(true);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
 
   const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -90,7 +103,7 @@ export default function SketchGallery() {
 
   return (
     <div ref={box} className="relative size-full bg-[#050505] p-1.5">
-      <div className="grid size-full grid-cols-4 grid-rows-4 gap-1.5">
+      <div className="grid size-full grid-cols-5 grid-rows-3 gap-1.5">
         {SKETCHES.map((s, i) => (
           <button
             key={s.name}
@@ -113,21 +126,6 @@ export default function SketchGallery() {
             />
           </button>
         ))}
-        <a
-          href="https://www.instagram.com/3t4msketches/"
-          target="_blank"
-          rel="noreferrer"
-          className="label flex items-center justify-center rounded-lg bg-white/5 p-2 text-center !text-white/70 transition-colors hover:!text-white"
-        >
-          <span>
-            {/* a phone's tile is too narrow for the handle */}
-            <span className="hidden sm:inline">more at @3t4msketches</span>
-            <span className="sm:hidden" aria-label="more at @3t4msketches">
-              more
-            </span>{" "}
-            ↗
-          </span>
-        </a>
       </div>
 
       <AnimatePresence>
@@ -147,30 +145,38 @@ export default function SketchGallery() {
             onClick={() => show(null)}
           >
             <iframe
+              ref={frame}
               src={`/sketches/run.html?s=${sketch.name}`}
               title={sketch.title}
               sandbox="allow-scripts"
               // p5 listens for device motion; allowing it keeps the console quiet
               allow="accelerometer; gyroscope"
               tabIndex={-1}
-              onLoad={() => setTimeout(() => setLive(true), 350)}
               className="pointer-events-none absolute left-1/2 top-1/2 border-0"
+              // the frame takes the grid's own shape, 1000 wide, so a sketch
+              // lays itself out as it would in a landscape window
               style={{
                 width: FRAME,
-                height: FRAME,
-                // cover the grid, whatever its exact shape
-                transform: `translate(-50%, -50%) scale(${Math.max(open.to.width, open.to.height) / FRAME})`,
+                height: Math.round((FRAME * open.to.height) / open.to.width),
+                transform: `translate(-50%, -50%) scale(${open.to.width / FRAME})`,
               }}
             />
-            {/* the still holds the place until the sketch has drawn */}
-            {/* eslint-disable-next-line @next/next/no-img-element -- tiny local stills */}
-            <img
-              src={`/sketches/${sketch.name}.jpg`}
-              alt=""
-              className={`pointer-events-none absolute inset-0 size-full object-cover transition-opacity duration-500 ${
+            {/* while it loads: the still, dimmed, under a thin turning arc */}
+            <div
+              aria-hidden
+              className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${
                 live ? "opacity-0" : "opacity-100"
               }`}
-            />
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- tiny local stills */}
+              <img
+                src={`/sketches/${sketch.name}.jpg`}
+                alt=""
+                className="size-full object-cover opacity-40 blur-[2px]"
+              />
+              <span className="absolute left-1/2 top-1/2 size-8 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 border-t-white/80 motion-safe:animate-spin motion-reduce:animate-pulse" />
+            </div>
+            {live ? null : <span className="sr-only">loading the sketch</span>}
             <p className="label pointer-events-none absolute bottom-3 left-4 !text-white/80">
               {sketch.title}
             </p>

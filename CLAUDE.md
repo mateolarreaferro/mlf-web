@@ -431,15 +431,17 @@ turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
 
 **Sketches (the Sketches card, 2026-10-05).** The card is a grid of Mateo's
 p5.js sketches (`SketchGallery.tsx`, frontmatter `media: - { sketch:
-"gallery" }`): fifteen and a link to @3t4msketches, a 4x4 grid in a square
-card. Each tile is a still; resting the mouse on one for 0.3s (or tapping
+"gallery" }`): fifteen in a 5x3 grid of square tiles (the card's "visit"
+pill is the Instagram link). Each tile is a still; resting the mouse on one for 0.3s (or tapping
 it) grows it until it fills the whole grid, running the real sketch, and
 leaving the card (or tapping again) shrinks it back. The card's close
-button sits above it (`z-20`). The sketches are his code,
+button sits above it (`z-20`). Until the sketch has drawn, `run.html` posts
+a message after its first frames, its still shows dimmed under a turning
+arc. The sketches are his code,
 unmodified, in `public/sketches/<name>.js`; `public/sketches/run.html?s=<name>`
 runs one in global mode with p5 1.11.10 from cdnjs, inside a sandboxed
 iframe (eleven global-mode sketches on one page would trample each other),
-at a fixed 1000x1000 the gallery scales down, so a sketch written for a full
+in a frame 1000 wide and shaped like the grid, which the gallery scales down, so a sketch written for a full
 window keeps its composition. Only the open one runs, and the iframe takes no
 pointer events (hover is tracked by the page, where leaving is reliable), so
 sketches that read the mouse don't see it. The stills

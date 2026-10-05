@@ -8,8 +8,9 @@
       Runs one of Mateo's p5.js sketches, unmodified, in global mode:
       run.html?s=<name> loads <name>.js from this folder. Each sketch gets its
       own page (the gallery puts it in an iframe) so their globals never meet.
-      The frame is a fixed 1000x1000 that the gallery scales down, so a sketch
-      written for a full window keeps its composition.
+      The gallery gives the frame a fixed 1000px width (and the grid's shape)
+      and scales it down, so a sketch written for a full window keeps its
+      composition.
     -->
     <style>
       html,
@@ -41,6 +42,17 @@
           window.setup = function () {
             pixelDensity(1);
             if (own) own();
+          };
+          // tell the gallery once the sketch has really drawn, so its
+          // loading state ends when the picture is there, not on a guess
+          var ownDraw = window.draw;
+          var told = false;
+          window.draw = function () {
+            if (ownDraw) ownDraw();
+            if (!told && frameCount > 2) {
+              told = true;
+              parent.postMessage({ sketch: name, ready: true }, "*");
+            }
           };
         };
         document.body.appendChild(script);
