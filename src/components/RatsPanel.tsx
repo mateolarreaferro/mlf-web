@@ -12,6 +12,9 @@ import { setSetting, useSettings, useStats, type Listen } from "@/lib/rats-and-c
 
 const css = (c: number[]) => `rgb(${c.map((v) => Math.round(v * 255)).join(",")})`;
 const LISTEN: Listen[] = ["all", "red", "yellow"];
+/* every control row on one grid and one height, so labels, controls and
+   values line up down the column whatever the value says */
+const ROW = "grid h-9 grid-cols-[5.5rem_minmax(0,1fr)_4.5rem] items-center gap-x-4";
 const hz = (f: number) => (f >= 1000 ? `${(f / 1000).toFixed(1)} kHz` : `${Math.round(f)} Hz`);
 
 function Slider({
@@ -32,7 +35,7 @@ function Slider({
   onChange: (v: number) => void;
 }) {
   return (
-    <label className="grid grid-cols-[5.5rem_1fr_4.25rem] items-center gap-3">
+    <label className={ROW}>
       <span className="label">{label}</span>
       <input
         type="range"
@@ -43,7 +46,7 @@ function Slider({
         onChange={(e) => onChange(Number(e.currentTarget.value))}
         className="h-1 w-full cursor-pointer accent-[var(--ink)]"
       />
-      <span className="label whitespace-nowrap text-right tabular-nums">{shown}</span>
+      <span className="label whitespace-nowrap tabular-nums">{shown}</span>
     </label>
   );
 }
@@ -99,9 +102,9 @@ export default function RatsPanel() {
         )}
       </section>
 
-      <section aria-label="Controls" className="space-y-2.5">
-        <div className="flex items-center gap-3">
-          <span className="label w-[5.5rem]">hear</span>
+      <section aria-label="Controls">
+        <div className={ROW}>
+          <span className="label">hear</span>
           <div className="flex gap-1">
             {LISTEN.map((l) => (
               <button
