@@ -40,7 +40,7 @@ export default function Home() {
             {thoughts.map((t) => (
               <li key={t.slug}>
                 <Item>
-                  <Link href={`/thoughts/${t.slug}`} className="group block">
+                  <Link href={`/thoughts/${t.slug}`} className="sharpen group block">
                     <div className="flex items-baseline gap-4">
                       <span className="label shrink-0">
                         {String(t.number).padStart(3, "0")}

@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import type { Project } from "@/lib/projects";
-import { hoverSpring, useTempo } from "./motion";
+import { hoverSpring, Typewriter, useTempo } from "./motion";
 
 /*
   When a project is selected, this takes over the left column (where the
@@ -41,7 +41,7 @@ export default function ProjectPanel({
       className={className}
     >
       <motion.p
-        className="label !text-ochre"
+        className="label"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 * tempo, ease, delay: 0.06 * tempo }}
@@ -50,12 +50,12 @@ export default function ProjectPanel({
       </motion.p>
 
       <motion.h2
-        className="mt-2 text-2xl font-light leading-snug tracking-tight sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3]"
+        className="mt-2 text-2xl font-medium leading-snug tracking-[-0.025em] sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3]"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 * tempo, ease, delay: 0.1 * tempo }}
       >
-        {project.name}
+        <Typewriter text={project.name} perChar={40} delay={150} />
       </motion.h2>
 
       {meta || project.isActive ? (

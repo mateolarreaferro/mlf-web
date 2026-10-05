@@ -35,6 +35,8 @@ export async function POST(req: Request) {
     messages: await convertToModelMessages(messages),
     // Answers about the portfolio are lookups, not hard problems.
     providerOptions: { anthropic: { effort: "low" } },
+    // Two sentences is the rule (agent-context.ts); this only catches a runaway.
+    maxOutputTokens: 220,
   });
 
   return createUIMessageStreamResponse({

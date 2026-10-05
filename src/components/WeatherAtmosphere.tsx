@@ -5,8 +5,7 @@ import { motion } from "motion/react";
 import type { Atmosphere } from "@/lib/weather-theme";
 import { followTheDay, setDaylight } from "@/lib/mood";
 
-const FADE_MS = 700; // must match the opacity transition in globals.css
-/* fired on window after the wash colours are written, for anything that caches them */
+/* fired on window after the forecast is applied, for anything that caches what it changed */
 export const ATMOSPHERE_EVENT = "mlf:atmosphere";
 
 /* a place the visitor chose to share, kept in their browser only */
@@ -48,9 +47,9 @@ function writePlace(p: Place) {
 }
 
 /*
-  Fetches the visitor's current conditions, hands the colours to CSS as custom
-  properties (globals.css owns what they look like), and states plainly in the
-  header where the colours came from.
+  Fetches the visitor's current conditions, hands the real sunrise and
+  sunset to the mood and the wind to the blobs' drift (their colours are
+  fixed, see globals.css), and says in the header where that weather is.
 
   Where that is comes from the edge's guess at the IP address, which is right
   about the region and often wrong about the town, so the line says "near
@@ -59,13 +58,8 @@ function writePlace(p: Place) {
   raised by that press), rounds it to about a kilometre, and remembers it in
   this browser for a month. Then the line names the town without the "near".
 
-  The swap happens behind a fade: the washes drop to opacity 0, the colours
-  change while they are invisible, and they come back up. Custom properties
-  can't be transitioned reliably (see the note in globals.css), so the motion
-  lives on opacity instead — the page takes one slow breath when the weather
-  arrives rather than flickering to a new colour. A page left open asks again
-  every quarter hour and breathes only if something actually changed, so an
-  afternoon turning to evening reaches the page without anyone reloading it.
+  A page left open asks again every quarter hour, so an afternoon turning to
+  evening reaches the page without anyone reloading it.
 */
 
 export default function WeatherAtmosphere() {
@@ -73,11 +67,9 @@ export default function WeatherAtmosphere() {
     city: string;
     precise: boolean;
     temperature: number;
-    colors: [string, string, string];
   } | null>(null);
 
   const alive = useRef(true);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const lastApplied = useRef("");
   const lastAt = useRef(0);
 
@@ -100,11 +92,8 @@ export default function WeatherAtmosphere() {
       const reveal = () => {
         if (!alive.current) return;
         if (changed) {
+          // the blobs keep attractor.world's colours; the wind only sets their pace
           const root = document.documentElement;
-          root.style.setProperty("--w1", atmosphere.colors[0]);
-          root.style.setProperty("--w2", atmosphere.colors[1]);
-          root.style.setProperty("--w3", atmosphere.colors[2]);
-          root.style.setProperty("--w-alpha", String(atmosphere.alpha));
           root.style.setProperty("--w-drift-a", `${atmosphere.driftA}s`);
           root.style.setProperty("--w-drift-b", `${atmosphere.driftB}s`);
           window.dispatchEvent(new CustomEvent(ATMOSPHERE_EVENT));
@@ -115,23 +104,11 @@ export default function WeatherAtmosphere() {
             city: data.city,
             precise: data.precise === true,
             temperature: data.weather!.temperature,
-            colors: atmosphere.colors,
           });
         }
       };
 
-      const root = document.documentElement;
-      if (!changed || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        reveal();
-        return;
-      }
-
-      root.dataset.wash = "hold";
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => {
-        reveal();
-        delete root.dataset.wash;
-      }, FADE_MS);
+      reveal();
     } catch {
       // decoration: a failure here should be invisible
     }
@@ -153,7 +130,6 @@ export default function WeatherAtmosphere() {
 
     return () => {
       alive.current = false;
-      clearTimeout(timer.current);
       clearInterval(interval);
       document.removeEventListener("visibilitychange", refresh);
     };
@@ -186,29 +162,19 @@ export default function WeatherAtmosphere() {
     <motion.button
       type="button"
       onClick={locate}
-      className="label hidden cursor-pointer items-center gap-2 hover:text-ink sm:flex"
+      className="label hidden cursor-pointer items-center hover:text-ink sm:flex"
       initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
       title={
         shown.precise
-          ? "the colours follow the weather here · press to update where you are"
-          : "the colours follow the weather near you · press to use your exact location"
+          ? "the light drifts with the wind here · press to update where you are"
+          : "the light drifts with the wind near you · press to use your exact location"
       }
     >
       <span>
         {shown.precise ? "" : "near "}
         {shown.city.toLowerCase()} · {Math.round(shown.temperature)}°c
-      </span>
-      {/* most-used colour first — the weights are set in globals.css */}
-      <span className="flex items-center gap-1" aria-hidden>
-        {shown.colors.map((c, i) => (
-          <span
-            key={c + i}
-            className="inline-block size-2 rounded-full"
-            style={{ background: c }}
-          />
-        ))}
       </span>
     </motion.button>
   );

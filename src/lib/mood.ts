@@ -103,31 +103,31 @@ export function isOverridden(): boolean {
 export const FADE_MS = 700; // must match --mood-fade in globals.css
 export const DAWN_MS = 60_000;
 let fadeTimer: ReturnType<typeof setTimeout> | undefined;
-let gainTimer: ReturnType<typeof setInterval> | undefined;
+let nightTimer: ReturnType<typeof setInterval> | undefined;
 
 /*
-  The wash gain (how much coloured light the dark paper gets) is a CSS token
-  and cannot be transitioned, so a slow fade carries it by hand: read the
-  before and after values around the flip, then walk an inline value between
-  them at ten steps a second and hand control back to the stylesheet at the
-  end. Ten a second is plenty for a minute-long move, and it costs the
-  browser only the two wash layers.
+  --night (0 by day, 1 at night) mixes the background blobs between their
+  day and night colours. It is a CSS token and cannot be transitioned, so a
+  slow fade carries it by hand: read the before and after values around the
+  flip, then walk an inline value between them at ten steps a second and
+  hand control back to the stylesheet at the end. Ten a second is plenty for
+  a minute-long move, and it costs the browser only the two blob layers.
 */
-function rampGain(from: number, ms: number) {
+function rampNight(from: number, ms: number) {
   const root = document.documentElement;
-  root.style.removeProperty("--w-gain");
-  const to = Number(getComputedStyle(root).getPropertyValue("--w-gain")) || 1;
-  clearInterval(gainTimer);
+  root.style.removeProperty("--night");
+  const to = Number(getComputedStyle(root).getPropertyValue("--night")) || 0;
+  clearInterval(nightTimer);
   if (from === to) return;
   const start = performance.now();
-  root.style.setProperty("--w-gain", String(from));
-  gainTimer = setInterval(() => {
+  root.style.setProperty("--night", String(from));
+  nightTimer = setInterval(() => {
     const t = Math.min(1, (performance.now() - start) / ms);
     const e = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-    root.style.setProperty("--w-gain", (from + (to - from) * e).toFixed(3));
+    root.style.setProperty("--night", (from + (to - from) * e).toFixed(3));
     if (t >= 1) {
-      clearInterval(gainTimer);
-      root.style.removeProperty("--w-gain");
+      clearInterval(nightTimer);
+      root.style.removeProperty("--night");
     }
   }, 100);
 }
@@ -136,7 +136,7 @@ function apply(m: Mood, fadeMs = FADE_MS) {
   if (currentMood() === m) return;
   const root = document.documentElement;
   const slow = fadeMs > FADE_MS;
-  const gainBefore = Number(getComputedStyle(root).getPropertyValue("--w-gain")) || 1;
+  const nightBefore = Number(getComputedStyle(root).getPropertyValue("--night")) || 0;
   /*
     While the page fades fast, elements with their own colour transition
     (links, buttons) must not restart theirs every frame or they trail the
@@ -148,10 +148,10 @@ function apply(m: Mood, fadeMs = FADE_MS) {
   clearTimeout(fadeTimer);
   fadeTimer = setTimeout(() => delete root.dataset.moodFade, fadeMs + 50);
   root.dataset.mood = m;
-  if (slow) rampGain(gainBefore, fadeMs);
+  if (slow) rampNight(nightBefore, fadeMs);
   else {
-    clearInterval(gainTimer);
-    root.style.removeProperty("--w-gain");
+    clearInterval(nightTimer);
+    root.style.removeProperty("--night");
   }
   for (const l of listeners) l(m, fadeMs);
 }

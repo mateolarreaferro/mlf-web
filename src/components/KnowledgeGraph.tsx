@@ -20,14 +20,14 @@ import MateoChat from "./MateoChat";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/* one radius for every project node — no size hierarchy in the graph */
-const NODE_R = 8;
+/* one radius for every project node (its footprint; the dot drawn inside is smaller) */
+const NODE_R = 6;
 
 /*
-  The graph is drawn rather than plotted: nothing is a perfect circle or a
-  clean curve. Every wobble is seeded from the node's slug, so a given project
-  always has the same hand — the shapes stay put while the layout moves, which
-  is what keeps it from shimmering.
+  The graph is an instrument, not a drawing: exact circles, hairline straight
+  threads, orbit rings and a slowly turning ring of ticks, with small pulses
+  of light travelling out along the threads. Each node's phase is seeded from
+  its slug, so the breathing and the pulses keep the same rhythm every visit.
 */
 function seeded(id: string) {
   let h = 2166136261;
@@ -58,10 +58,8 @@ type Node = {
   phase: number;
   r: number;
   e: number; // emphasis 0..1, lerped
-  /* per-node hand: radius multipliers, where the pen started, thread jitter */
-  wobble: number[];
-  lean: number;
-  thread: number[];
+  /* how fast this thread's pulse travels, so they don't march in step */
+  speed: number;
   /* half-extent of the dot + its label, used to keep nodes from colliding */
   halfW: number;
   halfH: number;
@@ -115,9 +113,15 @@ export default function KnowledgeGraph({
     let height = 0;
     let raf = 0;
     let frame = 0;
-    let orbitX = 220;
-    let orbitY = 180;
+    /* one radius: the orbits are circles, never an oval stretched to the box */
+    let orbit = 200;
+    /* the outer ring of ticks: always clear of every label (see fit()) */
+    let outer = 260;
+    /* the ring as drawn: eases outward if a live label reaches further than fit() expected */
+    let ringR = 0;
     let labelFont = "11px var(--font-inter), system-ui, sans-serif";
+    /* a phone-width canvas: only featured names are written (ProjectIndex lists the rest) */
+    let quiet = false;
     let featuredFont = "14px var(--font-inter), system-ui, sans-serif";
     // how quickly a node closes on its seat per frame, and how far it breathes
     const GLIDE = 0.08;
@@ -136,12 +140,9 @@ export default function KnowledgeGraph({
       phase: 0,
       r: 64,
       e: 0,
-      // the portrait is only barely off-round — a cut edge, not a scribble
       halfW: 90,
       halfH: 90,
-      wobble: Array.from({ length: 13 }, () => 0.968 + meRand() * 0.062),
-      lean: meRand() * Math.PI * 2,
-      thread: [],
+      speed: meRand(),
     };
 
     const photo = new window.Image();
@@ -192,9 +193,7 @@ export default function KnowledgeGraph({
         e: 0,
         halfW: 40,
         halfH: 20,
-        wobble: Array.from({ length: 7 }, () => 0.7 + rand() * 0.62),
-        lean: rand() * Math.PI * 2,
-        thread: Array.from({ length: 6 }, () => rand()),
+        speed: 0.0025 + rand() * 0.002,
       });
     });
 
@@ -203,13 +202,12 @@ export default function KnowledgeGraph({
     let dragMoved = 0;
 
     /*
-      The three group colours are the weather's three wash swatches (--w1..3),
-      so the graph is painted from the same palette as the page behind it and
-      the legend is the header's swatch row. weather-theme.ts keeps the three
-      two ramp steps apart so the groups never blur into one another.
+      The three group colours are the background's three blobs (--g1..3 in
+      globals.css), so the graph is painted from the same light as the page
+      behind it.
     */
-    type Palette = { ink: string; faint: string; accent: string; soft: string; paper: string; teal: string; w1: string; w2: string; w3: string };
-    let target: Palette = { ink: "#23282c", faint: "#656f77", accent: "#23718f", soft: "#eeece6", paper: "#f8f7f4", teal: "#4d908e", w1: "#f9854a", w2: "#a4c067", w3: "#499a8d" };
+    type Palette = { ink: string; faint: string; accent: string; soft: string; paper: string; g1: string; g2: string; g3: string };
+    let target: Palette = { ink: "#1b1d1b", faint: "#5d625e", accent: "#1a3a2a", soft: "#e8e7e1", paper: "#f4f3ee", g1: "#2e6b4b", g2: "#5f71c7", g3: "#b97c3a" };
     let colors: Palette = target;
     const readColors = () => {
       const s = getComputedStyle(document.documentElement);
@@ -220,10 +218,9 @@ export default function KnowledgeGraph({
         accent: read("--accent", target.accent),
         soft: read("--soft", target.soft),
         paper: read("--paper", target.paper),
-        teal: read("--teal", target.teal),
-        w1: read("--w1", target.w1),
-        w2: read("--w2", target.w2),
-        w3: read("--w3", target.w3),
+        g1: read("--g1", target.g1),
+        g2: read("--g2", target.g2),
+        g3: read("--g3", target.g3),
       };
       if (!blendFrom) colors = target;
     };
@@ -272,9 +269,9 @@ export default function KnowledgeGraph({
 
     const groupColor = (g: string | undefined) =>
       ({
-        projects: colors.w1,
-        "experiments / tools": colors.w2,
-        art: colors.w3,
+        projects: colors.g1,
+        "experiments / tools": colors.g2,
+        art: colors.g3,
       })[g ?? ""] ?? colors.faint;
 
     const resize = () => {
@@ -284,11 +281,14 @@ export default function KnowledgeGraph({
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // on a phone the canvas is a thumb wide: a ring inset by a fixed 96px
-      // left 75px of room and stacked every label into one column
-      orbitX = Math.max(width / 2 - 96, width * 0.34);
-      orbitY = height / 2 - 64;
-      me.r = Math.min(width, height) > 700 ? 74 : Math.min(width, height) > 540 ? 64 : 46;
+      // the largest circle that leaves room for the labels on every side;
+      // on a phone the width decides, and the labels may reach the edges
+      orbit = Math.max(
+        Math.min(width / 2 - 80, height / 2 - 64),
+        Math.min(width * 0.36, height / 2 - 64),
+      );
+      me.r = Math.min(width, height) > 700 ? 66 : Math.min(width, height) > 540 ? 58 : 42;
+      quiet = width < 480;
       labelFont = `${width < 480 ? 10 : 11}px var(--font-inter), system-ui, sans-serif`;
       featuredFont = `${width < 480 ? 12 : 14}px var(--font-inter), system-ui, sans-serif`;
       readColors();
@@ -298,13 +298,73 @@ export default function KnowledgeGraph({
         if (n.kind !== "project") continue;
         const isFeatured = n.project?.featured === true;
         ctx.font = isFeatured ? featuredFont : labelFont;
+        if (quiet && !isFeatured) {
+          // no label to make room for, only the dot and its ring
+          n.halfW = NODE_R + 9;
+          n.halfH = NODE_R + 9;
+          continue;
+        }
         n.halfW = Math.max(NODE_R, ctx.measureText(n.label).width / 2) + 7;
         n.halfH = NODE_R + (isFeatured ? 15 : 13) + 5;
       }
       me.halfW = me.r + 10;
-      me.halfH = me.r + 22;
+      me.halfH = me.r + 32;
       ctx.font = labelFont;
-      layout();
+      fit();
+    };
+
+    /*
+      Seat everything, then measure how far the farthest label reaches (the
+      far corner of its box) and put the outer ring a clear gap beyond it.
+      If that ring would leave the canvas, shrink the orbit and try again,
+      so the ring never runs through a name.
+    */
+    const GAP = 18;
+    /*
+      How far from the centre a node reaches: its dot and ring, or its label
+      (written NODE_R + 13..15 below the dot), whichever is further. Measured
+      as two boxes, not one: one box round dot and label together has an
+      empty corner that over-counts every diagonal node.
+    */
+    const reachOf = (n: Node) => {
+      const dot = Math.hypot(Math.abs(n.x) + 11, Math.abs(n.y) + 11);
+      if (quiet && !n.project?.featured) return dot;
+      const half = n.halfW - 7 + 2;
+      const below = Math.max(Math.abs(n.y + NODE_R + 6), Math.abs(n.y + NODE_R + 22));
+      return Math.max(dot, Math.hypot(Math.abs(n.x) + half, below));
+    };
+    // on a phone-width canvas the labels reach the edges and an outer ring
+    // would run straight through them, so it is left out there
+    const roomy = () => width >= 560;
+    const fit = () => {
+      // a phone-width canvas draws no outer ring, so there is nothing to clear
+      if (!roomy()) {
+        layout();
+        return;
+      }
+      const limit = Math.min(width, height) / 2 - 8;
+      for (let pass = 0; pass < 8; pass++) {
+        layout();
+        // settle a scratch copy with the live loop's own step (glide to the
+        // seat, then separation pushes crowded nodes off it), measure that,
+        // then put things back
+        const saved = nodes.map((n) => [n.x, n.y]);
+        for (const n of nodes) {
+          if (n === me) continue;
+          n.x = n.tx;
+          n.y = n.ty;
+        }
+        for (let k = 0; k < 90; k++) tick();
+        let reach = 0;
+        for (const n of nodes) if (n.kind === "project") reach = Math.max(reach, reachOf(n));
+        nodes.forEach((n, i) => {
+          n.x = saved[i][0];
+          n.y = saved[i][1];
+        });
+        outer = reach + GAP;
+        if (outer <= limit) return;
+        orbit *= (limit / outer) * 0.99;
+      }
     };
 
     /*
@@ -325,8 +385,8 @@ export default function KnowledgeGraph({
           const t = peers.length > 1 ? k / (peers.length - 1) - 0.5 : 0;
           const a = centre + t * usable;
           const ring = twoRings ? (k % 2 === 0 ? 0.84 : 1.12) : 1;
-          n.tx = Math.cos(a) * orbitX * ring;
-          n.ty = Math.sin(a) * orbitY * ring;
+          n.tx = Math.cos(a) * orbit * ring;
+          n.ty = Math.sin(a) * orbit * ring;
           // a seat must fit on the canvas, label and all
           const maxX = width / 2 - n.halfW - 4;
           const maxY = height / 2 - n.halfH - 8;
@@ -410,46 +470,15 @@ export default function KnowledgeGraph({
       }
     };
 
-    /*
-      A closed shape traced through the node's wobbled radii, smoothed by
-      running quadratic curves through the midpoints between points. Offset
-      rotates the pen a little so a second pass doesn't retrace the first —
-      that mismatch is what makes it read as drawn by hand.
-    */
-    const inkBlob = (n: Node, r: number, offset = 0) => {
-      const w = n.wobble;
-      const count = w.length;
-      const at = (i: number): [number, number] => {
-        const a = n.lean + offset + ((i % count) / count) * Math.PI * 2;
-        const rr = r * w[((i % count) + count) % count];
-        return [n.x + Math.cos(a) * rr, n.y + Math.sin(a) * rr];
-      };
-      ctx.beginPath();
-      const [fx, fy] = at(0);
-      const [lx, ly] = at(count - 1);
-      ctx.moveTo((fx + lx) / 2, (fy + ly) / 2);
-      for (let i = 0; i < count; i++) {
-        const [cx, cy] = at(i);
-        const [nx, ny] = at(i + 1);
-        ctx.quadraticCurveTo(cx, cy, (cx + nx) / 2, (cy + ny) / 2);
-      }
-      ctx.closePath();
+    /* a hex colour at an alpha, for gradients */
+    const rgba = (c: string, a: number) => {
+      const x = hex(c);
+      return x ? `rgba(${x[0]},${x[1]},${x[2]},${a})` : c;
     };
 
-    /* a thread drawn twice, each pass bowing differently, both overshooting */
-    const inkThread = (n: Node, pass: number) => {
-      const j = n.thread;
-      const k = pass === 0 ? 1 : -1;
-      const bow = 0.1 + (j[0] - 0.5) * 0.06;
-      const mx = (me.x + n.x) / 2 + (me.y - n.y) * bow + (j[1] - 0.5) * 16 * k;
-      const my = (me.y + n.y) / 2 + (n.x - me.x) * bow + (j[2] - 0.5) * 16 * k;
-      // start a touch off-centre and run slightly past the node, as a pen does
-      const sx = me.x + (j[3] - 0.5) * 5;
-      const sy = me.y + (j[4] - 0.5) * 5;
-      const over = 1 + j[5] * 0.05;
+    const circle = (r: number) => {
       ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.quadraticCurveTo(mx, my, sx + (n.x - sx) * over, sy + (n.y - sy) * over);
+      ctx.arc(me.x, me.y, r, 0, Math.PI * 2);
       ctx.stroke();
     };
 
@@ -464,15 +493,77 @@ export default function KnowledgeGraph({
         n.e += (target - n.e) * 0.15;
       }
 
-      // threads from me to every project, each stroked twice
-      ctx.lineCap = "round";
+      /*
+        The instrument: the orbits the seats sit on, dashed, and an outer
+        ring of ticks turning very slowly, with each group's arc marked in
+        its colour so the three neighbourhoods read before any label does.
+      */
+      ctx.lineWidth = 0.6;
+      ctx.strokeStyle = colors.faint;
+      ctx.setLineDash([2, 7]);
+      ctx.globalAlpha = 0.22;
+      circle(orbit * 0.84);
+      circle(orbit * 1.12);
+      ctx.setLineDash([]);
+
+      const turn = frame * 0.0006;
+      // fit() placed the ring from a settled layout; the live one can sit a
+      // few pixels further out, so the ring follows whichever reaches further
+      let live = 0;
+      for (const n of nodes) if (n.kind === "project") live = Math.max(live, reachOf(n) + 12);
+      const want = Math.min(Math.max(outer, live), Math.min(width, height) / 2 - 4);
+      ringR = ringR ? ringR + (want - ringR) * 0.08 : want;
+      const ro = ringR;
+      const ring = roomy();
+      for (let i = 0; ring && i < 120; i++) {
+        const a = turn + (i / 120) * Math.PI * 2;
+        const major = i % 10 === 0;
+        const len = major ? 7 : 3;
+        const cx = Math.cos(a);
+        const cy = Math.sin(a);
+        ctx.globalAlpha = major ? 0.3 : 0.14;
+        ctx.beginPath();
+        ctx.moveTo(cx * ro, cy * ro);
+        ctx.lineTo(cx * (ro + len), cy * (ro + len));
+        ctx.stroke();
+      }
+      ctx.lineWidth = 1.2;
+      for (const [group, peers] of byGroup) {
+        if (!peers.length || !ring) continue;
+        const c = sectorOf(group);
+        ctx.strokeStyle = groupColor(group);
+        ctx.globalAlpha = 0.45;
+        ctx.beginPath();
+        ctx.arc(0, 0, ro - 3, c - SECTOR * 0.41, c + SECTOR * 0.41);
+        ctx.stroke();
+      }
+
+      // threads: hairlines from me, brightening toward the node they reach
       for (const n of nodes) {
         if (n === me) continue;
-        ctx.strokeStyle = groupColor(n.project?.group);
-        for (let pass = 0; pass < 2; pass++) {
-          ctx.globalAlpha = (pass === 0 ? 0.16 : 0.09) + n.e * (pass === 0 ? 0.4 : 0.22);
-          ctx.lineWidth = (pass === 0 ? 1 : 0.7) + n.e * 0.5;
-          inkThread(n, pass);
+        const gc = groupColor(n.project?.group);
+        const grad = ctx.createLinearGradient(me.x, me.y, n.x, n.y);
+        grad.addColorStop(0, rgba(gc, 0));
+        grad.addColorStop(1, rgba(gc, 0.38 + n.e * 0.5));
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 0.7 + n.e * 0.6;
+        ctx.beginPath();
+        ctx.moveTo(me.x, me.y);
+        ctx.lineTo(n.x, n.y);
+        ctx.stroke();
+
+        // a pulse travelling outward, then a rest before the next one
+        if (!reduceMotion) {
+          const t = (frame * n.speed + n.phase) % 1.6;
+          if (t < 1) {
+            const k = 0.12 + t * 0.88;
+            ctx.fillStyle = gc;
+            ctx.globalAlpha = Math.sin(t * Math.PI) * 0.9;
+            ctx.beginPath();
+            ctx.arc(me.x + (n.x - me.x) * k, me.y + (n.y - me.y) * k, 1.4, 0, Math.PI * 2);
+            ctx.fill();
+          }
         }
       }
 
@@ -482,61 +573,94 @@ export default function KnowledgeGraph({
 
       for (const n of nodes) {
         if (n.kind !== "project") continue;
-        const r = n.r + n.e * 3;
         const gc = groupColor(n.project?.group);
+        // the dot, exact, with a soft light of its own colour
         ctx.globalAlpha = 1;
-        if (n.e > 0.05) {
-          ctx.shadowColor = gc;
-          ctx.shadowBlur = 18 * n.e;
-        }
+        ctx.shadowColor = gc;
+        ctx.shadowBlur = 8 + n.e * 14;
         ctx.fillStyle = gc;
-        inkBlob(n, r);
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 3.2 + n.e * 0.8, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
-        // the pen goes round a second time, not quite on the first line
+        // a thin ring that opens out and grows crosshair ticks under the pointer
+        const ring = 6.5 + n.e * 4;
         ctx.strokeStyle = gc;
-        ctx.globalAlpha = 0.5 + n.e * 0.4;
-        ctx.lineWidth = 1;
-        inkBlob(n, r + 1.8 + n.e * 1.6, 0.85);
+        ctx.lineWidth = 0.75;
+        ctx.globalAlpha = 0.45 + n.e * 0.5;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, ring, 0, Math.PI * 2);
         ctx.stroke();
-        ctx.globalAlpha = 1;
-        // nodes are all one size now, so "featured" reads in the label only
+        if (n.e > 0.02) {
+          ctx.globalAlpha = n.e;
+          ctx.beginPath();
+          for (let q = 0; q < 4; q++) {
+            const a = (q * Math.PI) / 2 + Math.PI / 4;
+            ctx.moveTo(n.x + Math.cos(a) * (ring + 2), n.y + Math.sin(a) * (ring + 2));
+            ctx.lineTo(n.x + Math.cos(a) * (ring + 6), n.y + Math.sin(a) * (ring + 6));
+          }
+          ctx.stroke();
+        }
         const isFeatured = n.project?.featured === true;
+        // on a phone an unfeatured name appears only while it is touched
+        if (quiet && !isFeatured && n.e < 0.05) continue;
         ctx.font = isFeatured ? featuredFont : labelFont;
-        ctx.globalAlpha = (isFeatured ? 0.75 : 0.55) + n.e * (isFeatured ? 0.25 : 0.45);
+        ctx.globalAlpha =
+          quiet && !isFeatured
+            ? n.e
+            : (isFeatured ? 0.85 : 0.6) + n.e * (isFeatured ? 0.15 : 0.4);
         ctx.fillStyle = n.e > 0.35 || isFeatured ? colors.ink : colors.faint;
-        ctx.fillText(n.label, n.x, n.y + r + (isFeatured ? 15 : 13));
+        ctx.fillText(n.label, n.x, n.y + NODE_R + (isFeatured ? 15 : 13));
       }
 
-      // me, on top: photo in a breathing teal ring
-      const pulse = reduceMotion ? 0.5 : 0.5 + 0.5 * Math.sin(frame * 0.04);
-      const R = me.r + me.e * 4;
-      ctx.strokeStyle = colors.teal;
-      for (let pass = 0; pass < 2; pass++) {
-        ctx.globalAlpha =
-          (0.3 + pulse * 0.35 + me.e * 0.4) * (pass === 0 ? 1 : 0.45);
-        ctx.lineWidth = pass === 0 ? 1.4 : 0.9;
-        inkBlob(me, R + 6 + pulse * 3, pass === 0 ? 0 : 0.4);
-        ctx.stroke();
-      }
+      /*
+        Me, on top: the portrait in a perfect circle, in black and white
+        until the pointer finds it, inside a fine ring with a scanning arc.
+      */
+      const R = me.r + me.e * 3;
+      ctx.lineWidth = 0.75;
+      ctx.strokeStyle = colors.faint;
+      ctx.globalAlpha = 0.35;
+      ctx.beginPath();
+      ctx.arc(me.x, me.y, R + 7, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([1.5, 5]);
+      ctx.globalAlpha = 0.3;
+      ctx.beginPath();
+      ctx.arc(me.x, me.y, R + 14, -turn * 3, Math.PI * 2 - turn * 3);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      const sweep = reduceMotion ? -Math.PI / 2 : frame * 0.012;
+      ctx.strokeStyle = colors.ink;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.55 + me.e * 0.4;
+      ctx.beginPath();
+      ctx.arc(me.x, me.y, R + 7, sweep, sweep + Math.PI / 3);
+      ctx.stroke();
+
       ctx.globalAlpha = 1;
       if (photoReady) {
         ctx.save();
-        inkBlob(me, R);
+        ctx.beginPath();
+        ctx.arc(me.x, me.y, R, 0, Math.PI * 2);
         ctx.clip();
         const side = Math.min(photo.width, photo.height);
         const sx = (photo.width - side) * 0.6;
         const sy = (photo.height - side) * 0.4;
+        ctx.filter = `grayscale(${1 - me.e}) contrast(1.05)`;
         ctx.drawImage(photo, sx, sy, side, side, me.x - R, me.y - R, R * 2, R * 2);
+        ctx.filter = "none";
         ctx.restore();
       } else {
         ctx.fillStyle = colors.soft;
-        inkBlob(me, R);
+        ctx.beginPath();
+        ctx.arc(me.x, me.y, R, 0, Math.PI * 2);
         ctx.fill();
       }
+      ctx.font = labelFont;
       ctx.globalAlpha = 0.7 + me.e * 0.3;
-      ctx.fillStyle = me.e > 0.35 ? colors.accent : colors.faint;
-      ctx.fillText("press to talk", me.x, me.y + R + 16);
+      ctx.fillStyle = me.e > 0.35 ? colors.ink : colors.faint;
+      ctx.fillText("press to talk", me.x, me.y + R + 26);
       ctx.globalAlpha = 1;
 
       ctx.restore();
@@ -766,9 +890,9 @@ export default function KnowledgeGraph({
         }`}
       >
         {[
-          ["projects", "var(--w1)"],
-          ["experiments / tools", "var(--w2)"],
-          ["art", "var(--w3)"],
+          ["projects", "var(--g1)"],
+          ["experiments / tools", "var(--g2)"],
+          ["art", "var(--g3)"],
         ].map(([name, color]) => (
           <span key={name} className="label flex items-center gap-2">
             <span

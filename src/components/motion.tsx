@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "motion/react";
-import { useSyncExternalStore, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { currentMood, subscribe, type Mood } from "@/lib/mood";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -29,13 +29,14 @@ export function hoverSpring(tempo: number, damping = 18) {
   return { type: "spring" as const, stiffness: 400 / tempo, damping };
 }
 
+/* a quiet arrival: a little out of focus, then sharp, with only a hint of travel */
 const fadeUpFor = (tempo: number, delay = 0): Variants => ({
-  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 6, filter: "blur(3px)" },
   show: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.7 * tempo, ease, delay: delay * tempo },
+    transition: { duration: 0.9 * tempo, ease, delay: delay * tempo },
   },
 });
 
@@ -106,41 +107,82 @@ export function Item({
   );
 }
 
-/* Word-by-word rise for headlines. */
-export function AnimatedText({
+/*
+  A typewriter: text appears a character at a time behind a thin blinking
+  caret, which lingers a moment and goes. The untyped rest of the text is
+  already laid out, only transparent, so nothing around it reflows while it
+  types. Plain DOM work on one element so the splash (which runs before
+  React's tree is interactive) and the components share it. Returns a
+  cancel function that leaves the full text in place.
+*/
+export function typewrite(
+  el: HTMLElement,
+  text: string,
+  { perChar = 32, delay = 0 }: { perChar?: number; delay?: number } = {},
+): () => void {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    el.classList.remove("tw-wait");
+    el.textContent = text;
+    return () => {};
+  }
+  el.classList.remove("tw-wait");
+  const typed = document.createElement("span");
+  const caret = document.createElement("span");
+  const rest = document.createElement("span");
+  caret.className = "caret";
+  rest.style.color = "transparent";
+  rest.textContent = text;
+  el.replaceChildren(typed, caret, rest);
+
+  let raf = 0;
+  let linger = 0;
+  const start = performance.now() + delay;
+  const frame = (now: number) => {
+    const n = Math.max(0, Math.min(text.length, Math.floor((now - start) / perChar)));
+    typed.textContent = text.slice(0, n);
+    rest.textContent = text.slice(n);
+    if (n < text.length) raf = requestAnimationFrame(frame);
+    else linger = window.setTimeout(() => caret.remove(), 900);
+  };
+  raf = requestAnimationFrame(frame);
+  return () => {
+    cancelAnimationFrame(raf);
+    window.clearTimeout(linger);
+    el.textContent = text;
+  };
+}
+
+/*
+  Text that types itself in when it appears. The server renders the real
+  text, so it reads without JavaScript, and screen readers get a hidden copy
+  rather than the characters arriving one by one.
+*/
+export function Typewriter({
   text,
   className,
+  perChar = 32,
+  delay = 0,
 }: {
   text: string;
   className?: string;
+  perChar?: number;
+  delay?: number;
 }) {
+  const ref = useRef<HTMLSpanElement>(null);
   const tempo = useTempo();
-  const words = text.split(" ");
+  // before paint, so the full text never flashes ahead of the typing
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    return typewrite(el, text, { perChar: perChar * tempo, delay: delay * tempo });
+  }, [text, perChar, delay, tempo]);
   return (
-    <motion.span
-      className={className}
-      initial="hidden"
-      animate="show"
-      variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 * tempo } } }}
-      aria-label={text}
-    >
-      {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden pb-[0.1em] -mb-[0.1em] align-bottom">
-          <motion.span
-            className="inline-block"
-            variants={{
-              hidden: { y: "110%" },
-              show: { y: 0, transition: { duration: 0.8 * tempo, ease } },
-            }}
-            aria-hidden
-          >
-            {word}
-          </motion.span>
-          {/* a non-breaking space: a plain one is trailing whitespace inside
-              the inline-block and gets collapsed, jamming the words together */}
-          {i < words.length - 1 ? "\u00A0" : null}
-        </span>
-      ))}
-    </motion.span>
+    <span className={className}>
+      <span className="sr-only">{text}</span>
+      {/* tw-wait keeps it invisible until the typing takes over (globals.css) */}
+      <span ref={ref} aria-hidden className="tw-wait">
+        {text}
+      </span>
+    </span>
   );
 }

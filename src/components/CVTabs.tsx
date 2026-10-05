@@ -32,7 +32,7 @@ export default function CVTabs({
             key={t}
             onClick={() => setTab(t)}
             className={`label cursor-pointer rounded-full px-3.5 py-1.5 transition-colors ${
-              tab === t ? "bg-accent !text-white" : "bg-soft hover:!text-accent"
+              tab === t ? "bg-ink !text-paper" : "bg-soft hover:!text-accent"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -55,12 +55,12 @@ export default function CVTabs({
             <div className="space-y-12">
               {categories.map((cat) => (
                 <div key={cat}>
-                  <h3 className="label mb-5 !text-teal">{cat}</h3>
+                  <h3 className="label mb-5 !text-accent">{cat}</h3>
                   <ul className="space-y-7">
                     {publications
                       .filter((p) => p.category === cat)
                       .map((p, i) => (
-                        <li key={`${p.title}-${i}`} className="group">
+                        <li key={`${p.title}-${i}`} className="sharpen group">
                           <div className="flex items-baseline gap-4">
                             <span className="label shrink-0">{p.year}</span>
                             {p.link ? (
@@ -91,7 +91,7 @@ export default function CVTabs({
           {tab === "talks" ? (
             <ul className="space-y-7">
               {talks.map((t, i) => (
-                <li key={`${t.title}-${i}`} className="group">
+                <li key={`${t.title}-${i}`} className="sharpen group">
                   <div className="flex items-baseline gap-4">
                     <span className="label shrink-0">{t.year}</span>
                     {t.link ? (
@@ -120,7 +120,7 @@ export default function CVTabs({
             <div className="space-y-10">
               {classes.map((g) => (
                 <div key={g.area}>
-                  <h3 className="label mb-3 !text-teal">{g.area}</h3>
+                  <h3 className="label mb-3 !text-accent">{g.area}</h3>
                   <p className="max-w-3xl text-sm leading-relaxed text-faint">
                     {g.courses.join(" · ")}
                   </p>

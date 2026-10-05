@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { FaGithub, FaInstagram, FaLinkedinIn, FaSoundcloud } from "react-icons/fa6";
-import { AnimatedText, hoverSpring, Reveal, useTempo } from "./motion";
+import { hoverSpring, Reveal, Typewriter, useTempo } from "./motion";
 
 const socials = [
   { href: "https://www.instagram.com/larreaferro/", label: "Instagram", Icon: FaInstagram },
@@ -39,8 +39,13 @@ export default function Hero() {
   const tempo = useTempo();
   return (
     <div>
-      <h1 className="text-2xl font-light leading-snug tracking-tight sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3] xl:text-[2.4rem] xl:leading-[1.25]">
-        <AnimatedText text="I design tools at the intersection of creativity, well-being, and education." />
+      <h1 className="text-2xl font-medium leading-snug tracking-[-0.025em] sm:text-3xl lg:text-[2.1rem] lg:leading-[1.3] xl:text-[2.4rem] xl:leading-[1.25]">
+        {/* a non-breaking hyphen: the line must never break inside "well-being" */}
+        <Typewriter
+          text={"I design tools at the intersection of creativity, well\u2011being, and education."}
+          perChar={24}
+          delay={200}
+        />
       </h1>
 
       <Reveal delay={0.3}>

@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { currentMood } from "@/lib/mood";
-import { NIGHT_TEMPO } from "./motion";
+import { NIGHT_TEMPO, typewrite } from "./motion";
 import { markSplashSeen, splashSeen } from "@/lib/intro";
 
 /*
-  The name, alone on the paper, before the page. The words rise in CSS so they
-  start at first paint rather than at hydration; then the name blurs away in
+  The name, alone on the paper, before the page. It types itself out once
+  the script runs (`typewrite` in motion.tsx; the text waits transparent
+  until then, so it never flashes in whole first), then blurs away in
   place, the paper behind it thins out, and the page is simply there. (It
   used to glide diagonally into the header wordmark; Mateo didn't like the
   movement.)
@@ -17,7 +18,7 @@ import { markSplashSeen, splashSeen } from "@/lib/intro";
   first frame, on every route; INTRO_SCRIPT (lib/intro.ts) hides it before
   paint everywhere but "/" and once seen. A press or a key skips to the fade.
 */
-const WORDS = ["mateo", "larrea", "ferro"];
+const NAME = "mateo larrea ferro";
 const ease = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export default function Splash() {
@@ -34,6 +35,7 @@ export default function Splash() {
 
     const tempo = currentMood() === "dark" ? NIGHT_TEMPO : 1;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const stop = typewrite(name, NAME, { perChar: 55 * tempo, delay: 150 * tempo });
     let leaving = false;
     let finish = 0;
 
@@ -71,6 +73,7 @@ export default function Splash() {
     window.addEventListener("pointerdown", skip);
     window.addEventListener("keydown", skip);
     return () => {
+      stop();
       window.clearTimeout(hold);
       window.clearTimeout(finish);
       window.removeEventListener("pointerdown", skip);
@@ -85,14 +88,9 @@ export default function Splash() {
       <div ref={paperRef} className="absolute inset-0 bg-paper" />
       <p
         ref={nameRef}
-        className="relative whitespace-nowrap text-[clamp(1.75rem,5vw,2.4rem)] font-light tracking-tight text-ink"
+        className="tw-wait relative whitespace-nowrap text-[clamp(1.75rem,5vw,2.4rem)] font-medium tracking-tight text-ink"
       >
-        {WORDS.map((w, i) => (
-          <span key={w} className="splash-word" style={{ "--i": i } as CSSProperties}>
-            {w}
-            {i < WORDS.length - 1 ? " " : null}
-          </span>
-        ))}
+        {NAME}
       </p>
     </div>
   );

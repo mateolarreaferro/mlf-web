@@ -12,9 +12,9 @@ import { Item, Stagger } from "./motion";
 */
 
 const GROUPS = [
-  { group: "projects", color: "var(--w1)" },
-  { group: "experiments / tools", color: "var(--w2)" },
-  { group: "art", color: "var(--w3)" },
+  { group: "projects", color: "var(--g1)" },
+  { group: "experiments / tools", color: "var(--g2)" },
+  { group: "art", color: "var(--g3)" },
 ];
 
 export default function ProjectIndex({
@@ -49,7 +49,7 @@ export default function ProjectIndex({
                         e.preventDefault();
                         onSelect(p);
                       }}
-                      className="block py-3 transition-colors active:text-accent"
+                      className="sharpen block py-3 transition-colors active:text-accent"
                     >
                       <span className="block text-base leading-snug">{p.name}</span>
                       <span className="label mt-0.5 block leading-snug">{p.category}</span>

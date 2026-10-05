@@ -65,7 +65,7 @@ const STEPS: Step[] = [
   {
     target: "room",
     title: "the room",
-    body: "the colours come from the weather where you are, and the page goes dark at night. the sun / moon switches it.",
+    body: "the page goes dark when the sun sets where you are, and the light drifts with the wind. the sun / moon switches it.",
   },
 ];
 

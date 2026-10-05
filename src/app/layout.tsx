@@ -9,6 +9,7 @@ import Script from "next/script";
 import { BOOT_SCRIPT } from "@/lib/mood";
 import { INTRO_SCRIPT } from "@/lib/intro";
 import TourButton from "@/components/TourButton";
+import { Typewriter } from "@/components/motion";
 import Splash from "@/components/Splash";
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn, FaSoundcloud } from "react-icons/fa6";
 
@@ -40,6 +41,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         {/* sets data-mood before first paint so an evening visit never flashes white */}
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
+        {/* text that types itself waits transparent; without scripts it never would */}
+        <noscript>
+          <style>{`.tw-wait{color:inherit}`}</style>
+        </noscript>
         {/* decides before paint whether the splash plays (see lib/intro.ts) */}
         <script dangerouslySetInnerHTML={{ __html: INTRO_SCRIPT }} />
         {/* The password box past the three free model calls; wraps fetch, so it loads first. */}
@@ -49,8 +54,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Splash />
         <SoundEffects />
         <header data-tour="room" className="mx-auto w-full max-w-[88rem] px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
-          <HomeLink className="text-xl font-light tracking-tight transition-colors hover:text-accent sm:text-2xl">
-            mateo larrea ferro
+          <HomeLink className="text-xl font-medium tracking-[-0.02em] transition-colors hover:text-accent sm:text-2xl">
+            <Typewriter text="mateo larrea ferro" perChar={45} delay={300} />
           </HomeLink>
           <WeatherAtmosphere />
           <nav className="flex items-baseline gap-5">
