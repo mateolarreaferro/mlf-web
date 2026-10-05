@@ -861,7 +861,7 @@ export default function KnowledgeGraph({
               <button
                 onClick={() => onSelect(null)}
                 aria-label="Back to the graph"
-                className="absolute right-3 top-3 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full bg-paper/85 text-ink backdrop-blur-sm transition-colors hover:text-accent"
+                className="absolute right-3 top-3 z-20 flex size-8 cursor-pointer items-center justify-center rounded-full bg-paper/85 text-ink backdrop-blur-sm transition-colors hover:text-accent"
               >
                 ✕
               </button>

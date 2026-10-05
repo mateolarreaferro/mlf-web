@@ -431,9 +431,11 @@ turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
 
 **Sketches (the Sketches card, 2026-10-05).** The card is a grid of Mateo's
 p5.js sketches (`SketchGallery.tsx`, frontmatter `media: - { sketch:
-"gallery" }`, card ratio 4:3). Each tile is a still; resting the mouse on
-one (or tapping it) grows it into a larger panel running the real sketch,
-and leaving (or tapping again) shrinks it back. The sketches are his code,
+"gallery" }`): fifteen and a link to @3t4msketches, a 4x4 grid in a square
+card. Each tile is a still; resting the mouse on one for 0.3s (or tapping
+it) grows it until it fills the whole grid, running the real sketch, and
+leaving the card (or tapping again) shrinks it back. The card's close
+button sits above it (`z-20`). The sketches are his code,
 unmodified, in `public/sketches/<name>.js`; `public/sketches/run.html?s=<name>`
 runs one in global mode with p5 1.11.10 from cdnjs, inside a sandboxed
 iframe (eleven global-mode sketches on one page would trample each other),
@@ -443,7 +445,8 @@ pointer events (hover is tracked by the page, where leaving is reliable), so
 sketches that read the mouse don't see it. The stills
 (`public/sketches/<name>.jpg`, 480px) are frames of the same sketches rendered
 headless with Playwright at 1000x1000: most after 6s, the slow builders
-longer (rossler 16s, triangles 32s, flow-field 45s). To add one: drop
+longer (rossler 16s, triangles 32s, flow-field 45s, the two currents
+12-14s). To add one: drop
 `<name>.js` in `public/sketches/`, render its still the same way, add it to
 `SKETCHES` in the component. ESLint ignores the folder.
 

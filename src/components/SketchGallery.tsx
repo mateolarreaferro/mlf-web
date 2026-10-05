@@ -6,7 +6,10 @@ import { useTempo } from "./motion";
 
 /*
   The Sketches card: a grid of stills of Mateo's p5.js sketches, and the one
-  under the pointer grows into a larger panel running the real thing.
+  under the pointer grows out of its tile until it fills the whole grid,
+  running the real thing. It closes when the pointer leaves the card (it
+  covers every tile while it plays), so a sketch only opens after the
+  pointer has rested on a tile a moment, not while crossing the grid.
 
   Each sketch is his code, unmodified, in public/sketches/<name>.js, run by
   public/sketches/run.html in an iframe (global-mode sketches would trample
@@ -16,19 +19,24 @@ import { useTempo } from "./motion";
   rendered headless (see CLAUDE.md, "Sketches").
 
   The iframe takes no pointer events: hover is tracked here, in the page,
-  where leaving the panel is reliable. On touch, or for visitors who prefer
+  where leaving the card is reliable. On touch, or for visitors who prefer
   reduced motion, a tap opens a sketch and another closes it.
 */
 
-export const GALLERY_RATIO = 4 / 3;
+/* fifteen sketches and a link: a 4x4 grid of square tiles */
+export const GALLERY_RATIO = 1;
 
 const SKETCHES: { name: string; title: string }[] = [
   { name: "poincare", title: "poincaré disk" },
   { name: "mandala", title: "mandala" },
+  { name: "pastel-currents", title: "pastel currents" },
+  { name: "spiral", title: "spiral" },
   { name: "flow-field-squares", title: "flow field, squares" },
-  { name: "noise-rings", title: "noise rings" },
   { name: "temple-glass", title: "temple glass" },
+  { name: "noise-rings", title: "noise rings" },
+  { name: "halo", title: "halo" },
   { name: "rossler", title: "two rössler attractors" },
+  { name: "gray-currents", title: "gray currents" },
   { name: "triangles", title: "triangles" },
   { name: "swirl", title: "swirl" },
   { name: "shells", title: "shells" },
@@ -37,7 +45,6 @@ const SKETCHES: { name: string; title: string }[] = [
 ];
 
 const FRAME = 1000;
-const GAP = 6;
 const ease = [0.22, 1, 0.36, 1] as const;
 
 type Rect = { left: number; top: number; width: number; height: number };
@@ -54,7 +61,7 @@ export default function SketchGallery() {
 
   const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // where the tile sits, and the larger square it grows into, kept inside the card
+  // where the tile sits, and the whole grid it grows into
   const show = (i: number | null) => {
     clearTimeout(intent.current);
     setLive(false);
@@ -67,14 +74,7 @@ export default function SketchGallery() {
       width: tile.width,
       height: tile.height,
     };
-    const side = Math.min(outer.width, outer.height) * 0.78;
-    const clamp = (v: number, max: number) => Math.max(GAP, Math.min(max - side - GAP, v));
-    const to = {
-      left: clamp(from.left + from.width / 2 - side / 2, outer.width),
-      top: clamp(from.top + from.height / 2 - side / 2, outer.height),
-      width: side,
-      height: side,
-    };
+    const to = { left: 0, top: 0, width: outer.width, height: outer.height };
     setOpen({ i, from, to });
   };
 
@@ -82,7 +82,7 @@ export default function SketchGallery() {
   const hoverIn = (i: number) => (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse" || still()) return;
     clearTimeout(intent.current);
-    intent.current = setTimeout(() => show(i), 140);
+    intent.current = setTimeout(() => show(i), 300);
   };
   const hoverOut = () => clearTimeout(intent.current);
 
@@ -90,7 +90,7 @@ export default function SketchGallery() {
 
   return (
     <div ref={box} className="relative size-full bg-[#050505] p-1.5">
-      <div className="grid size-full grid-cols-4 grid-rows-3 gap-1.5">
+      <div className="grid size-full grid-cols-4 grid-rows-4 gap-1.5">
         {SKETCHES.map((s, i) => (
           <button
             key={s.name}
@@ -136,7 +136,7 @@ export default function SketchGallery() {
             key={sketch.name}
             role="group"
             aria-label={sketch.title}
-            className="absolute z-10 cursor-pointer overflow-hidden rounded-xl bg-black shadow-2xl"
+            className="absolute z-10 cursor-pointer overflow-hidden bg-black"
             initial={{ ...open.from, opacity: 1 }}
             animate={{ ...open.to, opacity: 1 }}
             exit={{ ...open.from, opacity: 0 }}
@@ -158,7 +158,8 @@ export default function SketchGallery() {
               style={{
                 width: FRAME,
                 height: FRAME,
-                transform: `translate(-50%, -50%) scale(${open.to.width / FRAME})`,
+                // cover the grid, whatever its exact shape
+                transform: `translate(-50%, -50%) scale(${Math.max(open.to.width, open.to.height) / FRAME})`,
               }}
             />
             {/* the still holds the place until the sketch has drawn */}
