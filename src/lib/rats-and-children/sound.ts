@@ -1,3 +1,4 @@
+import type { Listen } from "./live";
 import type { Being, WorldEvent } from "./world";
 
 /*
@@ -7,8 +8,9 @@ import type { Being, WorldEvent } from "./world";
   a bubble when one is born or dies, a random collision sound at most every
   half second, a sound when a disaster lands; and beds that come in as the
   population grows (day/night always, people at 5, meditation at 7, the beat
-  at 10, the city at 15). Two things are new: changes fade over a few
-  milliseconds instead of clicking, and a limiter sits on the output.
+  at 10, the city at 15). New here: changes fade over a few milliseconds
+  instead of clicking, a limiter sits on the output, and the panel can
+  close a low-pass filter, set the volume, and listen to one colour only.
 
   The samples are MP3 (public/rats-and-children, converted from the
   original WAVs). MP3 pads the start and end of a file, which would put a
@@ -33,11 +35,13 @@ const BEDS: { name: string; gain: number; from: number }[] = [
 
 const pick = (n: number) => 1 + Math.floor(Math.random() * n);
 
-type Voice = { source: AudioBufferSourceNode; gain: GainNode };
+type Voice = { source: AudioBufferSourceNode; gain: GainNode; red?: boolean };
 
 export class Sound {
   readonly ctx: AudioContext;
   private out: GainNode;
+  private filter: BiquadFilterNode;
+  private listen: Listen = "all";
   private manifest: Promise<Manifest>;
   private cache = new Map<string, Promise<AudioBuffer | null>>();
   private voices = new Map<number, Voice>();
@@ -55,7 +59,11 @@ export class Sound {
     limiter.release.value = 0.25;
     this.out = this.ctx.createGain();
     this.out.gain.value = 0.9;
-    this.out.connect(limiter).connect(this.ctx.destination);
+    this.filter = this.ctx.createBiquadFilter();
+    this.filter.type = "lowpass";
+    this.filter.frequency.value = 20000;
+    this.filter.Q.value = 0.5;
+    this.out.connect(this.filter).connect(limiter).connect(this.ctx.destination);
     this.manifest = fetch(BASE + "manifest.json")
       .then((r) => r.json() as Promise<Manifest>)
       .catch(() => ({}));
@@ -79,6 +87,30 @@ export class Sound {
 
   close() {
     void this.ctx.close();
+  }
+
+  /* the panel's tone slider: 0..1, mapped to 180 Hz..20 kHz on a log scale */
+  setTone(tone: number) {
+    const hz = 180 * Math.pow(20000 / 180, Math.max(0, Math.min(1, tone)));
+    this.filter.frequency.setTargetAtTime(hz, this.ctx.currentTime, 0.05);
+  }
+
+  setVolume(volume: number) {
+    this.out.gain.setTargetAtTime(0.9 * volume, this.ctx.currentTime, 0.05);
+  }
+
+  setListen(listen: Listen) {
+    if (listen === this.listen) return;
+    this.listen = listen;
+    this.level();
+  }
+
+  /* what is sounding, for the panel */
+  get state() {
+    return {
+      voices: [...this.voices.values()].filter((v) => this.audible(v)).length,
+      layers: BEDS.filter((b) => this.beds.has(b.name)).map((b) => b.name),
+    };
   }
 
   hear(e: WorldEvent, population: number) {
@@ -177,7 +209,7 @@ export class Sound {
     void this.load(name).then((buf) => {
       // it may have died while the sample was on its way
       if (!this.pending.delete(b.id) || !buf) return;
-      this.voices.set(b.id, this.play(buf, 0, true));
+      this.voices.set(b.id, { ...this.play(buf, 0, true), red: b.red });
       this.level();
     });
   }
@@ -191,11 +223,17 @@ export class Sound {
     this.level();
   }
 
-  /* every loop at 1/N, as in the original */
+  private audible(v: Voice) {
+    return this.listen === "all" || (this.listen === "red") === v.red;
+  }
+
+  /* every loop you are listening to at 1/N, as in the original; the rest silent */
   private level() {
-    const n = this.voices.size;
+    const heard = [...this.voices.values()].filter((v) => this.audible(v));
     const now = this.ctx.currentTime;
-    for (const v of this.voices.values()) v.gain.gain.setTargetAtTime(1 / n, now, FADE);
+    for (const v of this.voices.values()) {
+      v.gain.gain.setTargetAtTime(this.audible(v) ? 1 / heard.length : 0, now, 0.05);
+    }
   }
 }
 

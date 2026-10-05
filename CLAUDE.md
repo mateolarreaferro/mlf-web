@@ -432,7 +432,9 @@ turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
 **Sketches (the Sketches card, 2026-10-05).** The card is a grid of Mateo's
 p5.js sketches (`SketchGallery.tsx`, frontmatter `media: - { sketch:
 "gallery" }`): fifteen in a 5x3 grid of square tiles (the card's "visit"
-pill is the Instagram link). Each tile is a still; resting the mouse on one for 0.3s (or tapping
+pill is the Instagram link). The corner button takes the grid full screen;
+a playing sketch then reopens at the screen's shape, and since the pointer
+can't leave a full-screen grid, a click on the sketch closes it. Each tile is a still; resting the mouse on one for 0.3s (or tapping
 it) grows it until it fills the whole grid, running the real sketch, and
 leaving the card (or tapping again) shrinks it back. The card's close
 button sits above it (`z-20`). Until the sketch has drawn, `run.html` posts
@@ -464,9 +466,20 @@ ChuGL's threshold, screened on rather than added so a white sky doesn't
 swallow the grey circle), and `sound.ts` the mix in Web Audio (per-being
 loops at 1/N, one-shots, beds by population, short fades and a limiter
 added). `RatsAndChildren.tsx` is the card (`media: - { sketch:
-"rats-and-children" }`): press and hold to bring beings in, sound starts on
-the first press, a corner button goes full screen where the browser allows
-it (hidden on iPhone Safari). The samples are the original WAVs as MP3 in
+"rats-and-children" }`): it opens on a card of instructions whose "begin"
+is the press that starts the sound, then press and hold to bring beings in;
+a corner button goes full screen where the browser allows it (hidden on
+iPhone Safari; `FullscreenButton.tsx`, shared with the sketches). The
+sparks are drawn as short streaks that narrow and fade toward the tail, with
+a little drag and some size variety, and a thin ring opens at each birth:
+polish Mateo asked for without changing the look. While the card is open,
+the left column (under the description on a phone) shows `RatsPanel`: who
+is alive by colour and size, a minute of population, births, deaths,
+touches, disasters, the time of day and what is sounding, and the controls
+(hear all, red or yellow; tone, a low-pass from 180 Hz to open; volume;
+speed; how often disasters fall). The piece and the panel only talk
+through `live.ts` (two small stores), and the piece publishes five times a
+second, not every frame. The samples are the original WAVs as MP3 in
 `public/rats-and-children/` (89 MB to 7 MB, `ffmpeg -nostdin -i x.wav -c:a
 libmp3lame -q:a 4`), loaded only when first needed; `manifest.json` keeps
 each file's true length so `trim()` can cut MP3 padding off a decoded loop

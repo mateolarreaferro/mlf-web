@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useTempo } from "./motion";
+import FullscreenButton, { useFullscreen } from "./FullscreenButton";
 
 /*
   The Sketches card: a grid of stills of Mateo's p5.js sketches, and the one
@@ -21,7 +22,9 @@ import { useTempo } from "./motion";
   rendered headless (see CLAUDE.md, "Sketches").
 
   The iframe takes no pointer events: hover is tracked here, in the page,
-  where leaving the card is reliable. On touch, or for visitors who prefer
+  where leaving the card is reliable. The corner button takes the grid full
+  screen (FullscreenButton); there the pointer can't leave, so a click on
+  the playing sketch is what closes it. On touch, or for visitors who prefer
   reduced motion, a tap opens a sketch and another closes it.
 */
 
@@ -60,6 +63,11 @@ export default function SketchGallery() {
   const intent = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const frame = useRef<HTMLIFrameElement>(null);
+  const { can, full, toggle } = useFullscreen(box);
+  const openRef = useRef(open);
+  useEffect(() => {
+    openRef.current = open;
+  }, [open]);
 
   useEffect(() => () => clearTimeout(intent.current), []);
 
@@ -90,6 +98,14 @@ export default function SketchGallery() {
     const to = { left: 0, top: 0, width: outer.width, height: outer.height };
     setOpen({ i, from, to });
   };
+
+  // entering or leaving full screen: a playing sketch reopens at the new size
+  useEffect(() => {
+    const id = requestAnimationFrame(() => {
+      if (openRef.current) show(openRef.current.i);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [full]);
 
   // a mouse that rests on a tile opens it; passing over does nothing
   const hoverIn = (i: number) => (e: React.PointerEvent) => {
@@ -145,6 +161,8 @@ export default function SketchGallery() {
             onClick={() => show(null)}
           >
             <iframe
+              // a new size is a new frame: the sketches set their canvas once
+              key={`${Math.round(open.to.width)}x${Math.round(open.to.height)}`}
               ref={frame}
               src={`/sketches/run.html?s=${sketch.name}`}
               title={sketch.title}
@@ -183,6 +201,7 @@ export default function SketchGallery() {
           </motion.div>
         ) : null}
       </AnimatePresence>
+      {can ? <FullscreenButton full={full} onClick={toggle} /> : null}
     </div>
   );
 }

@@ -9,7 +9,7 @@ media:
   - { sketch: "rats-and-children" }  # the piece itself, playable (RatsAndChildren.tsx)
 ---
 
-A small world that composes itself. Press and hold to bring beings into a breathing circle, red or yellow, each singing its own loop. When a red and a yellow meet they make a smaller child; whatever drifts outside the circle fades away, and every so often a black circle falls and takes what it covers. As the population grows, the city, the crowd and a beat come in. Play it here, full screen if you like.
+A small world that composes itself: the beings you bring into a breathing circle sing, meet, have children and die, and the crowd, the city and a beat arrive as they multiply. Play it here, full screen if you like.
 
 ---
 

@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import type { Project } from "@/lib/projects";
 import { hoverSpring, Typewriter, useTempo } from "./motion";
+import RatsPanel from "./RatsPanel";
 
 /*
   When a project is selected, this takes over the left column (where the
@@ -105,6 +106,11 @@ export default function ProjectPanel({
           </motion.a>
         ))}
       </motion.div>
+
+      {/* a piece that plays in its card can keep its controls here */}
+      {project.media[0]?.type === "sketch" && project.media[0].src === "rats-and-children" ? (
+        <RatsPanel />
+      ) : null}
     </motion.div>
   );
 }

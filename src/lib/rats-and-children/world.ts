@@ -33,6 +33,7 @@ const NORMAL_SIZE = 0.25 * 0.8;
 const PARTICLE_POOL = 256;
 const PARTICLE_R = 0.075;
 const PARTICLE_LIFE = 2.0;
+export const RING_LIFE = 0.9;
 
 export type Category = 0 | 1 | 2; // normal, small, tiny
 
@@ -58,13 +59,17 @@ export type Particle = {
   life: number;
   born: number;
   color: RGB;
+  size: number; // a little variety around the original's one size
 };
+
+/* a thin ring that opens where someone is born */
+export type Ring = { x: number; y: number; r: number; born: number; color: RGB };
 
 export type Disaster = { x: number; y: number; size: number; born: number };
 
 /* What the world tells the sound. */
 export type WorldEvent =
-  | { type: "born"; being: Being }
+  | { type: "born"; being: Being; child: boolean }
   | { type: "dying"; being: Being }
   | { type: "gone"; being: Being }
   | { type: "collision" }
@@ -79,8 +84,14 @@ export class World {
   sky = 0.5;
   beings: Being[] = [];
   particles: Particle[] = [];
+  rings: Ring[] = [];
   disaster: Disaster | null = null;
   disasterR = 0;
+  /* how often disasters fall: 1 as composed, 0 never (the panel's slider) */
+  disasterRate = 1;
+  /* what has happened so far, for the panel */
+  count = { born: 0, died: 0, collisions: 0, disasters: 0 };
+  private touching = new Set<string>();
 
   private nextId = 1;
   private breath = 0;
@@ -97,7 +108,7 @@ export class World {
     if (this.t - this.lastSpawn < 0.2) return;
     this.lastSpawn = this.t;
     for (let i = 0; i < 5; i++) this.spark(x, y, RED, 0.6, 1.0);
-    this.add(x, y, Math.random() < 0.5, NORMAL_SIZE, 0);
+    this.add(x, y, Math.random() < 0.5, NORMAL_SIZE, 0, false);
   }
 
   step(dt: number) {
@@ -111,11 +122,12 @@ export class World {
     this.ringR = BASE_R - ((BASE_R - MIN_R) / 2) * (1 + Math.cos(this.breath));
 
     this.stepParticles(dt);
+    this.rings = this.rings.filter((r) => this.t - r.born < RING_LIFE);
     this.stepBeings(dt, k);
     this.stepDisaster();
   }
 
-  private add(x: number, y: number, red: boolean, scale: number, category: Category) {
+  private add(x: number, y: number, red: boolean, scale: number, category: Category, child: boolean) {
     const being: Being = {
       id: this.nextId++,
       x,
@@ -129,7 +141,9 @@ export class World {
       shrinking: false,
     };
     this.beings.push(being);
-    this.emit({ type: "born", being });
+    this.count.born++;
+    this.rings.push({ x, y, r: scale, born: this.t, color: red ? RED : YELLOW });
+    this.emit({ type: "born", being, child });
   }
 
   private spark(x: number, y: number, color: RGB, speed: number, life: number) {
@@ -144,15 +158,20 @@ export class World {
       life: PARTICLE_LIFE * life,
       born: this.t,
       color: [color[0] + rand(-0.05, 0.05), color[1] + rand(-0.05, 0.05), color[2] + rand(-0.05, 0.05)],
+      size: rand(0.7, 1.35),
     });
   }
 
   /* how big a spark is drawn and what colour it has reached */
-  sparkLook(p: Particle): { r: number; color: RGB } {
+  sparkLook(p: Particle): { r: number; color: RGB; fade: number; trail: number } {
     const f = Math.min(1, (this.t - p.born) / p.life);
     const c = Math.pow(f, 0.5);
     return {
-      r: PARTICLE_R * (1 - Math.pow(f, 0.2)),
+      // the original's size curve, with its own size and a fade at the very end
+      r: PARTICLE_R * p.size * (1 - Math.pow(f, 0.2)),
+      fade: 1 - Math.pow(f, 3),
+      // a short streak behind it: how far it travelled in the last 70 ms
+      trail: 0.07 * p.speed * Math.exp(-0.9 * (this.t - p.born)),
       color: [p.color[0] + (RED[0] - p.color[0]) * c, p.color[1] + (RED[1] - p.color[1]) * c, p.color[2] + (RED[2] - p.color[2]) * c],
     };
   }
@@ -167,8 +186,10 @@ export class World {
   private stepParticles(dt: number) {
     this.particles = this.particles.filter((p) => this.t - p.born < p.life);
     for (const p of this.particles) {
-      p.x += dt * p.dx * p.speed;
-      p.y += dt * p.dy * p.speed;
+      // a touch of drag, so a burst settles instead of sliding off
+      const v = p.speed * Math.exp(-0.9 * (this.t - p.born));
+      p.x += dt * p.dx * v;
+      p.y += dt * p.dy * v;
     }
   }
 
@@ -176,15 +197,21 @@ export class World {
     const list = this.beings;
     // touching: sparks every frame they overlap (scaled to the clock)
     const burst = 10 * k;
+    const now = new Set<string>();
     for (let i = 0; i < list.length; i++) {
       const a = list[i];
       for (let j = i + 1; j < list.length; j++) {
         const b = list[j];
         const d = Math.hypot(a.x - b.x, a.y - b.y);
         if (d > (a.scale + b.scale) * 1.1) continue;
+        // a collision is counted once, when two start touching
+        const key = a.id + ":" + b.id;
+        now.add(key);
+        if (!this.touching.has(key)) this.count.collisions++;
         this.collide(a, b, burst);
       }
     }
+    this.touching = now;
 
     const glide = 1 - Math.pow(1 - easeInOutCubic(0.1) * 10, k);
     const wander = 0.01 * Math.sqrt(k);
@@ -209,6 +236,7 @@ export class World {
 
   private die(b: Being) {
     b.shrinking = true;
+    this.count.died++;
     this.emit({ type: "dying", being: b });
   }
 
@@ -236,7 +264,7 @@ export class World {
     if (a.category === 0 && b.category === 0 && mixed && !a.shrinking && !b.shrinking) {
       // a red and a yellow of the normal size: a small red one
       this.lastBirth = this.t;
-      this.add(x, y, true, a.scale * 0.6 * 0.8, 1);
+      this.add(x, y, true, a.scale * 0.6 * 0.8, 1, true);
       return;
     }
     const smallRed = (s: Being) => s.red && s.category === 1;
@@ -245,14 +273,17 @@ export class World {
       // a small red meeting a normal yellow: a tiny red one
       this.lastBirth = this.t;
       const normal = a.category === 0 ? a : b;
-      this.add(x, y, true, normal.scale * 0.4 * 0.8, 2);
+      this.add(x, y, true, normal.scale * 0.4 * 0.8, 2, true);
     }
   }
 
   private stepDisaster() {
-    if (!this.disaster && this.t - this.lastDisaster >= this.disasterGap) {
+    // the slider stretches the wait; at zero none fall
+    const due = this.disasterRate > 0 && this.t - this.lastDisaster >= this.disasterGap / this.disasterRate;
+    if (!this.disaster && due) {
       this.lastDisaster = this.t;
       this.disasterGap = rand(10, 20);
+      this.count.disasters++;
       const size = this.ringR / 4 + rand(0, this.ringR / 4);
       const a = rand(0, 2 * Math.PI);
       const r = rand(0, this.ringR - size);
