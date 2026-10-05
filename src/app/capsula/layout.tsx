@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 /* The capsule's room: no portfolio header or footer (SiteChrome), always the light paper (globals.css). */
 export default function CapsulaLayout({ children }: { children: ReactNode }) {
   return (
-    <div data-capsula className="mx-auto w-full max-w-3xl pb-24 text-[15px]">
+    <div data-capsula className="mx-auto w-full max-w-5xl pb-24 text-[15px]">
       {children}
     </div>
   );

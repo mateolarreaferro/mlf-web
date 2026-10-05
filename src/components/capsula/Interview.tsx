@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Act, Button, call } from "./ui";
+import Dictate from "./Dictate";
 
 /*
   The interview room: the interviewer's question in plain type, the answers
@@ -80,7 +81,7 @@ export default function Interview({
   const current = typeof section === "number" ? Math.min(section, sections.length) : sections.length;
 
   return (
-    <div className="flex min-h-[calc(100dvh-4rem)] flex-col">
+    <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-3xl flex-col">
       <header className="pt-8 pb-5">
         <div className="flex items-baseline justify-between gap-4">
           <Link href={home} className="font-medium tracking-[-0.02em] transition-colors hover:text-accent">cápsula {round}</Link>
@@ -147,6 +148,7 @@ export default function Interview({
             }}
             className="max-h-60 min-h-10 flex-1 resize-none bg-transparent py-2 text-base outline-none placeholder:text-faint/70 lg:text-[15px]"
           />
+          <Dictate onText={(heard, base) => setInput(base ? `${base} ${heard}` : heard)} current={input} />
           <button
             type="submit"
             disabled={busy || !input.trim()}

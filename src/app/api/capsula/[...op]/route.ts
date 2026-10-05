@@ -1,4 +1,5 @@
 import { get } from "@vercel/blob";
+import { after } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { noStore, readBody, sameOrigin, visitor } from "@/lib/hosted";
 import {
@@ -6,11 +7,12 @@ import {
 } from "@/lib/capsula/auth";
 import {
   addEntry, blobPrefix, checkPassword, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
-  removePerson, resetPassword, revealPassword, savePerson, saveDraft, within, USERNAME, usernameFor,
+  removePerson, renamePerson, resetPassword, revealPassword, savePerson, saveDraft, within, USERNAME, usernameFor,
   type Answer, type Mode, type Person, type Source,
 } from "@/lib/capsula/store";
 import { AUDIO_LIMIT, Said, extract, fromCsv, fromDocx, fromXlsx, transcribe } from "@/lib/capsula/ingest";
 import { opening, marker } from "@/lib/capsula/interviewer";
+import { currentInsight, readCapsule, refreshInsight } from "@/lib/capsula/insight";
 
 /*
   The capsule's HTTP face: /api/capsula/<op>. The rules about who may do
@@ -106,7 +108,11 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
   async remove(_request, body) {
     if (!(await isAdmin())) return no("Solo el admin.", 403);
     const username = str(body.username, 40);
-    if (body.id) await removeEntry(username, str(body.id, 40));
+    if (body.id) {
+      await removeEntry(username, str(body.id, 40));
+      const person = await getPerson(username);
+      if (person) after(() => refreshInsight(person));
+    }
     else if (body.confirm === username) await removePerson(username);
     else return no("Confirma escribiendo el usuario.");
     return json({ ok: true });
@@ -184,7 +190,33 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     // A recording is what the entry is, even when its words arrived as a transcript.
     if (files.some((f) => f.type.startsWith("audio/"))) source = "audio";
     const entry = await addEntry(person.username, { round, date, source, answers, summary, transcript: transcript || undefined, files });
+    after(() => refreshInsight(person));
     return json({ id: entry.id, answers: answers.length });
+  },
+
+  /** A new name, and optionally a new username, for someone already in the capsule. */
+  async rename(_request, body) {
+    if (!(await isAdmin())) return no("Solo el admin.", 403);
+    const person = await getPerson(str(body.username, 40));
+    if (!person) return no("No existe esa persona.", 404);
+    const name = str(body.name, 60) || person.name;
+    const username = (str(body.newUsername, 32) || person.username).toLowerCase();
+    if (!USERNAME.test(username) || ["admin", "entrevista"].includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
+    if (!(await renamePerson(person, name, username))) return no("Ese usuario ya existe.", 409);
+    return json({ username, name });
+  },
+
+  /** The themes map and letter: the cached one when current, otherwise read now (a minute or two). */
+  async insight(_request, body) {
+    const person = await getPerson(str(body.username, 40));
+    if (!person) return no("No existe esa persona.", 404);
+    if (!(await access(person))) return no("No tienes acceso.", 403);
+    const entries = await listEntries(person.username);
+    if (!entries.length) return no("Esta cápsula todavía está vacía.", 404);
+    const cached = await currentInsight(person, entries);
+    if (cached) return json(cached);
+    if (!(await within(`insight:${person.username}`, 8, 86_400))) return no("Hoy ya se leyó varias veces. Vuelve mañana.", 429);
+    return json(await readCapsule(person, entries));
   },
 
   /* ---------- the interview ---------- */
@@ -229,6 +261,7 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
       round: draft.round, date: today(), source: "entrevista", answers: read.answers, summary: read.summary, transcript,
     });
     await dropDraft(person.username);
+    after(() => refreshInsight(person));
     return json({ ok: true, answers: read.answers.length });
   },
 };

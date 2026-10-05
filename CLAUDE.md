@@ -593,7 +593,16 @@ through `extract()` (Claude). The interviewer (`interviewer.ts`) has two modes,
 guided and conversation, prefixes every message with `[[n]]` (section) or
 `[[fin]]`, and keeps the conversation as a server-side draft so friends can
 stop and resume. Members do not spend the site's three free calls; they have
-their own daily caps (`within()` in `store.ts`). The source folder is
+their own daily caps (`within()` in `store.ts`). A capsule page has three tabs (`?ver=`): **temas**, the default, is a map of
+the threads in their life read by "a psychologist who loves them"
+(`insight.ts`: people, what moves them, what they look for, what weighs on
+them, as the site's three colours plus grey; no diagnoses, every thread
+anchored in their quotes), cached sealed per set of entries and re-read in
+`after()` when an entry is added or removed, or when their first name changes
+(the letter addresses them by name); **respuestas**, one year or "todos" with
+a section index; **conversar**, a chat (`api/capsula/ask`) that answers only
+from that one capsule, so it can never reveal more than the asker may read.
+The interview has browser dictation (`Dictate.tsx`). The source folder is
 `~/Desktop/Capsula del Tiempo/Entrevistas`, one folder per round;
 `scripts/capsula-import.mjs` imports it through the admin endpoints and writes
 new passwords next to it, outside the repo.

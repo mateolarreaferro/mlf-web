@@ -88,7 +88,7 @@ export function StartInterview({
   hasThisYear: boolean; returning: boolean; self: boolean;
 }) {
   const router = useRouter();
-  const [choosing, setChoosing] = useState(!hasThisYear);
+  const [choosing, setChoosing] = useState(self && !hasThisYear);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const path = `/capsula/${username}/entrevista`;
@@ -104,6 +104,17 @@ export function StartInterview({
         </div>
         <Button onClick={() => router.push(path)}>continuar</Button>
       </div>
+    );
+  }
+
+  // For the admin, someone else's interview is an occasional thing: one line, not two cards.
+  if (!self && !choosing) {
+    return (
+      <p className="label">
+        <Act className="underline decoration-faint/40 underline-offset-4" onAct={() => setChoosing(true)}>
+          hacer la entrevista de {year} con {name}
+        </Act>
+      </p>
     );
   }
 

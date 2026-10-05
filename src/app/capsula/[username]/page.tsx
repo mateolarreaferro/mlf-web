@@ -2,12 +2,22 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import Bar from "@/components/capsula/Bar";
+import Ask from "@/components/capsula/Ask";
+import ThemeMap from "@/components/capsula/ThemeMap";
 import { PrivacyToggle, RemoveEntry, StartInterview, Unlock } from "@/components/capsula/controls";
 import { access, canWrite, isAdmin, me, openTo } from "@/lib/capsula/auth";
+import { currentInsight } from "@/lib/capsula/insight";
 import { SECTIONS, questionById } from "@/lib/capsula/questions";
 import { getDraft, getPerson, listEntries, listPeople, type Entry } from "@/lib/capsula/store";
 
 export const dynamic = "force-dynamic";
+
+type Tab = "temas" | "respuestas" | "conversar";
+const TABS: { id: Tab; label: string }[] = [
+  { id: "temas", label: "temas" },
+  { id: "respuestas", label: "respuestas" },
+  { id: "conversar", label: "conversar" },
+];
 
 const SOURCE = { entrevista: "entrevista", hoja: "hoja de cálculo", audio: "grabación", texto: "texto" } as const;
 const longDate = (date: string) =>
@@ -41,17 +51,22 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
   const writer = canWrite(how);
   const [entries, draft] = await Promise.all([listEntries(person.username), writer ? getDraft(person.username) : null]);
   const rounds = [...new Set(entries.map((e) => e.round))];
-  const view = query.vista === "tiempo" && rounds.length > 1 ? "tiempo" : "ano";
+  const tab: Tab = TABS.some((t) => t.id === query.ver) ? (query.ver as Tab) : "temas";
+  const across = query.tiempo === "1" && rounds.length > 1;
   const asked = Number(query.ano);
   const round = rounds.includes(asked) ? asked : rounds.at(-1);
   const people = how === "owner" || how === "admin" ? (await listPeople()).filter((p) => p.username !== person.username) : [];
   const opened = await openTo(people);
-  const href = (q: { ano?: number; vista?: string }) => {
+  const insight = entries.length && tab === "temas" ? await currentInsight(person, entries) : null;
+  const href = (q: { ver?: Tab; ano?: number; tiempo?: boolean }) => {
     const s = new URLSearchParams();
+    if (q.ver && q.ver !== "temas") s.set("ver", q.ver);
     if (q.ano) s.set("ano", String(q.ano));
-    if (q.vista) s.set("vista", q.vista);
+    if (q.tiempo) s.set("tiempo", "1");
     return `/capsula/${person.username}${s.size ? `?${s}` : ""}`;
   };
+  const shown = across ? entries : entries.filter((e) => e.round === round);
+  const present = SECTIONS.filter((sec) => shown.some((e) => e.answers.some((a) => a.questionId && questionById.get(a.questionId)?.section === sec.id)));
 
   return (
     <>
@@ -60,16 +75,15 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
       <Reveal>
         <h1 className="text-[2.4rem] font-medium leading-tight tracking-[-0.03em]">{person.name}</h1>
         <p className="label mt-2">
-          {entries.length
-            ? `${entries.length} ${entries.length === 1 ? "entrada" : "entradas"} desde ${rounds[0]}`
-            : "todavía sin entradas"}
-          {how === "owner" ? null : how === "admin" ? ` · ${person.public ? "visible para el círculo" : "privada"}` : ""}
+          {entries.length ? `${rounds.length === 1 ? "cápsula de" : "cápsulas de"} ${rounds.join(", ")}` : "todavía sin entradas"}
+          {how === "admin" ? ` · ${person.public ? "visible para el círculo" : "privada"}` : ""}
+          {how === "key" ? " · la abriste con su contraseña" : ""}
         </p>
-        {how === "owner" ? <div className="mt-3"><PrivacyToggle initial={person.public} /></div> : null}
+        {how === "owner" ? <div className="mt-1"><PrivacyToggle initial={person.public} /></div> : null}
       </Reveal>
 
       {writer ? (
-        <Reveal delay={0.15} className="mt-12">
+        <Reveal delay={0.1} className="mt-10">
           <StartInterview
             username={person.username}
             name={first}
@@ -82,45 +96,62 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
         </Reveal>
       ) : null}
 
-      {rounds.length ? (
-        <section className="mt-20">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-4">
-            <nav aria-label="años" className="flex items-baseline gap-6">
-              {rounds.map((r) => (
-                <Link
-                  key={r}
-                  href={href({ ano: r })}
-                  aria-current={view === "ano" && r === round ? "page" : undefined}
-                  className={`text-2xl font-medium tracking-[-0.02em] transition-colors hover:text-accent ${
-                    view === "ano" && r === round ? "text-ink" : "text-faint/60"
-                  }`}
-                >
-                  {r}
-                </Link>
-              ))}
-            </nav>
-            {rounds.length > 1 ? (
-              <Link
-                href={view === "tiempo" ? href({ ano: round }) : href({ vista: "tiempo" })}
-                className={`label transition-colors hover:text-accent ${view === "tiempo" ? "text-ink" : ""}`}
-              >
-                {view === "tiempo" ? "volver a un año" : "ver a través del tiempo"}
+      {entries.length ? (
+        <>
+          <nav aria-label="vistas" className="mt-16 flex items-baseline gap-7">
+            {TABS.map((t) => (
+              <Link key={t.id} href={href({ ver: t.id })} aria-current={tab === t.id ? "page" : undefined}
+                className={`text-lg font-medium tracking-[-0.01em] transition-colors hover:text-accent ${tab === t.id ? "text-ink" : "text-faint/60"}`}>
+                {t.label}
               </Link>
-            ) : null}
-          </div>
+            ))}
+          </nav>
 
-          {view === "tiempo" ? (
-            <AcrossTime entries={entries} />
-          ) : (
-            entries.filter((e) => e.round === round).map((e) => (
-              <OneEntry key={e.id} entry={e} username={person.username} admin={how === "admin"} />
-            ))
-          )}
-        </section>
+          <section className="mt-10">
+            {tab === "temas" ? (
+              <ThemeMap username={person.username} first={first} initial={insight} owner={how === "owner"} />
+            ) : tab === "conversar" ? (
+              <Ask username={person.username} first={first} owner={how === "owner"} rounds={rounds} />
+            ) : (
+              <div className="grid gap-10 lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-14">
+                <nav aria-label="años y secciones" className="flex flex-col gap-6 lg:sticky lg:top-8 lg:self-start">
+                  <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+                    {rounds.map((r) => (
+                      <Link key={r} href={href({ ver: "respuestas", ano: r })} aria-current={!across && r === round ? "page" : undefined}
+                        className={`text-xl font-medium tabular-nums tracking-[-0.02em] transition-colors hover:text-accent ${!across && r === round ? "text-ink" : "text-faint/60"}`}>
+                        {r}
+                      </Link>
+                    ))}
+                    {rounds.length > 1 ? (
+                      <Link href={href({ ver: "respuestas", tiempo: true })} aria-current={across ? "page" : undefined}
+                        className={`text-xl font-medium tracking-[-0.02em] transition-colors hover:text-accent ${across ? "text-ink" : "text-faint/60"}`}>
+                        todos
+                      </Link>
+                    ) : null}
+                  </div>
+                  <ul className="hidden flex-col gap-1.5 lg:flex">
+                    {present.map((sec) => (
+                      <li key={sec.id}>
+                        <a href={`#${sec.id}`} className="label lowercase transition-colors hover:text-accent">{sec.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+                <div>
+                  {across ? (
+                    <AcrossTime entries={entries} />
+                  ) : (
+                    shown.map((e) => <OneEntry key={e.id} entry={e} username={person.username} admin={how === "admin"} />)
+                  )}
+                </div>
+              </div>
+            )}
+          </section>
+        </>
       ) : null}
 
       {people.length ? (
-        <section className="mt-28">
+        <section className="mt-32 max-w-xl">
           <h2 className="label">el círculo</h2>
           <ul className="mt-4 flex flex-col gap-2.5">
             {people.map((p) => (
@@ -134,7 +165,7 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
             ))}
           </ul>
           {how === "owner" ? (
-            <p className="label mt-6 max-w-md">
+            <p className="label mt-6">
               Las cápsulas privadas se abren con la contraseña de su dueño. Las visibles se leen sin ella.
             </p>
           ) : null}
@@ -156,16 +187,17 @@ function OneEntry({ entry, username, admin }: { entry: Entry; username: string; 
   const order = new Map(SECTIONS.flatMap((s) => s.questions).map((q, i) => [q.id, i]));
   const groups = [
     ...SECTIONS.filter((s) => filed.has(s.id)).map((s) => ({
+      id: s.id,
       title: s.title,
       answers: filed.get(s.id)!.sort((a, b) => order.get(a.questionId!)! - order.get(b.questionId!)!),
     })),
-    ...(other.length ? [{ title: "Otras cosas", answers: other }] : []),
+    ...(other.length ? [{ id: "otras", title: "Otras cosas", answers: other }] : []),
   ];
   const audio = (entry.files ?? []).filter((f) => f.type.startsWith("audio/") || f.type.startsWith("video/"));
   const rest = (entry.files ?? []).filter((f) => !audio.includes(f));
 
   return (
-    <article className="mt-12">
+    <article className="mb-20">
       <div className="flex flex-wrap items-baseline justify-between gap-4">
         <p className="label">{longDate(entry.date)} · {SOURCE[entry.source]}</p>
         {admin ? <RemoveEntry username={username} id={entry.id} /> : null}
@@ -181,8 +213,8 @@ function OneEntry({ entry, username, admin }: { entry: Entry; username: string; 
 
       <div className="mt-14 flex flex-col gap-14">
         {groups.map((g) => (
-          <Reveal key={g.title}>
-            <h3 className="label lowercase">{g.title}</h3>
+          <Reveal key={g.id}>
+            <h3 id={g.id} className="label scroll-mt-8 lowercase">{g.title}</h3>
             <dl className="mt-5 flex flex-col gap-7">
               {g.answers.map((a, i) => (
                 <div key={i} className="grid gap-1.5 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-8">
@@ -227,10 +259,10 @@ function AcrossTime({ entries }: { entries: Entry[] }) {
     }
   }
   return (
-    <div className="mt-14 flex flex-col gap-16">
+    <div className="flex flex-col gap-16">
       {SECTIONS.filter((s) => s.questions.some((q) => byQuestion.has(q.id))).map((s) => (
         <Reveal key={s.id}>
-          <h3 className="label lowercase">{s.title}</h3>
+          <h3 id={s.id} className="label scroll-mt-8 lowercase">{s.title}</h3>
           <div className="mt-5 flex flex-col gap-10">
             {s.questions.filter((q) => byQuestion.has(q.id)).map((q) => (
               <div key={q.id}>

@@ -142,10 +142,39 @@ function AddEntry({ username, root, onDone }: { username: string; root: string; 
   );
 }
 
+/* A new name, and if needed a new username (the password stays the same). */
+function Edit({ row, onDone }: { row: Row; onDone: () => void }) {
+  const [name, setName] = useState(row.name);
+  const [username, setUsername] = useState(row.username);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  return (
+    <form
+      className="mt-3 flex flex-wrap items-center gap-2"
+      action={async () => {
+        setBusy(true);
+        const { error } = await call("rename", { username: row.username, name, newUsername: username });
+        setBusy(false);
+        if (error) return setError(error);
+        onDone();
+      }}
+    >
+      <input value={name} onChange={(e) => setName(e.target.value)} required aria-label="nombre" className={`${field} sm:w-56`} />
+      <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} required aria-label="usuario"
+        autoCapitalize="none" spellCheck={false} className={`${field} sm:w-44`} />
+      <Button type="submit" disabled={busy}>{busy ? "guardando…" : "guardar"}</Button>
+      <span className="label" aria-live="polite">
+        {error || (username !== row.username ? "Con otro usuario, su sesión se cierra; la contraseña sigue igual." : "")}
+      </span>
+    </form>
+  );
+}
+
 function Person({ row, root }: { row: Row; root: string }) {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [adding, setAdding] = useState(false);
+  const [editing, setEditing] = useState(false);
   return (
     <li className="py-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
@@ -158,6 +187,7 @@ function Person({ row, root }: { row: Row; root: string }) {
         </div>
         <div className="flex flex-wrap items-baseline gap-4">
           <Act onAct={() => setAdding(!adding)}>{adding ? "cerrar" : "añadir entrada"}</Act>
+          <Act onAct={() => setEditing(!editing)}>{editing ? "cerrar" : "editar"}</Act>
           <Act onAct={async () => {
             if (password) return setPassword("");
             const { data } = await call<{ password: string }>("password", { username: row.username });
@@ -173,6 +203,7 @@ function Person({ row, root }: { row: Row; root: string }) {
           }}>borrar</Act>
         </div>
       </div>
+      {editing ? <Edit row={row} onDone={() => { setEditing(false); router.refresh(); }} /> : null}
       {password ? <Credentials username={row.username} password={password} /> : null}
       {adding ? <AddEntry username={row.username} root={root} onDone={() => router.refresh()} /> : null}
     </li>

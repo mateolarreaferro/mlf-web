@@ -17,6 +17,7 @@ import type { UIMessage } from "ai";
     people              hash  username -> Person
     entries:<username>  hash  id -> Entry
     draft:<username>    value the interview in progress
+    insight:<username>  value the themes map and reading (insight.ts), cached
     rate:<what>         counters with an expiry
 */
 
@@ -53,6 +54,27 @@ export type Entry = {
 };
 
 export type Mode = "guiada" | "conversacion";
+
+/** One thread in a person's life, as the psychologist in insight.ts reads it. */
+export type Theme = {
+  id: string;
+  label: string;
+  kind: "personas" | "mueve" | "busca" | "pesa";
+  /** 1 (in passing) to 5 (runs through everything). */
+  weight: number;
+  note: string;
+  rounds: number[];
+  quotes: { round: number; text: string }[];
+};
+
+export type Insight = {
+  /** Which entries it was read from; when they change it is stale. */
+  fingerprint: string;
+  reading: string;
+  themes: Theme[];
+  links: { a: string; b: string; label: string }[];
+  createdAt: number;
+};
 
 export type Draft = { mode: Mode; round: number; messages: UIMessage[]; startedAt: number; updatedAt: number };
 
@@ -208,11 +230,36 @@ export async function resetPassword(person: Person): Promise<string> {
 
 export const revealPassword = (person: Person) => unseal<string>(person.passwordSealed);
 
-/** Removes the profile, its entries and any draft. Its files stay in Blob until deleted there. */
+/** Removes the profile, its entries, draft and reading. Its files stay in Blob until deleted there. */
 export async function removePerson(username: string) {
   await kv.hdel(PEOPLE, username);
   await kv.del(`${prefix}:entries:${username}`);
   await kv.del(`${prefix}:draft:${username}`);
+  await kv.del(`${prefix}:insight:${username}`);
+}
+
+/**
+ * A new name, and optionally a new username, which moves everything that
+ * hangs off the old one. The password stays; sessions under the old username
+ * end. Files keep their Blob paths: entries point at them by path.
+ */
+export async function renamePerson(person: Person, name: string, username: string): Promise<boolean> {
+  // The letter speaks to them by name: a new first name means reading it again.
+  if (name.split(" ")[0] !== person.name.split(" ")[0]) await kv.del(`${prefix}:insight:${person.username}`);
+  if (username === person.username) {
+    await savePerson({ ...person, name });
+    return true;
+  }
+  if (!(await kv.hsetnx(PEOPLE, username, seal({ ...person, name, username })))) return false;
+  for (const [field, value] of Object.entries(await kv.hgetall(ENTRIES(person.username)))) {
+    await kv.hset(ENTRIES(username), field, value);
+  }
+  for (const what of ["draft", "insight"]) {
+    const value = await kv.get(`${prefix}:${what}:${person.username}`);
+    if (value) await kv.set(`${prefix}:${what}:${username}`, value);
+  }
+  await removePerson(person.username);
+  return true;
 }
 
 /* ---------- entries ---------- */
@@ -248,6 +295,12 @@ const DRAFT = (username: string) => `${prefix}:draft:${username}`;
 export const getDraft = async (username: string) => unseal<Draft>(await kv.get(DRAFT(username)));
 export const saveDraft = (username: string, draft: Draft) => kv.set(DRAFT(username), seal(draft));
 export const dropDraft = (username: string) => kv.del(DRAFT(username));
+
+/* ---------- the reading ---------- */
+
+export const fingerprint = (entries: Entry[]) => entries.map((e) => `${e.id}.${e.createdAt}`).sort().join(",");
+export const getInsight = async (username: string) => unseal<Insight>(await kv.get(`${prefix}:insight:${username}`));
+export const saveInsight = (username: string, insight: Insight) => kv.set(`${prefix}:insight:${username}`, seal(insight));
 
 /* ---------- limits ---------- */
 
