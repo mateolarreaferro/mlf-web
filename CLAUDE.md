@@ -487,6 +487,37 @@ each file's true length so `trim()` can cut MP3 padding off a decoded loop
 Safari is not verified). Never call `loseContext()` on teardown: the canvas
 would get its dead context back on a remount and draw nothing.
 
+**Periphery and SacredVis (2026-10-05)** play in their cards the same way,
+ported from Mateo's Artful Design folder (`Periphery/Periphery.ck`,
+`Visualizer/SoundAndVision.ck`): instructions first (the press that starts
+sound), full screen, and a panel in the left column (`PeripheryPanel`,
+`SacredVisPanel`; `ProjectPanel`'s `PANELS` map picks it by the media's
+sketch name, and a press on a panel control before "begin" starts the
+piece). They share `src/lib/pieces/gl.ts` (discs, rings and rectangles as
+instanced quads, thick coloured polylines, the screened bloom, and the tiny
+`store` the piece and panel share); Rats & Children still has its own
+renderer. **Periphery** (`src/lib/periphery`, samples in `public/periphery`)
+is the breathing pacer: the edge moves at 0.25 units a second, so depth
+(scroll over it, or the slider) sets the length of a breath; turns are read
+from the cycle (sin of its angle), never from the radius, or a change of
+depth counts false breaths. The four ambience volumes are the original's
+second set (0.6, 0.2, 0.3, 1.0) every time. "Keep it in a corner" opens a
+Document Picture-in-Picture window (Chrome and Edge on a computer) that
+floats over every app and keeps the clock while it is open, drawn in plain
+2D. **The browser extension** is `extensions/periphery` (Manifest V3, a
+shadow-root corner on every page that takes no clicks, the breath from the
+clock so tabs breathe together, settings in `chrome.storage.sync`, no sound,
+only the `storage` permission); the site serves it zipped at
+`public/periphery/periphery-extension.zip` (rebuild with the command in its
+README) and the panel says how to load it unpacked. The Chrome Web Store
+needs Mateo's developer account. **SacredVis** (`src/lib/sacredvis`) reads
+the browser's analyser at the original's 317 bands (31.5 Hz each, 20 Hz to
+10 kHz) and scales it to ChucK's unnormalised FFT (`TO_CHUCK`, 15 x 350):
+too small a scale leaves every band under the colour threshold and the
+spiral draws white. Its source is the microphone (played back only with
+"listen back" on, since speakers feed it back) or `meditation.mp3` from Rats
+& Children.
+
 **Demo clips.** The three hosted projects' cards play a recording of the
 project in use (`public/projects/theo-demo.mp4`, `headwave-demo.mp4`,
 `sticky-notes-demo.mp4`), the way the Agents card plays its own site. They

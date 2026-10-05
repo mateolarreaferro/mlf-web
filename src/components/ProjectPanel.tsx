@@ -4,6 +4,15 @@ import { motion } from "motion/react";
 import type { Project } from "@/lib/projects";
 import { hoverSpring, Typewriter, useTempo } from "./motion";
 import RatsPanel from "./RatsPanel";
+import PeripheryPanel from "./PeripheryPanel";
+import SacredVisPanel from "./SacredVisPanel";
+
+/* pieces that play in their card keep their readout and controls here */
+const PANELS: Record<string, React.ComponentType> = {
+  "rats-and-children": RatsPanel,
+  periphery: PeripheryPanel,
+  sacredvis: SacredVisPanel,
+};
 
 /*
   When a project is selected, this takes over the left column (where the
@@ -107,10 +116,11 @@ export default function ProjectPanel({
         ))}
       </motion.div>
 
-      {/* a piece that plays in its card can keep its controls here */}
-      {project.media[0]?.type === "sketch" && project.media[0].src === "rats-and-children" ? (
-        <RatsPanel />
-      ) : null}
+      {(() => {
+        const item = project.media[0];
+        const Panel = item?.type === "sketch" ? PANELS[item.src] : undefined;
+        return Panel ? <Panel /> : null;
+      })()}
     </motion.div>
   );
 }

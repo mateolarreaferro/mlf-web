@@ -23,6 +23,8 @@ const eslintConfig = defineConfig([
     "public/theo/**",
     "public/headwave/**",
     "public/sticky-notes/**",
+    // the Periphery browser extension: plain scripts against chrome.* globals
+    "extensions/**",
     // Mateo's p5.js sketches, kept exactly as he wrote them (p5 globals)
     "public/sketches/**",
   ]),

@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
 import LorenzThumb from "./LorenzThumb";
 import SketchGallery, { GALLERY_RATIO } from "./SketchGallery";
 import RatsAndChildren from "./RatsAndChildren";
+import Periphery from "./Periphery";
+import SacredVis from "./SacredVis";
 
 /*
   The right-hand panel: exactly one piece of media per project: an image,
@@ -35,6 +37,8 @@ const sketches: Record<string, React.ComponentType> = {
   lorenz: LorenzThumb,
   gallery: SketchGallery,
   "rats-and-children": RatsAndChildren,
+  periphery: Periphery,
+  sacredvis: SacredVis,
 };
 
 function Slide({ item, alt }: { item: MediaItem; alt: string }) {
