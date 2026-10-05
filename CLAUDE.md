@@ -429,6 +429,24 @@ hash; they edit, move and delete their own notes only.
 note. No model is called, so the wall spends none of the free uses. The sync
 turns the 57 MB wav into a 3 MB mp3 and keeps it across syncs.
 
+**Sketches (the Sketches card, 2026-10-05).** The card is a grid of Mateo's
+p5.js sketches (`SketchGallery.tsx`, frontmatter `media: - { sketch:
+"gallery" }`, card ratio 4:3). Each tile is a still; resting the mouse on
+one (or tapping it) grows it into a larger panel running the real sketch,
+and leaving (or tapping again) shrinks it back. The sketches are his code,
+unmodified, in `public/sketches/<name>.js`; `public/sketches/run.html?s=<name>`
+runs one in global mode with p5 1.11.10 from cdnjs, inside a sandboxed
+iframe (eleven global-mode sketches on one page would trample each other),
+at a fixed 1000x1000 the gallery scales down, so a sketch written for a full
+window keeps its composition. Only the open one runs, and the iframe takes no
+pointer events (hover is tracked by the page, where leaving is reliable), so
+sketches that read the mouse don't see it. The stills
+(`public/sketches/<name>.jpg`, 480px) are frames of the same sketches rendered
+headless with Playwright at 1000x1000: most after 6s, the slow builders
+longer (rossler 16s, triangles 32s, flow-field 45s). To add one: drop
+`<name>.js` in `public/sketches/`, render its still the same way, add it to
+`SKETCHES` in the component. ESLint ignores the folder.
+
 **Demo clips.** The three hosted projects' cards play a recording of the
 project in use (`public/projects/theo-demo.mp4`, `headwave-demo.mp4`,
 `sticky-notes-demo.mp4`), the way the Agents card plays its own site. They

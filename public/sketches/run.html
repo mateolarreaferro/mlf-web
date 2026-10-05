@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sketch</title>
+    <!--
+      Runs one of Mateo's p5.js sketches, unmodified, in global mode:
+      run.html?s=<name> loads <name>.js from this folder. Each sketch gets its
+      own page (the gallery puts it in an iframe) so their globals never meet.
+      The frame is a fixed 1000x1000 that the gallery scales down, so a sketch
+      written for a full window keeps its composition.
+    -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.10/p5.min.js"></script>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var name = new URLSearchParams(location.search).get("s") || "";
+        // only a plain name from this folder, never a path or a URL
+        if (!/^[a-z0-9-]+$/.test(name)) return;
+        var script = document.createElement("script");
+        script.src = name + ".js";
+        // p5 starts a global-mode sketch by itself on window load, which an
+        // added script delays, so this only has to wrap setup before then
+        script.onload = function () {
+          // scaled down by the gallery anyway: one pixel per pixel is plenty
+          var own = window.setup;
+          window.setup = function () {
+            pixelDensity(1);
+            if (own) own();
+          };
+        };
+        document.body.appendChild(script);
+      })();
+    </script>
+  </body>
+</html>

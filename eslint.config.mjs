@@ -23,6 +23,8 @@ const eslintConfig = defineConfig([
     "public/theo/**",
     "public/headwave/**",
     "public/sticky-notes/**",
+    // Mateo's p5.js sketches, kept exactly as he wrote them (p5 globals)
+    "public/sketches/**",
   ]),
 ]);
 

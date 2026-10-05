@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { MediaItem } from "@/lib/projects";
 import { useEffect, useRef } from "react";
 import LorenzThumb from "./LorenzThumb";
+import SketchGallery, { GALLERY_RATIO } from "./SketchGallery";
 
 /*
   The right-hand panel: exactly one piece of media per project: an image,
@@ -25,11 +26,13 @@ import LorenzThumb from "./LorenzThumb";
 export function mediaRatio(items: MediaItem[]): number {
   const item = items[0];
   if (item?.width && item.height) return item.width / item.height;
+  if (item?.type === "sketch" && item.src === "gallery") return GALLERY_RATIO;
   return item && item.type !== "sketch" && item.type !== "image" ? 16 / 9 : 1;
 }
 
 const sketches: Record<string, React.ComponentType> = {
   lorenz: LorenzThumb,
+  gallery: SketchGallery,
 };
 
 function Slide({ item, alt }: { item: MediaItem; alt: string }) {
