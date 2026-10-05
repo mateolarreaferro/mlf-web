@@ -17,7 +17,7 @@ import { Stage, store, type RGB } from "@/lib/pieces/gl";
 const BASE = 3 * 0.8;
 export const MIN_R = BASE * 0.3; // the smallest breath, and the depth's floor
 export const MAX_R = 3 * MIN_R; // the depth's ceiling
-const TEXT_R = MIN_R * 0.6; // the black circle behind the word
+export const TEXT_R = MIN_R * 0.6; // the black circle behind the word
 export const VIEW_R = 3.3; // ChuGL's default orthographic view, half height
 
 const DEFAULT_BG: RGB = [0.992, 0.807, 0.388];
@@ -70,7 +70,13 @@ export type Reading = {
   history: number[]; // the breath's size, ten samples a second, the last 20 s
 };
 
-export const controls = store<Controls>({ depth: MIN_R, ambience: -1, breathSounds: [false, false], pace: 1, volume: 0.8 });
+/*
+  It starts at about six breaths a minute (10 s each), a calm pace. The
+  original started at its shallowest depth, a 3.6 s breath, which flips
+  "inhale" and "exhale" every 1.8 s and reads as frantic, not as breathing.
+*/
+const CALM_DEPTH = TEXT_R + 2 * ((10 * 0.25) / (2 * Math.PI));
+export const controls = store<Controls>({ depth: CALM_DEPTH, ambience: -1, breathSounds: [false, false], pace: 1, volume: 0.8 });
 export const reading = store<Reading>({ playing: false, phase: "inhale", breaths: 0, seconds: 0, fill: 0, history: [] });
 
 export function setControl<K extends keyof Controls>(key: K, value: Controls[K]) {
@@ -88,6 +94,7 @@ type Blob = { x: number; y: number; target: number; r: number; speed: number; co
 export class Periphery {
   t = 0;
   r = 0; // the breathing circle
+  depth = controls.get().depth; // eased towards the control, so a scroll never jumps
   phase: "inhale" | "exhale" = "inhale";
   breaths = 0;
   hovered = -1;
@@ -143,9 +150,12 @@ export class Periphery {
   step(dt: number, c: Controls) {
     this.t += dt;
     const k = dt * 60;
-    const amplitude = Math.max(0.0001, (c.depth - TEXT_R) / 2);
+    // the depth glides to where it was set (about a third of a second), and
+    // the breath keeps its place in the cycle, so nothing jumps
+    this.depth += (c.depth - this.depth) * (1 - Math.exp(-dt * 6));
+    const amplitude = Math.max(0.0001, (this.depth - TEXT_R) / 2);
     this.angle += ((0.25 * c.pace) / amplitude) * dt;
-    this.r = c.depth - amplitude * (1 + Math.cos(this.angle));
+    this.r = this.depth - amplitude * (1 + Math.cos(this.angle));
     // in or out from where the breath is in its cycle (r rises while sin > 0),
     // not from r itself: a change of depth moves r and must not count a breath
     const rising = Math.sin(this.angle) >= 0;
@@ -166,7 +176,7 @@ export class Periphery {
 
   draw(stage: Stage, c: Controls) {
     for (const b of this.blobs) stage.disc(b.x, b.y, b.r, b.color);
-    stage.disc(0, 0, c.depth, LIMIT_BLUE);
+    stage.disc(0, 0, this.depth, LIMIT_BLUE);
     stage.disc(0, 0, Math.max(0, this.r - 0.005), this.breathColor);
     stage.disc(0, 0, TEXT_R, [0, 0, 0]);
     for (const p of this.pads(stage)) {

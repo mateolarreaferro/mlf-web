@@ -65,8 +65,18 @@ export default function Periphery() {
     }
 
     let sound: PeripherySound | null = null;
+    // the word cross-fades at each turn instead of snapping
+    let swap = 0;
     const piece = new Piece((phase) => {
-      if (word.current) word.current.textContent = phase;
+      const w = word.current;
+      if (w) {
+        window.clearTimeout(swap);
+        w.style.opacity = "0";
+        swap = window.setTimeout(() => {
+          w.textContent = phase;
+          w.style.opacity = "1";
+        }, 250);
+      }
       const c = controls.get();
       c.breathSounds.forEach((on, pad) => on && sound?.breath(pad, phase));
     });
@@ -141,7 +151,7 @@ export default function Periphery() {
         phase: piece.phase,
         breaths: piece.breaths,
         seconds: breathSeconds(c.depth, c.pace),
-        fill: Math.max(0, Math.min(1, (piece.r - MIN_R * 0.6) / (c.depth - MIN_R * 0.6))),
+        fill: Math.max(0, Math.min(1, (piece.r - MIN_R * 0.6) / (piece.depth - MIN_R * 0.6))),
         history: [...history],
       });
     };
@@ -170,8 +180,10 @@ export default function Periphery() {
       }
       if (pip && pipCanvas) drawCorner(pipCanvas, piece, c);
     };
-    const loop = (now: number) => {
-      tick(now);
+    // always this page's clock: the corner window's frames carry timestamps
+    // from its own origin, and mixing the two ran the breath backwards
+    const loop = () => {
+      tick(performance.now());
       raf = (pip ?? window).requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -204,6 +216,7 @@ export default function Periphery() {
 
     return () => {
       (pip ?? window).cancelAnimationFrame(raf);
+      window.clearTimeout(swap);
       pip?.close();
       unsubscribe();
       el.removeEventListener("pointermove", move);
@@ -222,7 +235,7 @@ export default function Periphery() {
       <span
         ref={word}
         aria-live="off"
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(0.65rem,2.8cqmin,1.6rem)] text-white"
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[clamp(0.65rem,2.8cqmin,1.6rem)] text-white transition-opacity duration-[250ms]"
       >
         inhale
       </span>
@@ -302,7 +315,7 @@ function drawCorner(canvas: HTMLCanvasElement, piece: Piece, c: ReturnType<typeo
   };
   g.fillStyle = css(bg);
   g.fillRect(0, 0, w, h);
-  disc(c.depth, "rgb(91,134,194)");
+  disc(piece.depth, "rgb(91,134,194)");
   disc(piece.r - 0.005, css(breath));
   disc(MIN_R * 0.6, "#000");
   g.fillStyle = "#fff";
