@@ -11,6 +11,7 @@ import { INTRO_SCRIPT } from "@/lib/intro";
 import TourButton from "@/components/TourButton";
 import { Typewriter } from "@/components/motion";
 import Splash from "@/components/Splash";
+import SiteChrome from "@/components/SiteChrome";
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedinIn, FaSoundcloud } from "react-icons/fa6";
 
 const inter = Inter({
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             transform, and a transformed ancestor turns position: fixed into absolute */}
         <Splash />
         <SoundEffects />
+        <SiteChrome>
         <header data-tour="room" className="mx-auto w-full max-w-[88rem] px-6 pt-8 sm:px-10 pb-4 flex items-baseline justify-between gap-6">
           <HomeLink className="text-xl font-medium tracking-[-0.02em] transition-colors hover:text-accent sm:text-2xl">
             <Typewriter text="mateo larrea ferro" perChar={45} delay={300} />
@@ -71,7 +73,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <MoodToggle />
           </nav>
         </header>
+        </SiteChrome>
         <main className="mx-auto w-full max-w-[88rem] px-6 sm:px-10 flex-1">{children}</main>
+        <SiteChrome>
         <footer className="mx-auto w-full max-w-[88rem] px-6 sm:px-10 mt-28 pb-12">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -91,6 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <p className="label">San Francisco / Boston</p>
           </div>
         </footer>
+        </SiteChrome>
       </body>
     </html>
   );

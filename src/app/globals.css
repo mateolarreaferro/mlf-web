@@ -395,3 +395,19 @@ html[data-splash="seen"] .splash {
   margin-block: 1.75em;
   font-size: 0.8125rem;
 }
+
+/*
+  The capsule (/capsula) keeps the light mood at every hour: it is a white
+  room friends come back to once a year, and attractor.world's paper is the
+  brief. Same tokens as the light mood, held regardless of `data-mood`.
+*/
+:root:root:has([data-capsula]) {
+  color-scheme: light;
+  --paper: #f4f3ee;
+  --ink: #1b1d1b;
+  --faint: #5d625e;
+  --soft: #e8e7e1;
+  --accent: #1a3a2a;
+  --night: 0;
+  --tempo: 1;
+}

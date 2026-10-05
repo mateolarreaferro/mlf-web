@@ -533,6 +533,40 @@ runtime keeps its pins in `python/<name>/requirements.lock.txt` and
 `scripts/requirements.mjs` writes their union; both sync scripts call it. Add
 a runtime's pins there, never to the root file.
 
+## /capsula (Cápsula del Tiempo)
+
+A private yearly interview among Mateo's friends (2026-10-05): the same
+questions every round, so each person can read how they changed. Unlike the
+hosted projects, **the code lives in this repo** (`src/lib/capsula/`,
+`src/app/capsula/`, `src/app/api/capsula/`, `src/components/capsula/`) and
+**the data never does**: people and entries are in Redis under
+`capsula:<VERCEL_ENV|dev>:*`, every value sealed with AES-GCM under
+`CAPSULA_KEY`; recordings and original files are in the private Blob store
+under `capsula/<env>/<username>/`. Losing or changing `CAPSULA_KEY` makes the
+whole capsule unreadable, so it never rotates. `CAPSULA_ADMIN_PASSWORD` opens
+`/capsula/admin`. The UI is Spanish, always the light mood (a `:has([data-capsula])`
+block in `globals.css`), and `SiteChrome` hides the portfolio header/footer.
+
+Privacy rules, all in `auth.ts`: a friend signs in with the username and
+password Mateo hands out (the admin can reveal or reset them); a capsule is
+private by default; "visible" means visible to everyone signed in, never to the
+internet; another friend's password earns a read-only view key for that one
+capsule. A new password bumps `version`, closing every session and key made
+with the old one.
+
+Answers are stored against question ids in `questions.ts` (the old
+`Template.xlsx`), which is what lines years up: never reuse or rename an id,
+retire it instead. Spreadsheets map straight onto ids with no model call;
+text, .docx, recordings (Whisper, `OPENAI_API_KEY`) and finished interviews go
+through `extract()` (Claude). The interviewer (`interviewer.ts`) has two modes,
+guided and conversation, prefixes every message with `[[n]]` (section) or
+`[[fin]]`, and keeps the conversation as a server-side draft so friends can
+stop and resume. Members do not spend the site's three free calls; they have
+their own daily caps (`within()` in `store.ts`). The source folder is
+`~/Desktop/Capsula del Tiempo/Entrevistas`, one folder per round;
+`scripts/capsula-import.mjs` imports it through the admin endpoints and writes
+new passwords next to it, outside the repo.
+
 ## The agent
 
 `src/app/api/chat/route.ts` streams via AI SDK (Claude, with the system
