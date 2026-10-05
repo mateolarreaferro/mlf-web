@@ -106,7 +106,21 @@ function place(step: Step, el: HTMLElement, cw: number, ch: number): Place {
     const small = r.height < 60;
     const pad = small ? 8 : PAD;
     const max = step.clip ? vh * 0.4 : vh - 2 * (EDGE + pad);
-    const h = Math.min(r.height, max) + pad * 2;
+    let cut = Math.min(r.height, max);
+    if (r.height > max) {
+      /*
+        Too tall to light whole: end the light under the last row that fits
+        (a list item or heading), so a row is either lit or dark, never
+        sliced through its author line.
+      */
+      let fits = 0;
+      for (const row of el.querySelectorAll<HTMLElement>("li, h2, h3")) {
+        const bottom = row.getBoundingClientRect().bottom - r.top;
+        if (bottom <= max && bottom > fits) fits = bottom;
+      }
+      if (fits > max * 0.4) cut = fits;
+    }
+    const h = cut + pad * 2;
     box = { x: sx + r.left - pad, y: sy + r.top - pad, w: r.width + pad * 2, h, r: small ? h / 2 : 24 };
   }
 
