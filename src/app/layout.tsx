@@ -88,7 +88,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </a>
               ))}
             </div>
-            <p className="label">Palo Alto, CA</p>
+            <p className="label">San Francisco / Boston</p>
           </div>
         </footer>
       </body>
