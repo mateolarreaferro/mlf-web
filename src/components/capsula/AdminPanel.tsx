@@ -4,7 +4,8 @@ import { upload } from "@vercel/blob/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Act, Button, call, field } from "./ui";
+import { LuFilePlus, LuKeyRound, LuPencil, LuRefreshCw, LuTrash2 } from "react-icons/lu";
+import { Act, Button, IconAct, call, field } from "./ui";
 
 /*
   Mateo's view: everyone in the capsule, their passwords to hand out, and a
@@ -177,7 +178,7 @@ function Person({ row, root }: { row: Row; root: string }) {
   const [editing, setEditing] = useState(false);
   return (
     <li className="py-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
         <div>
           <Link href={`/capsula/${row.username}`} className="font-medium transition-colors hover:text-accent">{row.name}</Link>
           <p className="label">
@@ -185,22 +186,22 @@ function Person({ row, root }: { row: Row; root: string }) {
             {row.draft ? " · entrevista a medias" : ""}
           </p>
         </div>
-        <div className="flex flex-wrap items-baseline gap-4">
-          <Act onAct={() => setAdding(!adding)}>{adding ? "cerrar" : "añadir entrada"}</Act>
-          <Act onAct={() => setEditing(!editing)}>{editing ? "cerrar" : "editar"}</Act>
-          <Act onAct={async () => {
+        <div className="-mr-2 flex items-center gap-0.5">
+          <IconAct icon={LuFilePlus} label="añadir entrada" pressed={adding} onAct={() => setAdding(!adding)} />
+          <IconAct icon={LuPencil} label="editar nombre" pressed={editing} onAct={() => setEditing(!editing)} />
+          <IconAct icon={LuKeyRound} label={password ? "ocultar contraseña" : "ver contraseña"} pressed={Boolean(password)} onAct={async () => {
             if (password) return setPassword("");
             const { data } = await call<{ password: string }>("password", { username: row.username });
             if (data) setPassword(data.password);
-          }}>{password ? "ocultar" : "contraseña"}</Act>
-          <Act confirm="¿nueva? la anterior deja de servir" onAct={async () => {
+          }} />
+          <IconAct icon={LuRefreshCw} label="nueva contraseña" confirm="¿nueva? la anterior deja de servir" onAct={async () => {
             const { data } = await call<{ password: string }>("password", { username: row.username, reset: true });
             if (data) setPassword(data.password);
-          }}>nueva contraseña</Act>
-          <Act confirm={`¿borrar a ${row.name.split(" ")[0]} y todo lo suyo?`} onAct={async () => {
+          }} />
+          <IconAct icon={LuTrash2} label="borrar" confirm={`¿borrar a ${row.name.split(" ")[0]} y todo lo suyo?`} onAct={async () => {
             await call("remove", { username: row.username, confirm: row.username });
             router.refresh();
-          }}>borrar</Act>
+          }} />
         </div>
       </div>
       {editing ? <Edit row={row} onDone={() => { setEditing(false); router.refresh(); }} /> : null}

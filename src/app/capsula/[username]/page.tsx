@@ -5,11 +5,11 @@ import Bar from "@/components/capsula/Bar";
 import Ask from "@/components/capsula/Ask";
 import LifeMap from "@/components/capsula/LifeMap";
 import Letter from "@/components/capsula/Letter";
-import { RemoveEntry, StartInterview, Unlock } from "@/components/capsula/controls";
+import { RemoveEntry, RequestAccess, Requests, StartInterview } from "@/components/capsula/controls";
 import { access, canWrite, isAdmin, me } from "@/lib/capsula/auth";
 import { currentInsight } from "@/lib/capsula/insight";
 import { SECTIONS, questionById } from "@/lib/capsula/questions";
-import { getDraft, getPerson, listEntries, type Entry } from "@/lib/capsula/store";
+import { getAsk, getDraft, getPerson, listAsks, listEntries, listPeople, type Entry } from "@/lib/capsula/store";
 
 export const dynamic = "force-dynamic";
 
@@ -40,18 +40,26 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
   const first = person.name.split(" ")[0];
 
   if (!how) {
+    // Only a signed-in friend gets here: the admin can read everything.
+    const held = viewer ? await getAsk(person.username, viewer.username) : null;
     return (
       <>
         <Bar home={home} />
         <h1 className="text-[2.4rem] font-medium leading-tight tracking-[-0.03em]">{person.name}</h1>
-        <p className="mt-3 text-faint">Esta cápsula es privada. Si {first} te dio su contraseña, puedes leerla.</p>
-        <div className="mt-8"><Unlock username={person.username} /></div>
+        <p className="mt-3 text-faint">Esta cápsula es privada. Pídele a {first} que te deje leerla.</p>
+        <div className="mt-8"><RequestAccess username={person.username} first={first} status={held ? "pendiente" : null} /></div>
       </>
     );
   }
 
   const writer = canWrite(how);
-  const [entries, draft] = await Promise.all([listEntries(person.username), writer ? getDraft(person.username) : null]);
+  const [entries, draft, asks] = await Promise.all([
+    listEntries(person.username), writer ? getDraft(person.username) : null, how === "owner" ? listAsks(person.username) : [],
+  ]);
+  const names = asks.length ? new Map((await listPeople()).map((p) => [p.username, p.name])) : null;
+  const askers = (status: "pendiente" | "aceptada") =>
+    asks.filter((a) => a.status === status && names?.has(a.from)).map((a) => ({ username: a.from, name: names!.get(a.from)! }));
+  const invited = askers("aceptada");
   const rounds = [...new Set(entries.map((e) => e.round))];
   const tab: Tab = TABS.some((t) => t.id === query.ver) ? (query.ver as Tab) : "mapa";
   const across = query.tiempo === "1" && rounds.length > 1;
@@ -76,10 +84,16 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
         <h1 className="text-[2.4rem] font-medium leading-tight tracking-[-0.03em]">{person.name}</h1>
         <p className="label mt-2">
           {entries.length ? `${rounds.length === 1 ? "cápsula de" : "cápsulas de"} ${rounds.join(", ")}` : "todavía sin entradas"}
-          {how === "owner" ? " · solo tú y quien tenga tu contraseña pueden leerla" : ""}
-          {how === "key" ? " · la abriste con su contraseña" : ""}
+          {how === "owner" && !invited.length ? " · solo tú puedes leerla" : ""}
+          {how === "invited" ? ` · ${first} te dejó leerla` : ""}
         </p>
       </Reveal>
+
+      {how === "owner" && asks.length ? (
+        <Reveal delay={0.05} className="mt-8">
+          <Requests pending={askers("pendiente")} invited={invited} />
+        </Reveal>
+      ) : null}
 
       {writer ? (
         <Reveal delay={0.1} className="mt-10">

@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState, type ComponentProps, type ReactNode } from "react";
+import type { IconType } from "react-icons";
 import { hoverSpring, useTempo } from "@/components/motion";
 
 /* What every capsule control shares: one way to call the API, one button, one field. */
@@ -62,6 +63,43 @@ export function Act({
       className={`label cursor-pointer transition-colors hover:text-accent disabled:opacity-50 ${asking ? "text-ink" : ""} ${className}`}
     >
       {asking ? confirm : children}
+    </button>
+  );
+}
+
+/**
+ * The same action as an icon: a round button whose name shows above it on
+ * hover or focus. A confirm opens it into a pill that says what it will do.
+ */
+export function IconAct({
+  icon: Icon, label, confirm, onAct, pressed,
+}: { icon: IconType; label: string; confirm?: string; onAct: () => void | Promise<void>; pressed?: boolean }) {
+  const [asking, setAsking] = useState(false);
+  const [busy, setBusy] = useState(false);
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      aria-label={asking ? confirm : label}
+      aria-pressed={pressed}
+      onBlur={() => setAsking(false)}
+      onClick={async () => {
+        if (confirm && !asking) return setAsking(true);
+        setBusy(true);
+        await onAct();
+        setBusy(false);
+        setAsking(false);
+      }}
+      className={`group relative inline-flex h-9 cursor-pointer items-center justify-center gap-2 rounded-full transition-colors hover:text-accent disabled:opacity-50 ${
+        asking ? "bg-white px-3.5 text-ink" : pressed ? "w-9 bg-white text-ink" : "w-9 text-faint hover:bg-white/70"
+      }`}
+    >
+      <Icon aria-hidden className="size-[17px] shrink-0" />
+      {asking ? <span className="text-sm whitespace-nowrap">{confirm}</span> : (
+        <span aria-hidden className="pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1 text-sm text-paper opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+          {label}
+        </span>
+      )}
     </button>
   );
 }

@@ -3,10 +3,10 @@ import { after } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { noStore, readBody, sameOrigin, visitor } from "@/lib/hosted";
 import {
-  access, addViewKey, adminPasswordMatches, canWrite, endSession, isAdmin, me, startAdmin, startSession,
+  access, adminPasswordMatches, canWrite, endSession, isAdmin, me, startAdmin, startSession,
 } from "@/lib/capsula/auth";
 import {
-  addEntry, blobPrefix, checkPassword, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
+  acceptAsk, addEntry, ask, blobPrefix, dropAsk, checkPassword, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
   removePerson, renamePerson, resetPassword, revealPassword, saveDraft, within, USERNAME, usernameFor,
   type Answer, type Mode, type Person, type Source,
 } from "@/lib/capsula/store";
@@ -69,14 +69,35 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     return json({ ok: true });
   },
 
-  /** Opens someone else's capsule for reading with their password. */
-  async view(request, body) {
-    if (!(await me()) && !(await isAdmin())) return no("Entra primero con tu usuario.", 401);
-    const username = str(body.username, 40);
-    if (!(await within(`view:${visitor(request)}:${username}`, 10, 900))) return no("Demasiados intentos. Espera unos minutos.", 429);
-    const person = await getPerson(username);
-    if (!person || !checkPassword(str(body.password, 200), person.passwordHash)) return no("No es esa.", 401);
-    await addViewKey(person);
+  /* ---------- asking to read ---------- */
+
+  /** Asks `username` to let the signed-in friend read their capsule. */
+  async request(_request, body) {
+    const viewer = await me();
+    if (!viewer) return no("Entra primero con tu usuario.", 401);
+    const owner = await getPerson(str(body.username, 40));
+    if (!owner || owner.username === viewer.username) return no("No existe esa persona.", 404);
+    if (!(await within(`request:${viewer.username}`, 40, 86_400))) return no("Demasiadas solicitudes hoy. Vuelve mañana.", 429);
+    const held = await ask(owner.username, viewer.username);
+    return json({ status: held.status });
+  },
+
+  /** Withdraws the signed-in friend's own request to `username`, accepted or not. */
+  async withdraw(_request, body) {
+    const viewer = await me();
+    if (!viewer) return no("Entra primero con tu usuario.", 401);
+    await dropAsk(str(body.username, 40), viewer.username);
+    return json({ ok: true });
+  },
+
+  /** The owner's answer to `from`: let them in, or say no (which also takes back access already given). */
+  async answer(_request, body) {
+    const viewer = await me();
+    if (!viewer) return no("Entra primero con tu usuario.", 401);
+    const from = str(body.from, 40);
+    if (body.accept === true) {
+      if (!(await acceptAsk(viewer.username, from))) return no("Esa solicitud ya no existe.", 404);
+    } else await dropAsk(viewer.username, from);
     return json({ ok: true });
   },
 

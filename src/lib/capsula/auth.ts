@@ -1,6 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
-import { getPerson, secret, type Person } from "./store";
+import { getAsk, getPerson, secret, type Ask, type Person } from "./store";
 
 /*
   Who may see what in the capsule. Three kinds of visitor:
@@ -8,19 +8,20 @@ import { getPerson, secret, type Person } from "./store";
   - a friend, logged in with their username and password (a session cookie);
   - the admin, Mateo, with CAPSULA_ADMIN_PASSWORD (its own cookie, keyed on
     the password so changing it signs the admin out everywhere);
-  - a friend who also typed someone else's password, which earns a view key
-    for that one capsule: read only, never write.
+  - a friend the owner let in: they asked to read the capsule from the
+    circle page and the owner accepted. Read only, never write, and the owner
+    can take it back at any time.
 
-  Every capsule is closed to everyone else: the circle page lists who is in
-  the capsule, but reading someone's capsule takes the password they chose to
-  share. There is no "public". Every cookie is signed with
-  CAPSULA_KEY and carries the person's password version, so a new password
-  closes every session and view key made with the old one.
+  Every capsule is closed to everyone else. There is no "public". Every
+  cookie is signed with CAPSULA_KEY and carries the person's password
+  version, so a new password closes every session made with the old one.
+  Accepted requests live in the store (store.ts, asks:<username>), not in a
+  cookie, so they follow the friend to any browser and end when the owner
+  says so, not when a password changes.
 */
 
 const SESSION = "capsula_session";
 const ADMIN = "capsula_admin";
-const VIEWS = "capsula_views";
 const DAYS = 24 * 3600;
 const SESSION_AGE = 90 * DAYS;
 const ADMIN_AGE = 30 * DAYS;
@@ -67,7 +68,6 @@ export async function startSession(person: Person) {
 export async function endSession() {
   const jar = await cookies();
   jar.delete(SESSION);
-  jar.delete(VIEWS);
   jar.delete(ADMIN);
 }
 
@@ -95,22 +95,9 @@ export async function startAdmin() {
   (await cookies()).set(ADMIN, pack(ADMIN, { s: adminStamp(), exp: Date.now() + ADMIN_AGE * 1000 }), options(ADMIN_AGE));
 }
 
-/* ---------- view keys ---------- */
+/* ---------- who may read ---------- */
 
-type Key = { u: string; v: number };
-
-async function viewKeys(): Promise<Key[]> {
-  return unpack<Key[]>(VIEWS, (await cookies()).get(VIEWS)?.value) ?? [];
-}
-
-/** Remembers that this browser knows `person`'s password, for reading only. */
-export async function addViewKey(person: Person) {
-  const keys = (await viewKeys()).filter((k) => k.u !== person.username).slice(-40);
-  keys.push({ u: person.username, v: person.version });
-  (await cookies()).set(VIEWS, pack(VIEWS, keys), options(SESSION_AGE));
-}
-
-export type Access = "owner" | "admin" | "key";
+export type Access = "owner" | "admin" | "invited";
 
 /**
  * How the current visitor may see `person`'s capsule, or null when they may
@@ -121,14 +108,13 @@ export async function access(person: Person): Promise<Access | null> {
   if (viewer?.username === person.username) return "owner";
   if (admin) return "admin";
   if (!viewer) return null;
-  const keys = await viewKeys();
-  return keys.some((k) => k.u === person.username && k.v === person.version) ? "key" : null;
+  return (await getAsk(person.username, viewer.username))?.status === "aceptada" ? "invited" : null;
 }
 
 export const canWrite = (a: Access | null) => a === "owner" || a === "admin";
 
-/** Whether this browser holds a still-valid view key for each of `people`, without a lookup per person. */
-export async function openTo(people: Person[]): Promise<Set<string>> {
-  const keys = await viewKeys();
-  return new Set(people.filter((p) => keys.some((k) => k.u === p.username && k.v === p.version)).map((p) => p.username));
+/** Where `viewer` stands with each of `people`: asked, let in, or nothing yet. */
+export async function standing(viewer: Person, people: Person[]): Promise<Map<string, Ask["status"]>> {
+  const held = await Promise.all(people.map(async (p) => [p.username, (await getAsk(p.username, viewer.username))?.status] as const));
+  return new Map(held.filter((h): h is [string, Ask["status"]] => Boolean(h[1])));
 }

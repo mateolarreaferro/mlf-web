@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Act, Button, call, field } from "./ui";
+import { LuCheck, LuClock, LuUserMinus, LuUserPlus, LuX } from "react-icons/lu";
+import { Act, Button, IconAct, call } from "./ui";
 
 export function RemoveEntry({ username, id }: { username: string; id: string }) {
   const router = useRouter();
@@ -13,40 +14,100 @@ export function RemoveEntry({ username, id }: { username: string; id: string }) 
   );
 }
 
-/* Someone else's private capsule: their password opens it for reading, in this browser. */
-export function Unlock({ username, name, inline = false }: { username: string; name?: string; inline?: boolean }) {
+/*
+  Someone else's private capsule: ask them to let you read it, the way you ask
+  to follow a private account. Until they accept, the request waits; you can
+  take it back.
+*/
+export function RequestAccess({ username, first, status }: { username: string; first: string; status: "pendiente" | null }) {
   const router = useRouter();
-  const [asking, setAsking] = useState(!inline);
-  const [error, setError] = useState("");
+  const [sent, setSent] = useState(status === "pendiente");
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
-  if (!asking) {
-    return (
-      <button type="button" onClick={() => setAsking(true)}
-        className="flex w-full cursor-pointer items-baseline justify-between gap-4 text-left transition-colors hover:text-accent">
-        <span>{name}</span>
-        <span className="label">privada · abrir con su contraseña</span>
-      </button>
-    );
+  async function toggle() {
+    if (busy) return;
+    setBusy(true);
+    setError("");
+    const { error } = await call(sent ? "withdraw" : "request", { username });
+    setBusy(false);
+    if (error) return setError(error);
+    setSent(!sent);
+    router.refresh();
   }
+
   return (
-    <form
-      className="flex flex-wrap items-center gap-2"
-      action={async (form) => {
-        setBusy(true);
-        const { error } = await call("view", { username, password: form.get("password") });
-        setBusy(false);
-        if (error) return setError(error);
-        router.push(`/capsula/${username}`);
-        router.refresh();
-      }}
-    >
-      {name ? <span className="mr-1">{name}</span> : null}
-      <input name="password" type="password" required autoFocus={inline} placeholder={`contraseña${name ? ` de ${name.split(" ")[0]}` : ""}…`}
-        aria-label="contraseña" className={`${field} w-56`} />
-      <Button type="submit" disabled={busy}>abrir</Button>
+    <div className="flex items-center gap-3">
+      {sent ? (
+        <>
+          <span className="label inline-flex items-center gap-1.5"><LuClock aria-hidden className="size-4" />esperando a {first}</span>
+          <Act onAct={toggle}>retirar</Act>
+        </>
+      ) : (
+        <Button quiet onClick={toggle} disabled={busy} className="inline-flex items-center gap-2">
+          <LuUserPlus aria-hidden className="size-4" />pedir acceso
+        </Button>
+      )}
       <span className="label" aria-live="polite">{error}</span>
-    </form>
+    </div>
+  );
+}
+
+type Asker = { username: string; name: string };
+
+/* The owner's side: who is asking to read your capsule, and who already can. */
+export function Requests({ pending, invited }: { pending: Asker[]; invited: Asker[] }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState("");
+  const answer = async (from: string, accept: boolean) => {
+    setBusy(from);
+    await call("answer", { from, accept });
+    router.refresh();
+    setBusy("");
+  };
+  if (!pending.length && !invited.length) return null;
+  return (
+    <div className="flex flex-col gap-4">
+      {pending.length ? (
+        <div className="rounded-2xl bg-white/70 p-5">
+          <p className="font-medium">
+            {pending.length === 1 ? "Alguien quiere leer tu cápsula" : `${pending.length} personas quieren leer tu cápsula`}
+          </p>
+          <p className="label mt-1">Si aceptas, podrá leerla toda, sin cambiar nada. Puedes quitarle el acceso cuando quieras.</p>
+          <ul className="mt-4 flex flex-col gap-2">
+            {pending.map((p) => (
+              <li key={p.username} className="flex flex-wrap items-center justify-between gap-3">
+                <span>{p.name}</span>
+                <span className="flex items-center gap-2">
+                  <Button onClick={() => answer(p.username, true)} disabled={busy === p.username} className="inline-flex items-center gap-1.5">
+                    <LuCheck aria-hidden className="size-4" />aceptar
+                  </Button>
+                  <Button quiet onClick={() => answer(p.username, false)} disabled={busy === p.username} className="inline-flex items-center gap-1.5">
+                    <LuX aria-hidden className="size-4" />rechazar
+                  </Button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {invited.length ? (
+        <details className="group">
+          <summary className="label cursor-pointer list-none transition-colors hover:text-accent">
+            {invited.length === 1 ? "1 persona puede leerla" : `${invited.length} personas pueden leerla`}
+          </summary>
+          <ul className="mt-3 flex max-w-sm flex-col">
+            {invited.map((p) => (
+              <li key={p.username} className="flex items-center justify-between gap-3">
+                <span className="text-sm">{p.name}</span>
+                <IconAct icon={LuUserMinus} label="quitar acceso" confirm={`¿quitarle el acceso a ${p.name.split(" ")[0]}?`}
+                  onAct={() => answer(p.username, false)} />
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
+    </div>
   );
 }
 

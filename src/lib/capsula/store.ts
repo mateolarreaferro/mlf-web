@@ -18,6 +18,7 @@ import type { UIMessage } from "ai";
     entries:<username>  hash  id -> Entry
     draft:<username>    value the interview in progress
     insight:<username>  value the themes map and reading (insight.ts), cached
+    asks:<username>     hash  requester username -> Ask, who asked to read this capsule
     rate:<what>         counters with an expiry
 */
 
@@ -25,7 +26,7 @@ export type Person = {
   username: string;
   name: string;
   createdAt: number;
-  /** Bumped on every new password: signs out sessions and view keys made with the old one. */
+  /** Bumped on every new password: signs out sessions made with the old one. */
   version: number;
   passwordHash: string;
   /** The password itself, sealed, so the admin can hand it out again. */
@@ -78,6 +79,9 @@ export type Insight = {
   reading: string;
   createdAt: number;
 };
+
+/** A friend asking to read someone's capsule; "aceptada" once the owner said yes, until they take it back. */
+export type Ask = { from: string; at: number; status: "pendiente" | "aceptada" };
 
 export type Draft = { mode: Mode; round: number; messages: UIMessage[]; startedAt: number; updatedAt: number };
 
@@ -233,12 +237,11 @@ export async function resetPassword(person: Person): Promise<string> {
 
 export const revealPassword = (person: Person) => unseal<string>(person.passwordSealed);
 
-/** Removes the profile, its entries, draft and reading. Its files stay in Blob until deleted there. */
+/** Removes the profile, its entries, draft, reading and requests. Its files stay in Blob until deleted there. */
 export async function removePerson(username: string) {
   await kv.hdel(PEOPLE, username);
-  await kv.del(`${prefix}:entries:${username}`);
-  await kv.del(`${prefix}:draft:${username}`);
-  await kv.del(`${prefix}:insight:${username}`);
+  for (const what of ["entries", "draft", "insight", "asks"]) await kv.del(`${prefix}:${what}:${username}`);
+  await moveAsks(username, null);
 }
 
 /**
@@ -261,8 +264,54 @@ export async function renamePerson(person: Person, name: string, username: strin
     const value = await kv.get(`${prefix}:${what}:${person.username}`);
     if (value) await kv.set(`${prefix}:${what}:${username}`, value);
   }
+  for (const [field, value] of Object.entries(await kv.hgetall(ASKS(person.username)))) {
+    await kv.hset(ASKS(username), field, value);
+  }
+  await moveAsks(person.username, username);
   await removePerson(person.username);
   return true;
+}
+
+/* ---------- requests to read ---------- */
+
+const ASKS = (username: string) => `${prefix}:asks:${username}`;
+
+const valid = (...names: string[]) => names.every((n) => USERNAME.test(n));
+
+export const getAsk = async (owner: string, from: string) =>
+  valid(owner, from) ? unseal<Ask>(await kv.hget(ASKS(owner), from)) : null;
+
+/** Everyone who asked to read `owner`'s capsule, oldest first. */
+export async function listAsks(owner: string): Promise<Ask[]> {
+  return Object.values(await kv.hgetall(ASKS(owner))).map((v) => unseal<Ask>(v)!).filter(Boolean).sort((a, b) => a.at - b.at);
+}
+
+/** Asks once; asking again leaves a pending or accepted request as it is. */
+export async function ask(owner: string, from: string): Promise<Ask> {
+  const fresh: Ask = { from, at: Date.now(), status: "pendiente" };
+  return (await kv.hsetnx(ASKS(owner), from, seal(fresh))) ? fresh : (await getAsk(owner, from)) ?? fresh;
+}
+
+export async function acceptAsk(owner: string, from: string): Promise<boolean> {
+  const held = await getAsk(owner, from);
+  if (!held) return false;
+  await kv.hset(ASKS(owner), from, seal({ ...held, status: "aceptada" }));
+  return true;
+}
+
+/** Declining, withdrawing and taking back access are all the same: the request is gone. */
+export async function dropAsk(owner: string, from: string) {
+  if (valid(owner, from)) await kv.hdel(ASKS(owner), from);
+}
+
+/** Re-files `username`'s requests to everyone else under `to`, or drops them when `to` is null. */
+async function moveAsks(username: string, to: string | null) {
+  await Promise.all((await listPeople()).map(async (p) => {
+    const held = await getAsk(p.username, username);
+    if (!held) return;
+    await kv.hdel(ASKS(p.username), username);
+    if (to) await kv.hset(ASKS(p.username), to, seal({ ...held, from: to }));
+  }));
 }
 
 /* ---------- entries ---------- */

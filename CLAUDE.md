@@ -582,9 +582,29 @@ Privacy rules, all in `auth.ts`: a friend signs in with the username and
 password Mateo hands out (the admin can reveal or reset them). Every capsule
 is closed to everyone but its owner and the admin; there is no "public"
 (Mateo removed it on 2026-10-05). `/capsula/circulo` lists everyone by name,
-and another friend's password, given by that friend, earns a read-only view
-key for that one capsule. A new password bumps `version`, closing every session and key made
-with the old one.
+and reading someone else's capsule works like following a private Instagram
+account (Mateo, 2026-10-05; it replaced typing their password): "pedir
+acceso" files a request in `asks:<owner>` (store.ts), the owner sees it on
+their own capsule page and accepts or declines, and can take access back
+later from "N personas pueden leerla". Accepted is read only. Requests are
+server-side, so they follow a friend to any browser and are untouched by a
+password change; rename and delete re-file or drop them in everyone's hash.
+The ops are `request` / `withdraw` / `answer` (not `ask`: the chat route
+`/api/capsula/ask` would win). A new password bumps `version`, closing every
+session made with the old one.
+
+**The interview speaks** (2026-10-05). Each new interviewer message is read
+aloud by ElevenLabs (`api/capsula/voice`, `ELEVENLABS_API_KEY`, voice
+`ELEVENLABS_VOICE_ID`, model `eleven_multilingual_v2` unless
+`ELEVENLABS_MODEL`); without the key the page has no voice and no toggle.
+Answers can be spoken: with the field empty the main button is the
+microphone, MediaRecorder records at 32 kbps (stops at ten minutes, under
+Vercel's 4.5 MB body cap), `api/capsula/listen` sends it to Whisper and the
+text lands in the field to fix before sending; no audio is kept. This
+replaced the browser's speech recognition (`Dictate.tsx`, gone). Both halves
+live in `components/capsula/voice.ts`. A first visit opens "cómo funciona"
+in the room; the header's ? reopens it, and the voice waits for it to close,
+so the first question plays after a press and autoplay is never blocked.
 
 Answers are stored against question ids in `questions.ts` (the old
 `Template.xlsx`), which is what lines years up: never reuse or rename an id,

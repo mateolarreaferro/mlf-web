@@ -68,7 +68,7 @@ export function opening(name: string, mode: Mode, round: number, returning: bool
     ? `Hola ${name}, qué bueno verte de vuelta. Esta es tu cápsula de ${round}.`
     : `Hola ${name}. Esta es tu cápsula de ${round}: las mismas preguntas cada año, para que algún día puedas leer cómo has cambiado.`;
   const how = mode === "guiada"
-    ? "Te haré las preguntas una por una. Puedes saltar cualquiera escribiendo “paso”, y parar cuando quieras: todo se guarda."
+    ? "Te haré las preguntas una por una. Puedes saltar cualquiera respondiendo “paso”, y parar cuando quieras: todo se guarda."
     : "Vamos a conversar con calma, sección por sección. Puedes saltar cualquier pregunta, y parar cuando quieras: todo se guarda.";
   return `[[1]] ${hello} ${how}\n\nEmpecemos por quién eres hoy. ${first}`;
 }

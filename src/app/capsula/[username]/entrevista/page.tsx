@@ -21,6 +21,7 @@ export default async function InterviewPage({ params }: PageProps<"/capsula/[use
       round={draft.round}
       sections={ACTIVE.map((s) => s.title)}
       home={`/capsula/${person.username}`}
+      voice={Boolean(process.env.ELEVENLABS_API_KEY)}
     />
   );
 }
