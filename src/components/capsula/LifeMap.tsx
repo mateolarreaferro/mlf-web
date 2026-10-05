@@ -2,33 +2,68 @@
 
 import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Insight, Theme } from "@/lib/capsula/store";
+import type { Insight, Point } from "@/lib/capsula/store";
 import { call } from "./ui";
 
 /*
-  The themes map: the person at the centre and the threads of their life
-  around them, one quarter each for the people, what moves them, what they
-  are looking for and what weighs on them (the site's three blob colours,
-  and grey for the weight). Heavier threads sit closer. A hairline joins two
-  threads that touch. One inspector beside it: the psychologist's letter
-  until a thread is chosen, then that thread up close.
+  The map: the person at the centre and the plain facts of their life
+  around them, one quarter each for people, places, what happened and what
+  they like (the site's three blob colours, and grey). No interpretation
+  here; that is "lo que veo", a separate tab. Points that come up more sit
+  closer. A hairline joins two points with a factual tie. One inspector
+  beside it: a few plain sentences until a point is chosen, then that point
+  with their own words.
 
   Laid out for the box it actually has (measured), so labels stay 12px on a
-  phone; on a narrow box only the heavier threads are named until touched.
+  phone; on a narrow box only the heavier points are named until touched,
+  and every point is also a chip under the map.
 */
 
 export const KINDS = {
   personas: { label: "personas", color: "var(--g1)", angle: Math.PI },
-  mueve: { label: "lo que te mueve", color: "var(--g2)", angle: -Math.PI / 2 },
-  busca: { label: "lo que buscas", color: "var(--g3)", angle: 0 },
-  pesa: { label: "lo que pesa", color: "var(--faint)", angle: Math.PI / 2 },
+  lugares: { label: "lugares", color: "var(--g2)", angle: -Math.PI / 2 },
+  vida: { label: "lo que pasó", color: "var(--g3)", angle: 0 },
+  gustos: { label: "lo que te gusta", color: "var(--faint)", angle: Math.PI / 2 },
 } as const;
 
-type Placed = Theme & { x: number; y: number; r: number; w: number; anchor: "start" | "end" };
+/** The capsule's reading, from the page or, the first time, made on request (a minute or two). */
+export function useInsight(username: string, initial: Insight | null) {
+  const [insight, setInsight] = useState(initial);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    if (insight) return;
+    let live = true;
+    call<Insight>("insight", { username }).then(({ data, error }) => {
+      if (!live) return;
+      if (data) setInsight(data);
+      else setError(error ?? "");
+    });
+    return () => { live = false; };
+  }, [insight, username]);
+  return { insight, error };
+}
+
+export function Waiting({ error, owner, first }: { error: string; owner: boolean; first: string }) {
+  return (
+    <div className="py-24" aria-live="polite">
+      {error ? (
+        <p className="label">{error}</p>
+      ) : (
+        <>
+          <p className="max-w-md text-[17px]">Leyendo {owner ? "tus entrevistas" : `las entrevistas de ${first}`} con calma…</p>
+          <p className="label mt-2">La primera vez tarda uno o dos minutos. Después queda guardado.</p>
+          <span className="caret mt-6 inline-block h-5 w-[2px]" aria-hidden />
+        </>
+      )}
+    </div>
+  );
+}
+
+type Placed = Point & { x: number; y: number; r: number; w: number; anchor: "start" | "end" };
 
 const CHAR = 6.6; // average width of a 12px Inter character
 
-function layout(themes: Theme[], W: number, H: number): Placed[] {
+function layout(themes: Point[], W: number, H: number): Placed[] {
   const cx = W / 2, cy = H / 2;
   // An ellipse that fills the box: wide on a desk, tall on a phone.
   const rx = W * (W < 520 ? 0.34 : 0.4), ry = H * 0.44;
@@ -64,30 +99,27 @@ function layout(themes: Theme[], W: number, H: number): Placed[] {
       if (b.x0 < 4) p.x += 4 - b.x0;
       if (b.x1 > W - 4) p.x -= b.x1 - (W - 4);
       p.y = Math.min(H - 12, Math.max(12, p.y));
+      // The person's dot and name are a box nothing may cover: step aside along x,
+      // or, for a label too long to fit beside it, above or below it.
+      const c = box(p);
+      if (c.x1 > cx - 34 && c.x0 < cx + 34 && c.y1 > cy - 18 && c.y0 < cy + 36) {
+        const x = p.anchor === "end" ? cx - 34 - p.r - 1 : cx + 34 + p.r + 1;
+        const fits = p.anchor === "end" ? x - p.w - p.r >= 4 : x + p.w + p.r <= W - 4;
+        if (fits) p.x = x;
+        else p.y = p.y >= cy ? cy + 48 : cy - 30;
+      }
     }
   }
   return placed;
 }
 
-export default function ThemeMap({ username, first, initial, owner }: { username: string; first: string; initial: Insight | null; owner: boolean }) {
-  const [insight, setInsight] = useState(initial);
-  const [error, setError] = useState("");
+export default function LifeMap({ username, first, initial, owner }: { username: string; first: string; initial: Insight | null; owner: boolean }) {
+  const { insight, error } = useInsight(username, initial);
   const [selected, setSelected] = useState<string | null>(null);
   const [hover, setHover] = useState<string | null>(null);
   const holder = useRef<HTMLDivElement>(null);
   const panel = useRef<HTMLElement>(null);
   const [size, setSize] = useState({ W: 0, H: 0 });
-
-  useEffect(() => {
-    if (insight) return;
-    let live = true;
-    call<Insight>("insight", { username }).then(({ data, error }) => {
-      if (!live) return;
-      if (data) setInsight(data);
-      else setError(error ?? "");
-    });
-    return () => { live = false; };
-  }, [insight, username]);
 
   useEffect(() => {
     const el = holder.current;
@@ -107,7 +139,7 @@ export default function ThemeMap({ username, first, initial, owner }: { username
     if (selected && size.W < 520) panel.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [selected, size.W]);
 
-  const placed = useMemo(() => (insight && size.W ? layout(insight.themes, size.W, size.H) : []), [insight, size]);
+  const placed = useMemo(() => (insight && size.W ? layout(insight.points, size.W, size.H) : []), [insight, size]);
   const byId = useMemo(() => new Map(placed.map((p) => [p.id, p])), [placed]);
   const focus = hover ?? selected;
   const near = useMemo(() => {
@@ -120,23 +152,9 @@ export default function ThemeMap({ username, first, initial, owner }: { username
     return set;
   }, [focus, insight]);
 
-  if (!insight) {
-    return (
-      <div className="py-24" aria-live="polite">
-        {error ? (
-          <p className="label">{error}</p>
-        ) : (
-          <>
-            <p className="max-w-md text-[17px]">Leyendo {owner ? "tus entrevistas" : `las entrevistas de ${first}`} con calma…</p>
-            <p className="label mt-2">La primera vez tarda uno o dos minutos. Después queda guardado.</p>
-            <span className="caret mt-6 inline-block h-5 w-[2px]" aria-hidden />
-          </>
-        )}
-      </div>
-    );
-  }
+  if (!insight) return <Waiting error={error} owner={owner} first={first} />;
 
-  const chosen = selected ? insight.themes.find((t) => t.id === selected) : null;
+  const chosen = selected ? insight.points.find((t) => t.id === selected) : null;
   const narrow = size.W < 520;
   const cx = size.W / 2, cy = size.H / 2;
 
@@ -145,7 +163,7 @@ export default function ThemeMap({ username, first, initial, owner }: { username
       <div>
         <div ref={holder} className="w-full">
           {size.W ? (
-            <svg width={size.W} height={size.H} role="group" aria-label={`mapa de temas de ${first}`} className="block touch-manipulation select-none">
+            <svg width={size.W} height={size.H} role="group" aria-label={`mapa de ${first}`} className="block touch-manipulation select-none">
               {/* spokes */}
               {placed.map((p) => (
                 <line key={`s-${p.id}`} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--ink)"
@@ -221,8 +239,8 @@ export default function ThemeMap({ username, first, initial, owner }: { username
           ))}
         </ul>
         {narrow ? (
-          <ul className="mt-6 flex flex-wrap gap-2" aria-label="todos los temas">
-            {[...insight.themes].sort((a, b) => b.weight - a.weight).map((t) => (
+          <ul className="mt-6 flex flex-wrap gap-2" aria-label="todos los puntos">
+            {[...insight.points].sort((a, b) => b.weight - a.weight).map((t) => (
               <li key={t.id}>
                 <button type="button" onClick={() => setSelected(t.id)} aria-pressed={selected === t.id}
                   className={`flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-1.5 text-sm transition-colors ${selected === t.id ? "bg-white" : "bg-white/60 hover:bg-white"}`}>
@@ -237,14 +255,12 @@ export default function ThemeMap({ username, first, initial, owner }: { username
 
       <aside ref={panel} className="scroll-mt-6 lg:sticky lg:top-8 lg:self-start" aria-live="polite">
         {chosen ? (
-          <Thread theme={chosen} insight={insight} onPick={setSelected} />
+          <Fact point={chosen} insight={insight} onPick={setSelected} />
         ) : (
           <div>
-            <p className="label">lo que veo</p>
-            <div className="mt-4 flex flex-col gap-4 leading-relaxed">
-              {insight.reading.split(/\n\s*\n/).map((p, i) => <p key={i}>{p}</p>)}
-            </div>
-            <p className="label mt-8">Toca un tema del mapa para verlo de cerca.</p>
+            <p className="label">en pocas palabras</p>
+            <p className="mt-4 leading-relaxed">{insight.overview}</p>
+            <p className="label mt-8">Toca un punto del mapa para ver lo que {owner ? "dijiste" : `dijo ${first}`} de él.</p>
           </div>
         )}
       </aside>
@@ -252,16 +268,16 @@ export default function ThemeMap({ username, first, initial, owner }: { username
   );
 }
 
-function Thread({ theme, insight, onPick }: { theme: Theme; insight: Insight; onPick: (id: string | null) => void }) {
+function Fact({ point: theme, insight, onPick }: { point: Point; insight: Insight; onPick: (id: string | null) => void }) {
   const k = KINDS[theme.kind];
   const ties = insight.links
     .filter((l) => l.a === theme.id || l.b === theme.id)
-    .map((l) => ({ label: l.label, other: insight.themes.find((t) => t.id === (l.a === theme.id ? l.b : l.a))! }))
+    .map((l) => ({ label: l.label, other: insight.points.find((t) => t.id === (l.a === theme.id ? l.b : l.a))! }))
     .filter((t) => t.other);
   return (
     <div>
       <button type="button" onClick={() => onPick(null)} className="label cursor-pointer transition-colors hover:text-accent">
-        ← lo que veo
+        ← en pocas palabras
       </button>
       <p className="label mt-6 flex items-center gap-2">
         <span className="size-2 rounded-full" style={{ background: k.color }} aria-hidden />
@@ -279,7 +295,7 @@ function Thread({ theme, insight, onPick }: { theme: Theme; insight: Insight; on
       </ul>
       {ties.length ? (
         <>
-          <p className="label mt-8">se toca con</p>
+          <p className="label mt-8">relacionado con</p>
           <ul className="mt-2 flex flex-col gap-1.5">
             {ties.map((t) => (
               <li key={t.other.id}>

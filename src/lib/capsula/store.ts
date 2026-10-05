@@ -24,8 +24,6 @@ import type { UIMessage } from "ai";
 export type Person = {
   username: string;
   name: string;
-  /** Visible to everyone logged into the capsule. Private by default. */
-  public: boolean;
   createdAt: number;
   /** Bumped on every new password: signs out sessions and view keys made with the old one. */
   version: number;
@@ -55,12 +53,12 @@ export type Entry = {
 
 export type Mode = "guiada" | "conversacion";
 
-/** One thread in a person's life, as the psychologist in insight.ts reads it. */
-export type Theme = {
+/** One plain fact on a person's map (insight.ts): someone, somewhere, something that happened or that they like. */
+export type Point = {
   id: string;
   label: string;
-  kind: "personas" | "mueve" | "busca" | "pesa";
-  /** 1 (in passing) to 5 (runs through everything). */
+  kind: "personas" | "lugares" | "vida" | "gustos";
+  /** 1 (mentioned once) to 5 (comes up again and again). */
   weight: number;
   note: string;
   rounds: number[];
@@ -68,11 +66,16 @@ export type Theme = {
 };
 
 export type Insight = {
+  /** The shape it was made in; insight.ts re-reads older ones. */
+  v: number;
   /** Which entries it was read from; when they change it is stale. */
   fingerprint: string;
-  reading: string;
-  themes: Theme[];
+  /** The map's few plain sentences. */
+  overview: string;
+  points: Point[];
   links: { a: string; b: string; label: string }[];
+  /** "lo que veo": the letter from the agent instructed to read them as a loving psychologist. */
+  reading: string;
   createdAt: number;
 };
 
@@ -212,7 +215,7 @@ export async function listPeople(): Promise<Person[]> {
 export async function createPerson(name: string, username: string): Promise<{ person: Person; password: string } | null> {
   const password = newPassword();
   const person: Person = {
-    username, name, public: false, createdAt: Date.now(), version: 1,
+    username, name, createdAt: Date.now(), version: 1,
     passwordHash: hashPassword(password), passwordSealed: seal(password),
   };
   return (await kv.hsetnx(PEOPLE, username, seal(person))) ? { person, password } : null;

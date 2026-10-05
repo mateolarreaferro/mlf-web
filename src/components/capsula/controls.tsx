@@ -4,25 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Act, Button, call, field } from "./ui";
 
-/* Private by default; the owner can open their capsule to the circle and close it again. */
-export function PrivacyToggle({ initial }: { initial: boolean }) {
-  const [open, setOpen] = useState(initial);
-  return (
-    <p className="label flex flex-wrap items-baseline gap-x-3">
-      <span>{open ? "Visible para el círculo." : "Privada: solo tú la lees."}</span>
-      <Act
-        className="underline decoration-faint/40 underline-offset-4"
-        onAct={async () => {
-          const { data } = await call<{ public: boolean }>("visibility", { public: !open });
-          if (data) setOpen(data.public);
-        }}
-      >
-        {open ? "volver a privada" : "hacerla visible para el círculo"}
-      </Act>
-    </p>
-  );
-}
-
 export function RemoveEntry({ username, id }: { username: string; id: string }) {
   const router = useRouter();
   return (
@@ -41,8 +22,10 @@ export function Unlock({ username, name, inline = false }: { username: string; n
 
   if (!asking) {
     return (
-      <button type="button" onClick={() => setAsking(true)} className="cursor-pointer text-left transition-colors hover:text-accent">
-        {name} <span className="label">· privada</span>
+      <button type="button" onClick={() => setAsking(true)}
+        className="flex w-full cursor-pointer items-baseline justify-between gap-4 text-left transition-colors hover:text-accent">
+        <span>{name}</span>
+        <span className="label">privada · abrir con su contraseña</span>
       </button>
     );
   }

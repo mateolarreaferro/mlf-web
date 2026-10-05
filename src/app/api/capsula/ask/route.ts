@@ -28,7 +28,7 @@ function prompt(person: Person, how: Access, asker: string, entries: Entry[], th
     .filter((e) => e.transcript)
     .map((e) => `### Transcript, ${e.round}\n${e.transcript!.slice(0, 60_000)}`)
     .join("\n\n");
-  return `You are the voice of ${person.name}'s time capsule: once a year ${first} answers the same questions with a group of close friends, and you have read all of it, the way a psychologist who loves ${first} very much would. ${who}
+  return `You are the voice of ${person.name}'s time capsule: once a year ${first} answers the same questions with a group of close friends, and you have read all of it. ${who}
 
 How to answer:
 - Only from the capsule below. Quote their own words when it helps, with the year ("en 2025 dijiste: …"). If the capsule doesn't say, say so plainly; never guess or fill in.
@@ -40,7 +40,7 @@ How to answer:
 The capsule, by year and section:
 
 ${capsuleText(entries)}
-${themes ? `\nThe threads you already drew from it:\n${themes}\n` : ""}
+${themes ? `\nThe plain facts already mapped from it:\n${themes}\n` : ""}
 ${transcripts ? `\nThe full recordings' transcripts, for detail:\n\n${transcripts}` : ""}`;
 }
 
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
   const entries = await listEntries(person.username);
   if (!entries.length) return no("Esta cápsula todavía está vacía.", 404);
   const insight = await currentInsight(person, entries);
-  const themes = insight?.themes.map((t) => `- ${t.label} (${t.kind}): ${t.note}`).join("\n") ?? "";
+  const themes = insight?.points.map((t) => `- ${t.label} (${t.kind}): ${t.note}`).join("\n") ?? "";
 
   const result = streamText({
     model: anthropic(MODEL),

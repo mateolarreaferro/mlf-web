@@ -3,18 +3,20 @@ import { notFound, redirect } from "next/navigation";
 import { Reveal } from "@/components/motion";
 import Bar from "@/components/capsula/Bar";
 import Ask from "@/components/capsula/Ask";
-import ThemeMap from "@/components/capsula/ThemeMap";
-import { PrivacyToggle, RemoveEntry, StartInterview, Unlock } from "@/components/capsula/controls";
-import { access, canWrite, isAdmin, me, openTo } from "@/lib/capsula/auth";
+import LifeMap from "@/components/capsula/LifeMap";
+import Letter from "@/components/capsula/Letter";
+import { RemoveEntry, StartInterview, Unlock } from "@/components/capsula/controls";
+import { access, canWrite, isAdmin, me } from "@/lib/capsula/auth";
 import { currentInsight } from "@/lib/capsula/insight";
 import { SECTIONS, questionById } from "@/lib/capsula/questions";
-import { getDraft, getPerson, listEntries, listPeople, type Entry } from "@/lib/capsula/store";
+import { getDraft, getPerson, listEntries, type Entry } from "@/lib/capsula/store";
 
 export const dynamic = "force-dynamic";
 
-type Tab = "temas" | "respuestas" | "conversar";
+type Tab = "mapa" | "veo" | "respuestas" | "conversar";
 const TABS: { id: Tab; label: string }[] = [
-  { id: "temas", label: "temas" },
+  { id: "mapa", label: "mapa" },
+  { id: "veo", label: "lo que veo" },
   { id: "respuestas", label: "respuestas" },
   { id: "conversar", label: "conversar" },
 ];
@@ -40,9 +42,9 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
   if (!how) {
     return (
       <>
-        <Bar home={home} who={viewer?.name ?? "admin"} />
+        <Bar home={home} />
         <h1 className="text-[2.4rem] font-medium leading-tight tracking-[-0.03em]">{person.name}</h1>
-        <p className="mt-3 text-faint">Esta cápsula es privada. Con la contraseña de {first} puedes leerla.</p>
+        <p className="mt-3 text-faint">Esta cápsula es privada. Si {first} te dio su contraseña, puedes leerla.</p>
         <div className="mt-8"><Unlock username={person.username} /></div>
       </>
     );
@@ -51,16 +53,14 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
   const writer = canWrite(how);
   const [entries, draft] = await Promise.all([listEntries(person.username), writer ? getDraft(person.username) : null]);
   const rounds = [...new Set(entries.map((e) => e.round))];
-  const tab: Tab = TABS.some((t) => t.id === query.ver) ? (query.ver as Tab) : "temas";
+  const tab: Tab = TABS.some((t) => t.id === query.ver) ? (query.ver as Tab) : "mapa";
   const across = query.tiempo === "1" && rounds.length > 1;
   const asked = Number(query.ano);
   const round = rounds.includes(asked) ? asked : rounds.at(-1);
-  const people = how === "owner" || how === "admin" ? (await listPeople()).filter((p) => p.username !== person.username) : [];
-  const opened = await openTo(people);
-  const insight = entries.length && tab === "temas" ? await currentInsight(person, entries) : null;
+  const insight = entries.length && (tab === "mapa" || tab === "veo") ? await currentInsight(person, entries) : null;
   const href = (q: { ver?: Tab; ano?: number; tiempo?: boolean }) => {
     const s = new URLSearchParams();
-    if (q.ver && q.ver !== "temas") s.set("ver", q.ver);
+    if (q.ver && q.ver !== "mapa") s.set("ver", q.ver);
     if (q.ano) s.set("ano", String(q.ano));
     if (q.tiempo) s.set("tiempo", "1");
     return `/capsula/${person.username}${s.size ? `?${s}` : ""}`;
@@ -70,16 +70,15 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
 
   return (
     <>
-      <Bar home={home} who={viewer?.username === person.username ? null : (viewer?.name ?? "admin")} />
+      <Bar home={home} />
 
       <Reveal>
         <h1 className="text-[2.4rem] font-medium leading-tight tracking-[-0.03em]">{person.name}</h1>
         <p className="label mt-2">
           {entries.length ? `${rounds.length === 1 ? "cápsula de" : "cápsulas de"} ${rounds.join(", ")}` : "todavía sin entradas"}
-          {how === "admin" ? ` · ${person.public ? "visible para el círculo" : "privada"}` : ""}
+          {how === "owner" ? " · solo tú y quien tenga tu contraseña pueden leerla" : ""}
           {how === "key" ? " · la abriste con su contraseña" : ""}
         </p>
-        {how === "owner" ? <div className="mt-1"><PrivacyToggle initial={person.public} /></div> : null}
       </Reveal>
 
       {writer ? (
@@ -98,7 +97,7 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
 
       {entries.length ? (
         <>
-          <nav aria-label="vistas" className="mt-16 flex items-baseline gap-7">
+          <nav aria-label="vistas" className="mt-16 flex flex-wrap items-baseline gap-x-7 gap-y-2">
             {TABS.map((t) => (
               <Link key={t.id} href={href({ ver: t.id })} aria-current={tab === t.id ? "page" : undefined}
                 className={`text-lg font-medium tracking-[-0.01em] transition-colors hover:text-accent ${tab === t.id ? "text-ink" : "text-faint/60"}`}>
@@ -108,8 +107,10 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
           </nav>
 
           <section className="mt-10">
-            {tab === "temas" ? (
-              <ThemeMap username={person.username} first={first} initial={insight} owner={how === "owner"} />
+            {tab === "mapa" ? (
+              <LifeMap username={person.username} first={first} initial={insight} owner={how === "owner"} />
+            ) : tab === "veo" ? (
+              <Letter username={person.username} first={first} initial={insight} owner={how === "owner"} />
             ) : tab === "conversar" ? (
               <Ask username={person.username} first={first} owner={how === "owner"} rounds={rounds} />
             ) : (
@@ -150,27 +151,6 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
         </>
       ) : null}
 
-      {people.length ? (
-        <section className="mt-32 max-w-xl">
-          <h2 className="label">el círculo</h2>
-          <ul className="mt-4 flex flex-col gap-2.5">
-            {people.map((p) => (
-              <li key={p.username} className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-                {how === "admin" || p.public || opened.has(p.username) ? (
-                  <Link href={`/capsula/${p.username}`} className="transition-colors hover:text-accent">{p.name}</Link>
-                ) : (
-                  <Unlock username={p.username} name={p.name} inline />
-                )}
-              </li>
-            ))}
-          </ul>
-          {how === "owner" ? (
-            <p className="label mt-6">
-              Las cápsulas privadas se abren con la contraseña de su dueño. Las visibles se leen sin ella.
-            </p>
-          ) : null}
-        </section>
-      ) : null}
     </>
   );
 }

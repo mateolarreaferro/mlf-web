@@ -11,8 +11,9 @@ import { getPerson, secret, type Person } from "./store";
   - a friend who also typed someone else's password, which earns a view key
     for that one capsule: read only, never write.
 
-  A capsule is private by default. Made public, it is open to everyone logged
-  into the capsule, never to the internet. Every cookie is signed with
+  Every capsule is closed to everyone else: the circle page lists who is in
+  the capsule, but reading someone's capsule takes the password they chose to
+  share. There is no "public". Every cookie is signed with
   CAPSULA_KEY and carries the person's password version, so a new password
   closes every session and view key made with the old one.
 */
@@ -109,7 +110,7 @@ export async function addViewKey(person: Person) {
   (await cookies()).set(VIEWS, pack(VIEWS, keys), options(SESSION_AGE));
 }
 
-export type Access = "owner" | "admin" | "circle" | "key";
+export type Access = "owner" | "admin" | "key";
 
 /**
  * How the current visitor may see `person`'s capsule, or null when they may
@@ -120,7 +121,6 @@ export async function access(person: Person): Promise<Access | null> {
   if (viewer?.username === person.username) return "owner";
   if (admin) return "admin";
   if (!viewer) return null;
-  if (person.public) return "circle";
   const keys = await viewKeys();
   return keys.some((k) => k.u === person.username && k.v === person.version) ? "key" : null;
 }

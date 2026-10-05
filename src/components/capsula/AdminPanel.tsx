@@ -12,7 +12,7 @@ import { Act, Button, call, field } from "./ui";
   pasted text) as an entry on a given date.
 */
 
-export type Row = { username: string; name: string; public: boolean; rounds: number[]; draft: boolean };
+export type Row = { username: string; name: string; rounds: number[]; draft: boolean };
 
 const slug = (name: string) =>
   name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "").trim().split(/\s+/).slice(0, 2).join(".");
@@ -182,7 +182,7 @@ function Person({ row, root }: { row: Row; root: string }) {
           <Link href={`/capsula/${row.username}`} className="font-medium transition-colors hover:text-accent">{row.name}</Link>
           <p className="label">
             {row.username} · {row.rounds.length ? row.rounds.join(", ") : "sin entradas"}
-            {row.draft ? " · entrevista a medias" : ""} · {row.public ? "visible" : "privada"}
+            {row.draft ? " · entrevista a medias" : ""}
           </p>
         </div>
         <div className="flex flex-wrap items-baseline gap-4">

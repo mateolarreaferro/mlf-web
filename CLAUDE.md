@@ -579,10 +579,11 @@ whole capsule unreadable, so it never rotates. `CAPSULA_ADMIN_PASSWORD` opens
 block in `globals.css`), and `SiteChrome` hides the portfolio header/footer.
 
 Privacy rules, all in `auth.ts`: a friend signs in with the username and
-password Mateo hands out (the admin can reveal or reset them); a capsule is
-private by default; "visible" means visible to everyone signed in, never to the
-internet; another friend's password earns a read-only view key for that one
-capsule. A new password bumps `version`, closing every session and key made
+password Mateo hands out (the admin can reveal or reset them). Every capsule
+is closed to everyone but its owner and the admin; there is no "public"
+(Mateo removed it on 2026-10-05). `/capsula/circulo` lists everyone by name,
+and another friend's password, given by that friend, earns a read-only view
+key for that one capsule. A new password bumps `version`, closing every session and key made
 with the old one.
 
 Answers are stored against question ids in `questions.ts` (the old
@@ -593,16 +594,18 @@ through `extract()` (Claude). The interviewer (`interviewer.ts`) has two modes,
 guided and conversation, prefixes every message with `[[n]]` (section) or
 `[[fin]]`, and keeps the conversation as a server-side draft so friends can
 stop and resume. Members do not spend the site's three free calls; they have
-their own daily caps (`within()` in `store.ts`). A capsule page has three tabs (`?ver=`): **temas**, the default, is a map of
-the threads in their life read by "a psychologist who loves them"
-(`insight.ts`: people, what moves them, what they look for, what weighs on
-them, as the site's three colours plus grey; no diagnoses, every thread
-anchored in their quotes), cached sealed per set of entries and re-read in
-`after()` when an entry is added or removed, or when their first name changes
-(the letter addresses them by name); **respuestas**, one year or "todos" with
-a section index; **conversar**, a chat (`api/capsula/ask`) that answers only
-from that one capsule, so it can never reveal more than the asker may read.
-The interview has browser dictation (`Dictate.tsx`). The source folder is
+their own daily caps (`within()` in `store.ts`). A capsule page has four tabs (`?ver=`), all from `insight.ts`, which makes
+two readings in two separate calls so the voices never mix: **mapa**, the
+default, is plain facts only (people, places, what happened, what they like,
+e.g. "te mudaste a brasil"; Mateo asked for objective points, no
+interpretation), with an overview and their quotes per point; **lo que veo**
+is a letter from an agent instructed to read them as a psychologist who loves
+them, and the page always says that first (no diagnoses, nothing invented).
+Both are cached sealed per set of entries (and per `INSIGHT_VERSION`) and
+re-read in `after()` when an entry is added or removed, or when their first
+name changes. **respuestas** is one year or "todos" with a section index;
+**conversar** is a chat (`api/capsula/ask`) that answers only from that one
+capsule, so it can never reveal more than the asker may read. The interview has browser dictation (`Dictate.tsx`). The source folder is
 `~/Desktop/Capsula del Tiempo/Entrevistas`, one folder per round;
 `scripts/capsula-import.mjs` imports it through the admin endpoints and writes
 new passwords next to it, outside the repo.

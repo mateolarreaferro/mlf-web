@@ -7,7 +7,7 @@ import {
 } from "@/lib/capsula/auth";
 import {
   addEntry, blobPrefix, checkPassword, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
-  removePerson, renamePerson, resetPassword, revealPassword, savePerson, saveDraft, within, USERNAME, usernameFor,
+  removePerson, renamePerson, resetPassword, revealPassword, saveDraft, within, USERNAME, usernameFor,
   type Answer, type Mode, type Person, type Source,
 } from "@/lib/capsula/store";
 import { AUDIO_LIMIT, Said, extract, fromCsv, fromDocx, fromXlsx, transcribe } from "@/lib/capsula/ingest";
@@ -21,6 +21,9 @@ import { currentInsight, readCapsule, refreshInsight } from "@/lib/capsula/insig
 */
 
 export const maxDuration = 300;
+
+/** Paths under /capsula that are pages, not people. */
+const RESERVED = ["admin", "entrevista", "circulo"];
 
 const json = (data: unknown, status = 200) => Response.json(data, { status, headers: noStore });
 const no = (error: string, status = 400) => json({ error }, status);
@@ -77,13 +80,6 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     return json({ ok: true });
   },
 
-  async visibility(_request, body) {
-    const person = await me();
-    if (!person) return no("Entra primero con tu usuario.", 401);
-    await savePerson({ ...person, public: body.public === true });
-    return json({ public: body.public === true });
-  },
-
   /* ---------- admin ---------- */
 
   async people(_request, body) {
@@ -91,7 +87,7 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     const name = str(body.name, 60);
     const username = (str(body.username, 32) || usernameFor(name)).toLowerCase();
     if (!name) return no("Escribe un nombre.");
-    if (!USERNAME.test(username) || ["admin", "entrevista"].includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
+    if (!USERNAME.test(username) || RESERVED.includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
     const made = await createPerson(name, username);
     if (!made) return no("Ese usuario ya existe.", 409);
     return json({ username, password: made.password });
@@ -201,7 +197,7 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     if (!person) return no("No existe esa persona.", 404);
     const name = str(body.name, 60) || person.name;
     const username = (str(body.newUsername, 32) || person.username).toLowerCase();
-    if (!USERNAME.test(username) || ["admin", "entrevista"].includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
+    if (!USERNAME.test(username) || RESERVED.includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
     if (!(await renamePerson(person, name, username))) return no("Ese usuario ya existe.", 409);
     return json({ username, name });
   },
