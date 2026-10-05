@@ -452,6 +452,28 @@ longer (rossler 16s, triangles 32s, flow-field 45s, the two currents
 `<name>.js` in `public/sketches/`, render its still the same way, add it to
 `SKETCHES` in the component. ESLint ignores the folder.
 
+**Rats & Children (2026-10-05)** plays in its own card: Mateo's ChucK/ChuGL
+piece (Artful Design, fall 2024; source `RatsAndChildren.ck` in his
+`Artful-Design-Fall-24-main/Sequencer` folder, not a repo here) ported to
+the browser, with no ChucK. `src/lib/rats-and-children/` is the whole
+piece: `world.ts` the rules, ported with the original's numbers (anything
+the original did once per frame is scaled by `dt * 60`, so it runs the same
+at any refresh rate), `gl.ts` the picture in plain WebGL2 (every circle is
+an instanced quad drawn as an exact disc by the shader, then a bloom at
+ChuGL's threshold, screened on rather than added so a white sky doesn't
+swallow the grey circle), and `sound.ts` the mix in Web Audio (per-being
+loops at 1/N, one-shots, beds by population, short fades and a limiter
+added). `RatsAndChildren.tsx` is the card (`media: - { sketch:
+"rats-and-children" }`): press and hold to bring beings in, sound starts on
+the first press, a corner button goes full screen where the browser allows
+it (hidden on iPhone Safari). The samples are the original WAVs as MP3 in
+`public/rats-and-children/` (89 MB to 7 MB, `ffmpeg -nostdin -i x.wav -c:a
+libmp3lame -q:a 4`), loaded only when first needed; `manifest.json` keeps
+each file's true length so `trim()` can cut MP3 padding off a decoded loop
+(Chrome already honours LAME's gapless header, so there it is a no-op;
+Safari is not verified). Never call `loseContext()` on teardown: the canvas
+would get its dead context back on a remount and draw nothing.
+
 **Demo clips.** The three hosted projects' cards play a recording of the
 project in use (`public/projects/theo-demo.mp4`, `headwave-demo.mp4`,
 `sticky-notes-demo.mp4`), the way the Agents card plays its own site. They

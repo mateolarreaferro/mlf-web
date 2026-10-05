@@ -5,6 +5,7 @@ import type { MediaItem } from "@/lib/projects";
 import { useEffect, useRef } from "react";
 import LorenzThumb from "./LorenzThumb";
 import SketchGallery, { GALLERY_RATIO } from "./SketchGallery";
+import RatsAndChildren from "./RatsAndChildren";
 
 /*
   The right-hand panel: exactly one piece of media per project: an image,
@@ -33,6 +34,7 @@ export function mediaRatio(items: MediaItem[]): number {
 const sketches: Record<string, React.ComponentType> = {
   lorenz: LorenzThumb,
   gallery: SketchGallery,
+  "rats-and-children": RatsAndChildren,
 };
 
 function Slide({ item, alt }: { item: MediaItem; alt: string }) {
