@@ -1,45 +1,20 @@
 <!--
   Media-only room made by Claude Code on 2026-10-06. Mateo's own write-up
-  (objective, interface design and spec, reflection, final project group,
-  course agent issue, AI disclosure) replaces the "write-up coming" line.
+  replaces the "write-up coming" line.
 -->
 <p class="label">week 3 · write-up coming</p>
 <h1>Melody: arranging with DrC</h1>
 
 <figure>
-  <video controls playsinline preload="metadata" poster="media/week03/demo-poster.jpg" aria-label="Melody demo run">
-    <source src="media/week03/demo-melody.mp4" type="video/mp4">
-    <a href="media/week03/demo-melody.mp4">Watch the demo</a>.
+  <video controls playsinline preload="metadata" poster="media/week03/melody-demo-poster.jpg" aria-label="Melody demo">
+    <source src="media/week03/melody-demo.mp4" type="video/mp4">
+    <a href="media/week03/melody-demo.mp4">Watch the demo</a>.
   </video>
-  <figcaption>Recorded run against the local app with the real model · 70 seconds · sound on. <a href="media/week03/demo-melody-run.json">Run log</a>.</figcaption>
+  <figcaption>One real run, model waits sped up · 53 seconds · sound on. <a href="media/week03/melody-demo-run.json">Run log</a>.</figcaption>
 </figure>
 
-<h2>States</h2>
 <figure>
-  <img src="media/week03/03-your-turn.png" alt="A recorded ten-note take on the piano roll">
-  <figcaption>your turn: a recorded take</figcaption>
-</figure>
-<figure>
-  <img src="media/week03/04-arranging.png" alt="DrC arranging and saying what it heard">
-  <figcaption>arranging</figcaption>
-</figure>
-<figure>
-  <img src="media/week03/05-review.png" alt="Proposed layers on the roll, each to take or leave">
-  <figcaption>your review</figcaption>
-</figure>
-<figure>
-  <img src="media/week03/07-question.png" alt="DrC asks before changing notes the setting protects">
-  <figcaption>"make my melody minor" in "keep my notes": DrC asks instead of acting</figcaption>
-</figure>
-<figure>
-  <img src="media/week03/08-jam-answer.png" alt="Jam mode: DrC answers a played phrase on the next cycle">
-  <figcaption>jam</figcaption>
-</figure>
-
-<h2>Architecture</h2>
-<figure>
-  <img src="media/week03/melody-architecture.png" alt="Melody architecture: interface, model, harness, tools, state, authority boundary">
-  <figcaption>Diagram made with AI assistance. <a href="media/week03/melody-architecture.svg">SVG</a>.</figcaption>
+  <img src="media/week03/melody-loop.svg" alt="You play and ask on a piano roll; DrC's replies pass your rules before you see them; states: your turn, DrC arranging or asking, your review">
 </figure>
 
 <p><a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week03">Code and evidence</a></p>

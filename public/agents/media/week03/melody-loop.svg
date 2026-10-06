@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" role="img" aria-labelledby="t d">
+  <title id="t">Melody loop</title>
+  <desc id="d">You play and ask on a piano roll. The app sends the arrangement to Claude, checks the reply against what you allow, and only then shows it to you to take or leave. Csound plays everything. States: your turn, DrC arranging (or DrC asks first), your review, back to your turn.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0.8L7 4L0 7.2" fill="none" stroke="#8a9ba3" stroke-width="1.2"/>
+    </marker>
+  </defs>
+  <rect width="960" height="400" fill="#0a1015"/>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" text-anchor="middle">
+
+    <!-- the loop -->
+    <rect x="40" y="56" width="160" height="72" rx="16" fill="rgb(219 230 234 / 0.06)"/>
+    <text x="120" y="90" fill="#dbe6ea" font-size="19">you</text>
+    <text x="120" y="112" fill="#8a9ba3" font-size="13">play, ask, take or leave</text>
+
+    <rect x="270" y="56" width="180" height="72" rx="16" fill="rgb(219 230 234 / 0.06)"/>
+    <text x="360" y="90" fill="#dbe6ea" font-size="19">piano roll</text>
+    <text x="360" y="112" fill="#8a9ba3" font-size="13">yours outlined, drc's filled</text>
+
+    <rect x="520" y="56" width="180" height="72" rx="16" fill="none" stroke="#F8961E" stroke-opacity="0.7" stroke-dasharray="4 5"/>
+    <text x="610" y="90" fill="#dbe6ea" font-size="19">your rules</text>
+    <text x="610" y="112" fill="#8a9ba3" font-size="13">keep · polish · rewrite · pins</text>
+
+    <rect x="770" y="56" width="150" height="72" rx="16" fill="rgb(122 183 212 / 0.12)"/>
+    <text x="845" y="90" fill="#7ab7d4" font-size="19">drc</text>
+    <text x="845" y="112" fill="#8a9ba3" font-size="13">claude</text>
+
+    <path d="M204 92H264" stroke="#8a9ba3" stroke-width="1.2" marker-start="url(#a)" marker-end="url(#a)"/>
+    <path d="M454 82H514" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <path d="M514 102H454" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <path d="M704 82H764" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <path d="M764 102H704" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+
+    <text x="610" y="160" fill="#8a9ba3" font-size="13">a reply that breaks them goes back to drc</text>
+    <text x="610" y="178" fill="#8a9ba3" font-size="13">you only ever see one that keeps them</text>
+
+    <path d="M360 132V176" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <text x="360" y="200" fill="#8a9ba3" font-size="13">csound plays it</text>
+
+    <!-- the states -->
+    <text x="40" y="262" fill="#8a9ba3" font-size="13" text-anchor="start">states</text>
+    <g font-size="15" fill="#dbe6ea">
+      <text x="160" y="300">your turn</text>
+      <text x="460" y="300" fill="#7ab7d4">drc arranging</text>
+      <text x="760" y="300">your review</text>
+    </g>
+    <path d="M222 295H382" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <text x="302" y="283" fill="#8a9ba3" font-size="12">ask</text>
+    <path d="M540 295H690" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <text x="460" y="322" fill="#8a9ba3" font-size="12">or it asks first, when the request needs more than you allow</text>
+    <path d="M760 312C760 372 160 372 160 316" fill="none" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <text x="460" y="384" fill="#8a9ba3" font-size="12">take or leave each layer</text>
+  </g>
+</svg>
