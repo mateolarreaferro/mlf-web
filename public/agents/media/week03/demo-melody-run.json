@@ -1,0 +1,54 @@
+{
+  "startedAt": "2026-10-05T16:06:39.065Z",
+  "steps": [
+    {
+      "name": "signed in",
+      "at": 2520
+    },
+    {
+      "name": "recorded",
+      "at": 11838,
+      "notes": 10
+    },
+    {
+      "name": "proposal",
+      "at": 33939,
+      "ms": 22100,
+      "rows": 4,
+      "chords": [
+        "C",
+        "C",
+        "F",
+        "Am",
+        "C"
+      ]
+    },
+    {
+      "name": "accepted",
+      "at": 41829,
+      "share": 34,
+      "notes": 29
+    },
+    {
+      "name": "question",
+      "at": 50852,
+      "ms": 9012,
+      "text": "DrC asks\nTurning your melody minor means changing some of your pitches (E to E flat, A to A flat for C minor), which needs the \"free to rewrite\" setting, since \"keep my notes\" and \"polish my notes\" both keep your pitches. Do you want to switch to \"free to rewrite\", or should I keep your notes as pla"
+    },
+    {
+      "name": "saved",
+      "at": 50862,
+      "url": "http://127.0.0.1:4410/melody?project=51f0118e-2e24-4e98-ba8a-c2f747713007"
+    },
+    {
+      "name": "jam",
+      "at": 62168,
+      "seconds": 10.9,
+      "cycles": 1.09,
+      "modelSeconds": 6.4
+    }
+  ],
+  "status": "passed",
+  "errors": [],
+  "audioOffsetSeconds": 11.82
+}
