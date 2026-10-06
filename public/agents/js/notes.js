@@ -10,8 +10,7 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
   host.setAttribute("aria-label", "weekly notes");
   host.innerHTML = `
     <div class="notes-bar">
-      <span class="notes-name">notes</span>
-      <label class="sr" for="notes-week">week</label><select id="notes-week"></select>
+      <span class="notes-name" id="notes-name">notes</span>
       <button class="pill" id="notes-add" hidden>+ note</button>
       <button class="pill" id="notes-auth" hidden>sign out</button>
       <button class="pill" id="notes-close" aria-label="close notes">close</button>
@@ -22,7 +21,7 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
       <div class="notes-save"><span id="notes-status" role="status" aria-live="polite"></span><button class="pill" id="notes-retry" hidden>retry save</button></div>
     </div>
     <dialog id="note-dialog" class="note-dialog" aria-labelledby="note-label">
-      <div class="note-top"><span id="note-label" class="label"></span><button class="pill" id="note-done">done</button></div>
+      <div class="note-top"><label class="sr" for="note-week">week</label><select id="note-week" class="label"></select><span id="note-label" class="label" hidden></span><button class="pill" id="note-done">done</button></div>
       <label class="sr" for="note-text">note</label><textarea id="note-text" placeholder="a thought, a question, something to return to…" maxlength="4000" spellcheck="true"></textarea>
       <div class="note-bottom"><div id="note-colors" aria-label="note color"></div><span id="note-count"></span><button class="pill" id="note-delete">remove</button></div>
       <div id="note-remove-confirm" hidden><span>remove this note?</span><button class="pill" id="note-remove-yes">remove</button><button class="pill" id="note-remove-no">keep</button></div>
@@ -34,14 +33,15 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
       <label for="notes-key">editing key</label><input id="notes-key" type="password" autocomplete="current-password" required maxlength="256">
       <button class="pill solid" type="submit">sign in</button><p id="notes-login-status" role="status"></p></form>
     </dialog>`;
-  document.body.append(host);
+  // The dialogs live outside the panel, so a note opens even while the panel is closed.
+  document.body.append(host, host.querySelector("#note-dialog"), host.querySelector("#notes-login"));
   const $ = id => document.getElementById(id);
   const sculpture = createNotesSculpture(world);
   let opened = false, week = "week01", selected = null;
   const store = createNotesStore(refresh);
   const weekNotes = () => store.notes.filter(n => n.week === week);
   for (const room of world.rooms) {
-    const option = document.createElement("option"); option.value = room.id; option.textContent = room.label; $("notes-week").append(option);
+    const option = document.createElement("option"); option.value = room.id; option.textContent = room.label; $("note-week").append(option);
   }
   for (const [key, color] of Object.entries(NOTE_COLORS)) {
     const b = document.createElement("button"); b.className = "note-swatch"; b.dataset.color = key; b.style.setProperty("--swatch", color.light);
@@ -78,6 +78,7 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
       $("note-dialog").style.setProperty("--note-paper", palette.paper);
       $("note-dialog").style.setProperty("--note-light", palette.light);
       $("note-text").readOnly = !store.canEdit;
+      $("note-week").value = note.week; $("note-week").hidden = !store.canEdit; $("note-label").hidden = store.canEdit;
       $("note-count").textContent = `${note.text.length} / 4000`;
       $("note-colors").hidden = !store.canEdit; $("note-delete").hidden = !store.canEdit;
       for (const b of $("note-colors").children) b.setAttribute("aria-pressed", String(b.dataset.color === note.color));
@@ -89,8 +90,8 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
     week = world.rooms.some(r => r.id === id) ? id : "week01";
     opened = true; host.hidden = false; root.dataset.notes = "";
     $("notes-button").setAttribute("aria-expanded", "true");
-    $("notes-week").value = week;
-    refresh(); $("notes-week").focus();
+    $("notes-name").textContent = world.rooms.find(r => r.id === week)?.label || "notes";
+    refresh(); $("notes-close").focus();
     void store.load();
   }
   function close() {
@@ -102,7 +103,6 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
   }
   function select(id) {
     const note = store.get(id); if (!note) return;
-    if (!opened) open(note.week);
     selected = id;
     $("note-label").textContent = world.rooms.find(r => r.id === note.week)?.label || "notes";
     $("note-text").value = note.text; $("note-remove-confirm").hidden = true;
@@ -110,15 +110,27 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
     if (store.canEdit) $("note-text").focus(); else $("note-done").focus();
   }
   function closeNote() { $("note-dialog").close(); selected = null; void store.flush(); }
-  function add() {
+  // The next free spot on a week's wall: three across, two rows, then a new block below.
+  function slot(target) {
+    const i = store.notes.filter(n => n.week === target).length;
+    return { x: (i % 3 - 1) * 2.65, y: (Math.floor(i % 6 / 3) === 0 ? 1 : -1) * 1.45 };
+  }
+  // A new note starts in the week you are in; the note itself says which week, and can change it.
+  function add(target = week) {
     if (!store.canEdit) return;
-    const i = weekNotes().length;
-    const note = { id: crypto.randomUUID(), week, text: "", color: Object.keys(NOTE_COLORS)[i % 4], x: (i % 3 - 1) * 2.65, y: (Math.floor(i % 6 / 3) === 0 ? 1 : -1) * 1.45, revision: null };
+    if (!world.rooms.some(r => r.id === target)) target = "week01";
+    const i = store.notes.filter(n => n.week === target).length;
+    const note = { id: crypto.randomUUID(), week: target, text: "", color: Object.keys(NOTE_COLORS)[i % 4], ...slot(target), revision: null };
     store.edit(note); select(note.id);
   }
-  $("notes-week").addEventListener("change", () => { week = $("notes-week").value; refresh(); });
+  $("note-week").addEventListener("change", () => {
+    const note = store.get(selected), target = $("note-week").value;
+    if (!note || note.week === target) return;
+    store.edit({ ...note, week: target, ...slot(target) });
+    if (opened) { week = target; $("notes-name").textContent = world.rooms.find(r => r.id === week)?.label || "notes"; refresh(); }
+  });
   $("notes-close").addEventListener("click", close);
-  $("notes-add").addEventListener("click", add); $("notes-first").addEventListener("click", add);
+  $("notes-add").addEventListener("click", () => add()); $("notes-first").addEventListener("click", () => add());
   $("notes-retry").addEventListener("click", () => void store.flush());
   $("note-done").addEventListener("click", closeNote);
   $("note-dialog").addEventListener("cancel", e => { e.preventDefault(); closeNote(); });
@@ -162,6 +174,8 @@ export function createNotes({ world, camera, walker, canvas, beforeOpen, reduced
     pickLink(e) { return sculpture.pickLink(e, camera); },
     pick(e) { return store.get(sculpture.pick(e, camera)); },
     get opened() { return opened; },
+    get canEdit() { return store.canEdit; },
+    create(week) { add(week); },
     resize() {},
     press(e) { const id = sculpture.pick(e, camera); if (id) { select(id); return true; } return false; },
     hover(e) { return Boolean(sculpture.pick(e, camera)); },

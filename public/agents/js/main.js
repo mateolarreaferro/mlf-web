@@ -199,6 +199,8 @@ function pick(e) {
 /* A click on a room's words goes there and reads; a double-click on the ground goes to that spot. */
 function onPress(e, double) {
   if (sound.diagnostics().wanted) sound.start();
+  // An editor's right click leaves a new note in the room they are in (or the nearest one).
+  if (e.button === 2 && notes?.canEdit) { notes.create(nearestRoom()); return; }
   if (companion?.hit(e)) { companion.talk(); return; }
   { const note = notes?.pick(e); if (note) { knowledge?.inspectNote(note); return; } }
   const link = notes?.pickLink(e); if (link) { knowledge?.inspectLink(link); return; }
@@ -216,6 +218,12 @@ canvas.addEventListener("pointermove", (e) => {
   hoverAt = e.timeStamp;
   canvas.style.cursor = companion?.hit(e) || notes?.hover(e) || notes?.pickLink(e) || pick(e)?.object.userData.roomId ? "pointer" : "grab";
 });
+
+function nearestRoom() {
+  if (world.rooms.some((r) => r.id === region)) return region;
+  const p = camera.position;
+  return world.rooms.reduce((best, r) => (Math.hypot(r.center.x - p.x, r.center.z - p.z) < Math.hypot(best.center.x - p.x, best.center.z - p.z) ? r : best)).id;
+}
 
 /* Walk to a room and, if it has a page, open it on arrival. */
 function visit(id) {
