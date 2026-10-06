@@ -25,7 +25,7 @@ export const ROOMS = [
   { id: "week12", label: "week 12", title: "", status: "soon" },
   { id: "week13", label: "week 13", title: "", status: "soon" },
   // The last entry is the big room at the far end of the atrium.
-  { id: "final", label: "final project", title: "three ideas", status: "open", final: true },
+  { id: "final", label: "final project", title: "dream diary, with ray", status: "open", final: true },
 ];
 
 /* The same spectral ramp as mateolarreaferro.com, warm to cool. */
