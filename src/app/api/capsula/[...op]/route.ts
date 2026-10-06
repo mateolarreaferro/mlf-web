@@ -6,11 +6,11 @@ import {
   access, adminPasswordMatches, canWrite, endSession, isAdmin, me, startAdmin, startSession,
 } from "@/lib/capsula/auth";
 import {
-  acceptAsk, addEntry, ask, blobPrefix, dropAsk, checkPassword, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
-  removePerson, renamePerson, resetPassword, revealPassword, saveDraft, within, USERNAME, usernameFor,
+  acceptAsk, addEntry, ask, blobPrefix, dropAsk, checkPassword, getInsight, saveInsight, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
+  listPeople, removePerson, renamePerson, saveEntry, resetPassword, revealPassword, saveDraft, within, USERNAME, usernameFor,
   type Answer, type Mode, type Person, type Source,
 } from "@/lib/capsula/store";
-import { AUDIO_LIMIT, Said, extract, fromCsv, fromDocx, fromXlsx, transcribe } from "@/lib/capsula/ingest";
+import { AUDIO_LIMIT, Said, extract, fromCsv, fromDocx, fromXlsx, tidy, transcribe } from "@/lib/capsula/ingest";
 import { opening, marker } from "@/lib/capsula/interviewer";
 import { currentInsight, readCapsule, refreshInsight } from "@/lib/capsula/insight";
 
@@ -204,6 +204,11 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
       answers = answers.concat(read.answers.filter((a) => !a.questionId || !have.has(a.questionId)));
     }
     if (!answers.length) return no("No encontré respuestas en eso.");
+    // A sheet's answers arrive as typed; Claude's reading above already spells correctly.
+    if (source === "hoja") {
+      const fixed = await tidy(answers.map((a) => a.answer));
+      answers = answers.map((a, i) => ({ ...a, answer: fixed[i] }));
+    }
     // A recording is what the entry is, even when its words arrived as a transcript.
     if (files.some((f) => f.type.startsWith("audio/"))) source = "audio";
     const entry = await addEntry(person.username, { round, date, source, answers, summary, transcript: transcript || undefined, files });
@@ -221,6 +226,67 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     if (!USERNAME.test(username) || RESERVED.includes(username)) return no("Ese usuario no sirve: letras, números y puntos.");
     if (!(await renamePerson(person, name, username))) return no("Ese usuario ya existe.", 409);
     return json({ username, name });
+  },
+
+  /** Everyone's usernames, for scripts that walk the whole capsule. */
+  async roster() {
+    if (!(await isAdmin())) return no("Solo el admin.", 403);
+    return json({ usernames: (await listPeople()).map((p) => p.username) });
+  },
+
+  /**
+   * The spelling pass over what is already stored: every answer, each
+   * entry's summary, and the quotes on the map (they are the same words).
+   * Without `changes` it proposes them and writes nothing; with `changes` it
+   * writes exactly those, each only if the text is still what it was when
+   * proposed. Transcripts are the record and are never touched.
+   */
+  async tidy(_request, body) {
+    if (!(await isAdmin())) return no("Solo el admin.", 403);
+    const person = await getPerson(str(body.username, 40));
+    if (!person) return no("No existe esa persona.", 404);
+    const [entries, insight] = await Promise.all([listEntries(person.username), getInsight(person.username)]);
+
+    // Every text the pass may touch, by a stable address.
+    type Slot = { where: string; question: string; get: () => string; set: (v: string) => void };
+    const slots: Slot[] = [];
+    for (const e of entries) {
+      e.answers.forEach((a, i) => slots.push({ where: `entry:${e.id}:${i}`, question: a.question, get: () => a.answer, set: (v) => { a.answer = v; } }));
+      if (e.summary) slots.push({ where: `summary:${e.id}`, question: "(resumen)", get: () => e.summary!, set: (v) => { e.summary = v; } });
+    }
+    insight?.points.forEach((pt, i) => pt.quotes.forEach((q, j) =>
+      slots.push({ where: `quote:${i}:${j}`, question: `(mapa: ${pt.label})`, get: () => q.text, set: (v) => { q.text = v; } })));
+
+    if (Array.isArray(body.changes)) {
+      const wanted = new Map((body.changes as { where: string; before: string; after: string }[]).map((c) => [c.where, c]));
+      let applied = 0;
+      for (const slot of slots) {
+        const c = wanted.get(slot.where);
+        if (c && slot.get() === c.before && typeof c.after === "string") { slot.set(c.after); applied++; }
+      }
+      if (applied) {
+        for (const e of entries) await saveEntry(person.username, e);
+        // Same entries, so the map stays current: only its quotes change.
+        if (insight) await saveInsight(person.username, insight);
+      }
+      return json({ applied });
+    }
+
+    const changes: { where: string; question: string; before: string; after: string }[] = [];
+    // A batch per entry keeps each call small; the quotes go as one more.
+    const groups = [...entries.map((e) => slots.filter((x) => x.where.endsWith(e.id) || x.where.startsWith(`entry:${e.id}:`))),
+      slots.filter((x) => x.where.startsWith("quote:"))].filter((g) => g.length);
+    for (const group of groups) {
+      const fixed = await tidy(group.map((x) => x.get()));
+      group.forEach((x, i) => {
+        let after = fixed[i];
+        const before = x.get();
+        // A quote is cut from the middle of a sentence: its first letter stays as it was.
+        if (x.where.startsWith("quote:") && after[0]?.toLowerCase() === before[0]) after = before[0] + after.slice(1);
+        if (after !== before) changes.push({ where: x.where, question: x.question, before, after });
+      });
+    }
+    return json({ name: person.name, changes });
   },
 
   /** The themes map and letter: the cached one when current, otherwise read now (a minute or two). */

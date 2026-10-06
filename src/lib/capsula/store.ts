@@ -336,6 +336,11 @@ export async function addEntry(username: string, entry: Omit<Entry, "id" | "crea
   return full;
 }
 
+/** Writes an entry back as it is, keeping its id and when it was made. */
+export async function saveEntry(username: string, entry: Entry) {
+  await kv.hset(ENTRIES(username), entry.id, seal(entry));
+}
+
 export async function removeEntry(username: string, id: string) {
   await kv.hdel(ENTRIES(username), id);
 }

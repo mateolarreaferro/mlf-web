@@ -606,6 +606,26 @@ live in `components/capsula/voice.ts`. A first visit opens "cómo funciona"
 in the room; the header's ? reopens it, and the voice waits for it to close,
 so the first question plays after a press and autoplay is never blocked.
 
+**Spelling only** (2026-10-05). Mateo asked that the stored interviews be
+corrected for typos and spelling and nothing else. `tidy()` in `ingest.ts`
+asks Claude for that, and `keepSpelling()` enforces it in code word by word:
+a correction stands only as accents, case, punctuation, a one- or two-letter
+typo, or words fused or split; a word added, dropped or swapped goes back to
+what they wrote. Spreadsheet answers get it at import (Claude's own readings
+already spell correctly). For what is stored, `node scripts/capsula-tidy.mjs
+--base <site>` writes a before/after review to `~/Desktop/Capsula del
+Tiempo/ortografia-<host>.md` and `.json`, and `--apply <json>` writes exactly
+those changes. It covers answers, summaries and the map's quotes (with the
+map's cache otherwise untouched); transcripts are the record and never change.
+
+**The card's clip** (`public/projects/capsula-demo.mp4`, 2026-10-05) is a
+made-up capsule for "Mateo Larrea" (two invented rounds, 2025 and 2026,
+ingested as text into the dev capsule (`capsula:dev`), then deleted), recorded with
+Playwright at 1280x720 against `next dev`: the map with two points open,
+"todos" across the years, then the interview room with the voice and the
+microphone. Sped up 1.3x, 1024x576, CRF 26, about 31 seconds and 1.3 MB.
+Never record a real friend's capsule.
+
 Answers are stored against question ids in `questions.ts` (the old
 `Template.xlsx`), which is what lines years up: never reuse or rename an id,
 retire it instead. Spreadsheets map straight onto ids with no model call;

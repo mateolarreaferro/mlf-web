@@ -126,6 +126,7 @@ Rules:
 - If an answer to one question comes up while talking about another, file it under the question it answers.
 - Use "otro" sparingly, for something that clearly matters to them and fits no question.
 - A transcript made by speech recognition has errors: fix obvious mishearings from context, never change meaning.
+- Spell correctly: fix typos, missing accents and fused or split words. That is the only liberty with their words; slang and regionalisms stay.
 - Notes like "(escucha grabación)" mean the full answer is in the recording; keep what is written.`,
     prompt: text,
     providerOptions: { anthropic: { effort: "medium" } },
@@ -137,4 +138,89 @@ Rules:
       ? { questionId: null, question: a.question.trim(), answer: a.answer.trim() }
       : { questionId: a.questionId, question: questionById.get(a.questionId)!.text, answer: a.answer.trim() });
   return { summary: output.summary.trim(), answers };
+}
+
+/* ---------- spelling only ---------- */
+
+const plain = (t: string) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9ñ]+/g, "");
+
+function distance(a: string, b: string) {
+  let row = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const next = [i];
+    for (let j = 1; j <= b.length; j++) next[j] = Math.min(row[j] + 1, next[j - 1] + 1, row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    row = next;
+  }
+  return row[b.length];
+}
+
+/** How far apart two words may be and still be a typo of each other. */
+const typo = (a: string, b: string) => distance(plain(a), plain(b)) <= (plain(a).length >= 5 ? 2 : 1);
+
+/** Word-level alignment (LCS on the plain form), as runs of before/after words. */
+function align(a: string[], b: string[]) {
+  const key = (w: string) => plain(w);
+  const n = a.length, m = b.length;
+  const lcs = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
+    lcs[i][j] = key(a[i]) === key(b[j]) ? lcs[i + 1][j + 1] + 1 : Math.max(lcs[i + 1][j], lcs[i][j + 1]);
+  const runs: { same: boolean; a: string[]; b: string[] }[] = [];
+  const push = (same: boolean, x: string[], y: string[]) => {
+    const last = runs.at(-1);
+    if (last && !last.same && !same) { last.a.push(...x); last.b.push(...y); } else runs.push({ same, a: x, b: y });
+  };
+  let i = 0, j = 0;
+  while (i < n || j < m) {
+    if (i < n && j < m && key(a[i]) === key(b[j])) { push(true, [a[i]], [b[j]]); i++; j++; }
+    else if (j < m && (i === n || lcs[i][j + 1] >= lcs[i + 1][j])) { push(false, [], [b[j]]); j++; }
+    else { push(false, [a[i]], []); i++; }
+  }
+  return runs;
+}
+
+/**
+ * Keeps a proofread text only where it changed spelling: per run of words,
+ * the correction stands if it is the same words with accents, case or
+ * punctuation fixed, a typo of each (one or two letters), or words fused or
+ * split ("aveces" / "a veces"). Anything else (a word added, dropped or
+ * swapped) goes back to what they wrote. Line breaks are kept as they were.
+ */
+export function keepSpelling(before: string, after: string): string {
+  return before.split("\n").length !== after.split("\n").length ? before
+    : before.split("\n").map((line, k) => {
+      const a = line.split(" "), b = after.split("\n")[k].split(" ");
+      return align(a, b).flatMap((r) => {
+        if (r.same) return r.b;
+        const fused = r.a.length && r.b.length && plain(r.a.join("")) === plain(r.b.join(""));
+        const typos = r.a.length === r.b.length && r.a.every((w, i) => typo(w, r.b[i]));
+        return fused || typos ? r.b : r.a;
+      }).join(" ");
+    }).join("\n");
+}
+
+const tidySchema = z.object({ texts: z.array(z.string()) });
+
+/**
+ * Typos and spelling, nothing else: the same words in the same order, in
+ * their voice. Returns one text per input, the original wherever the model
+ * changed more than spelling (see keepSpelling).
+ */
+export async function tidy(texts: string[]): Promise<string[]> {
+  if (!texts.length) return [];
+  const { output } = await generateText({
+    model: anthropic(MODEL),
+    output: Output.object({ schema: tidySchema }),
+    instructions: `You proofread answers friends wrote or said for a time capsule, mostly in Ecuadorian Spanish, sometimes English. Correct spelling and typos only.
+
+Fix: misspelled words, missing or wrong accents (tildes), letters doubled, dropped or swapped, words fused or split by mistake ("aveces" -> "a veces"), a missing capital at the start of a sentence or on a proper name, and an obvious punctuation slip (a doubled period, a missing question mark that the sentence opens with "¿").
+
+Never: change a word for another, reorder, add or remove words, change verb forms or agreement, translate, formalise, or touch slang, regionalisms, anglicisms, swearing, nicknames, laughter ("jajaja"), emoji or the way they punctuate on purpose. Names of people, bands, places and brands stay as written unless clearly misspelled. When unsure, leave it. A text with nothing to fix comes back identical. Some texts are fragments quoted from the middle of a sentence: leave their first letter as it is.
+
+You get a JSON array of texts. Return the same number of texts, in the same order.`,
+    prompt: JSON.stringify(texts),
+    providerOptions: { anthropic: { effort: "low" } },
+    maxOutputTokens: 32_000,
+  });
+  if (output.texts.length !== texts.length) return texts;
+  return texts.map((t, i) => keepSpelling(t, output.texts[i]));
 }
