@@ -66,7 +66,12 @@ if (applyFrom) {
   const people = {};
   const lines = [`# Ortografía: ${base}`, "", `Propuesto ${new Date().toLocaleString("sv")}. Solo erratas y ortografía; nada se ha escrito todavía.`, ""];
   for (const username of usernames.filter((u) => !only || u === only)) {
-    const { name, changes } = await api("tidy", { username });
+    let result;
+    for (let attempt = 1; attempt <= 3 && !result; attempt++) {
+      try { result = await api("tidy", { username }); } catch (error) { console.log(`${username}: attempt ${attempt} failed (${error.message})`); }
+    }
+    if (!result) { lines.push(`## ${username}`, "", "(no se pudo revisar; vuelve a correr con --only)", ""); continue; }
+    const { name, changes } = result;
     people[username] = changes;
     console.log(`${username}: ${changes.length} changes`);
     if (!changes.length) continue;

@@ -254,7 +254,8 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
       e.answers.forEach((a, i) => slots.push({ where: `entry:${e.id}:${i}`, question: a.question, get: () => a.answer, set: (v) => { a.answer = v; } }));
       if (e.summary) slots.push({ where: `summary:${e.id}`, question: "(resumen)", get: () => e.summary!, set: (v) => { e.summary = v; } });
     }
-    insight?.points.forEach((pt, i) => pt.quotes.forEach((q, j) =>
+    // A map read in an older shape may have no quotes; it is re-read on its own when opened.
+    insight?.points?.forEach((pt, i) => (pt.quotes ?? []).forEach((q, j) =>
       slots.push({ where: `quote:${i}:${j}`, question: `(mapa: ${pt.label})`, get: () => q.text, set: (v) => { q.text = v; } })));
 
     if (Array.isArray(body.changes)) {
