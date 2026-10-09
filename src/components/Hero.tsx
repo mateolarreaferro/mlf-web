@@ -79,7 +79,7 @@ export default function Hero() {
           I also have a strong foundation in immersive technology and audio. I
           engineered VR at{" "}
           <BioLink href="https://www.prismsvr.com/">Prisms</BioLink> (an
-          a16z-backed startup), taught VR at MIT, and hold a degree in computer
+          a16z-backed startup), TA’d VR at MIT, and hold a degree in computer
           music and psychoacoustics from Berklee.
         </p>
         <p className="mt-3 text-[13px] leading-relaxed text-faint sm:text-sm xl:text-[15px]">
