@@ -361,7 +361,7 @@ a page ducks the scene. Its underwater appearance is always dark. Course policy 
 disclosing AI use, so keep the disclosure lines in the README and the weekly
 pages truthful when you change things.
 
-## Hosted projects (/theo, /headwave, /sticky-notes)
+## Hosted projects (/theo, /headwave, /sticky-notes, /eyelab)
 
 Some projects run on the site itself: the card's "interactive demo" pill
 (`demo:` in the frontmatter) opens the real app in a new tab. Same shape as
@@ -517,6 +517,13 @@ too small a scale leaves every band under the colour threshold and the
 spiral draws white. Its source is the microphone (played back only with
 "listen back" on, since speakers feed it back) or `meditation.mp3` from Rats
 & Children.
+
+Eye Lab is the fourth (`/eyelab`, `content/projects/eye-lab.md`): the Eye-Lab repo's `web/` folder,
+a Vite app that runs entirely in the browser, built with `--base=/eyelab/` by
+`npm run sync:demos -- eyelab` (one argument syncs one project; none syncs all). It needs nothing from
+this site: no route, no budget, no `unlock.js`. Iris calls the Eye Lab server (eye-lab-iris.vercel.app)
+with each visitor's own Claude key, and Whole screen talks to a macOS helper on 127.0.0.1. The
+Eye-Lab repo's CLAUDE.md covers the rest.
 
 **Demo clips.** The three hosted projects' cards play a recording of the
 project in use (`public/projects/theo-demo.mp4`, `headwave-demo.mp4`,

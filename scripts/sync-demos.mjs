@@ -26,6 +26,11 @@
   module, so the private wall is never reachable, and names neither the app
   nor its song). There is no Python here: notes go to src/app/api/sticky-notes.
   The 57 MB wav becomes a 128 kbps mp3 called music.mp3.
+
+  Eye Lab: the Eye-Lab repo's web/ folder, a Vite app built with
+  --base=/eyelab/. Everything runs in the visitor's browser; Iris goes to the
+  Eye Lab server (eye-lab-iris.vercel.app) with the visitor's own Claude key,
+  and Whole screen talks to the macOS helper on 127.0.0.1. No backend here.
 */
 
 import { execFileSync } from "node:child_process";
@@ -139,7 +144,31 @@ function stickyNotes() {
   console.log("sync-demos: public/sticky-notes now matches hosted/Ansantuario");
 }
 
-theo();
-headwave();
-stickyNotes();
+function eyeLab() {
+  const repo = path.join(root, "hosted", "Eye-Lab");
+  const web = path.join(repo, "web");
+  if (!existsSync(path.join(web, "package.json"))) {
+    console.error(`sync-demos: nothing at ${web}. Clone github.com/mateolarreaferro/Eye-Lab into hosted/ first.`);
+    process.exit(1);
+  }
+  if (!existsSync(path.join(web, "node_modules"))) {
+    execFileSync("npm", ["ci"], { cwd: web, stdio: "inherit" });
+  }
+  execFileSync("npx", ["tsc", "--noEmit", "-p", "."], { cwd: web, stdio: "inherit" });
+  execFileSync("npx", ["vite", "build", "--base=/eyelab/"], { cwd: web, stdio: "inherit" });
+
+  const site = path.join(root, "public", "eyelab");
+  rmSync(site, { recursive: true, force: true });
+  cpSync(path.join(web, "dist"), site, { recursive: true, filter: junk });
+  console.log("sync-demos: public/eyelab now matches hosted/Eye-Lab/web");
+}
+
+// `npm run sync:demos -- eyelab` syncs just one project; no argument syncs them all.
+const only = process.argv[2];
+const all = { theo, headwave, "sticky-notes": stickyNotes, eyelab: eyeLab };
+if (only && !all[only]) {
+  console.error(`sync-demos: unknown project "${only}". Known: ${Object.keys(all).join(", ")}`);
+  process.exit(1);
+}
+for (const [slug, sync] of Object.entries(all)) if (!only || only === slug) sync();
 writeRequirements(root);
