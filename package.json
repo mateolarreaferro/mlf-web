@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "sync:agents": "node scripts/sync-agents.mjs",
-    "sync:demos": "node scripts/sync-demos.mjs"
+    "sync:demos": "node scripts/sync-demos.mjs",
+    "lovesims:date": "node --env-file-if-exists=.env.local --import tsx scripts/lovesims-date.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.71",
     "@ai-sdk/react": "^4.0.130",
+    "@anthropic-ai/sdk": "^0.134.0",
     "@upstash/redis": "^1.39.0",
     "@vercel/blob": "^2.8.0",
     "ai": "^7.0.127",
@@ -37,6 +39,7 @@
     "eslint-config-next": "16.3.0",
     "playwright-core": "^1.62.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

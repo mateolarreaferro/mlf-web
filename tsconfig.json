@@ -30,5 +30,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "hosted"]
+  "exclude": ["node_modules", "hosted", "agents2026-mateo"]
 }

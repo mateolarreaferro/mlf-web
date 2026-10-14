@@ -399,9 +399,10 @@ html[data-splash="seen"] .splash {
 /*
   The capsule (/capsula) keeps the light mood at every hour: it is a white
   room friends come back to once a year, and attractor.world's paper is the
-  brief. Same tokens as the light mood, held regardless of `data-mood`.
+  brief. LoveSims (/lovesims) too: its cards and portraits were drawn for
+  white. Same tokens as the light mood, held regardless of `data-mood`.
 */
-:root:root:has([data-capsula]) {
+:root:root:has([data-capsula], [data-lovesims]) {
   color-scheme: light;
   --paper: #f4f3ee;
   --ink: #1b1d1b;

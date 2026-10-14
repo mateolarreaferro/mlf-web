@@ -657,6 +657,58 @@ capsule, so it can never reveal more than the asker may read. The interview has 
 `scripts/capsula-import.mjs` imports it through the admin endpoints and writes
 new passwords next to it, outside the repo.
 
+## /lovesims (LoveSims v2)
+
+The LoveSims date engine runs on the site at `/lovesims` (2026-10-14). Like
+/capsula, **the code lives in this repo**: `src/lib/lovesims/` is the engine
+(read `types.ts` first; `date.ts` is the loop, `llm.ts` the model layer,
+`prompts.ts` the prompts, `metrics.ts` the computed debrief),
+`src/components/lovesims/` the procedural portraits, the stage, the affect
+track and the `useDateRun` hook that buffers the stream into beats, and
+`src/app/lovesims/` the three pages: the door, `/lovesims/play` (the game:
+read a line, guess whether the listener warmed, cooled or held, watch the
+face change; what is scored is the player's empathic accuracy, never the
+couple) and `/lovesims/date` (the analyst view). It is a port of
+`lovesims-nextjs/` in the lovesims repo (`Attractor-AI-Lab/lovesims`,
+private, checked out at `hosted/lovesims/` and git-ignored), made for Next 16
+and Tailwind v4; that repo's `CLAUDE.md` and `docs/lovesims-v2.md` hold the
+research notes, invariants and measured numbers, and are the reference for
+any change to the engine. The engine files here changed only in comments
+(house style, no em dashes) and in where the cast comes from; the prompt
+strings are byte-identical to the research build's r4 regime, so keep them
+that way unless you mean to start a new measurement regime.
+
+**The cast is fictional, and the real corpus must never enter this repo.**
+The research ran on interviews with 36 real students, pseudonymised but
+re-identifiable from the detail, and the lovesims repo's `DATA.md` forbids
+copying it anywhere or shipping it to users without fresh consent. So
+`src/lib/lovesims/cast.ts` is twelve invented people (and `PAIRS`, the six
+pairs the game offers), written to the shape `agentbank.ts` reads. Page copy
+says so. If Mateo ever re-consents or synthesizes a new corpus, swapping the
+cast is a data change: the loader and the Tier 0 transcript path are
+unchanged.
+
+**Metering.** `/api/lovesims/agents` is the free catalog (who, where, whether
+the model is connected, free dates left). `/api/lovesims/date` streams one
+date as NDJSON (one `DateEvent` per line): same origin only, 6 live dates an
+hour per visitor and 60 per instance, and **one date is one of the three free
+uses** (`spendUse`), refunded if the model fails before the first turn.
+`live: false` runs the deterministic mock provider, spends nothing, and is
+what `/lovesims/play?demo=1` sends (8 turns, no model). Turns are capped at
+22 and the route's `maxDuration` is 300, Vercel's ceiling: a live turn is
+about seven seconds. The models are the research build's measured pair,
+`claude-opus-5` as the voice (effort low, thinking off: with thinking a turn
+took a minute) and `claude-haiku-4-5` as the appraisal coder;
+`LOVESIMS_VOICE_MODEL` / `LOVESIMS_ANALYST_MODEL` override them, and an
+override gets no `thinking` field (newer models reject disabling it) and low
+effort instead. The page is always the light mood (`[data-lovesims]` in
+`globals.css`) and has no portfolio header (`SiteChrome`).
+
+`npm run lovesims:date -- --mock` is the engine's self-check (fifteen
+assertions that every layer is load-bearing, ported from the research
+runner); run it after touching `src/lib/lovesims/`. Without `--mock` it runs
+a live date on the key in `.env.local` and prints the model spend.
+
 ## The agent
 
 `src/app/api/chat/route.ts` streams via AI SDK (Claude, with the system
