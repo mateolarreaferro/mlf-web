@@ -1,0 +1,102 @@
+[
+ {
+  "step": 0,
+  "stop_reason": "tool_use",
+  "content": [
+   {
+    "id": "toolu_018pMKKVvHNvsCN2AjBhcSPk",
+    "caller": {
+     "type": "direct"
+    },
+    "input": {
+     "seconds": 5
+    },
+    "name": "wait",
+    "type": "tool_use"
+   }
+  ]
+ },
+ {
+  "step": 1,
+  "stop_reason": "tool_use",
+  "content": [
+   {
+    "signature": "CAQSwgUKEAgSGAI4AUIIdGhpbmtpbmcSDIMpWnDvauHXRSRFmBoMPRb5at0hiq4Xlub9IjDKnVF+8KVyJ7RUzDcxyYhAmsFVYeddCX2ZhPDe6uiYGo18p2isrp82NUM/tqn6qT4q3wRJxB2rasf6T/G/AQA7Pk+PQBij5xgZWMA10psdNbvdl3f4DbGEIAa5qxJmfaKeRtanq4Y+d1GgVZ9wYFL5R6wIVw+Suwkgpl2CarbMdCgWLPiV9dIvnnonxM7ZgdHW7SvnrzrytoII9N7aI780EVSOj+sS1IlIy6USkOuDFcKaZtytpGBxjyTpDztJzxTNopxWqtDZ5V4JU9EMv2jNmovgvAyHh79UlgF80K8D4Iqazi8mmO/apE1XLjh97Xw2a399WCmkSPA5Xq0N0h+7E+ZHzoeK2P/qvDy3KOCzVzVsB5VsGJS0Gwlsc37tjqRnt2tGUqSLAMk+evU4CuCB2hAfzGtxSLYUKBQHPmr6Rq9qdSfOI1EBY6BJ5vIRnnZMQEY2cLLXmka/kWiniCA9/23R8+2JIg9VeahY4WPxOnPLW4HIfb1IV8p94gtpI41Ft7gbQCZdp7NY8edWFNl6MytQGpMThW7qPf6bgFWfhy4YI6eA18ZK08+8m1Kn4S7KiQY8Iz+2YTdoY93IbhMsB4aIv/QLqF574+v9UdiU9krpTbmnf+L5UENxuGg8LfFNRz0LzwfCdC+xfBgAMt+k7YnM9qheby8EzntAj47kW2P/xsOJq+EaBHfaEKUbtCmxyWMwVuKmeezmttFdDMhEF90W7jO8QdKhrcOA8MNFdeEweuJKK1DI1DXTKrCxQwWyARlI0F3fX+O+eEWb6rvLEW0/R+G/MmqqXW+uAYzh8GTQl+7UeGPSDgnUoNfvak8OZjYSS3M9QpYUYuPUvHq46ikRj2wahfV5bBB1Rj6Hd7bqGAE=",
+    "thinking": "",
+    "type": "thinking"
+   },
+   {
+    "id": "toolu_011V1mnzWYSzMbixHvKEAdqT",
+    "caller": {
+     "type": "direct"
+    },
+    "input": {
+     "seconds": 8
+    },
+    "name": "wait",
+    "type": "tool_use"
+   }
+  ]
+ },
+ {
+  "step": 2,
+  "stop_reason": "tool_use",
+  "content": [
+   {
+    "signature": "CAQS7gUKEAgSGAI4AUIIdGhpbmtpbmcSDBfXSZf2/yKmmStbMxoMAd5mf+nassoE3Do1IjBmkSZBN6edOSGQaFi0PggGWRvE0DavfD4TUbe9refa2Lvdnbs2w3xtCfbH5BqYYroqiwXI6fja+zTNCPxxOOlbgM9YMIfH8rTZDNCWYNtZiVq7U0EToFPh/Aa4Np4nL6Sh5uLvi6jR2eg3j0pR2xbVI0mSIzM6Ke3GZSsnbym5JwQhM7TQPoao7pQCM9wVsOVpVeU+U4DhITxeIdWEyFuPZMaw5qFgNS7eAhV+ErefD8WysBPSC9uxeQIs47E87vjhFtlaMg/dH4qq76NI+dV9uiqbJp/URrrcrdEBpD0ti493Ea7PbrXXqukDGl/8jDcbAyEyw0r29PLsIMpn/pLBaPAsCB0ysBR8nd7Y18o7SYj+SqZgBUtH3O7dH0lkmnF8v+LVWamXndJTNCxMsAViwj4tejidxup1DYFxD7AKpdDpMkUWVWmwr7Txw58lKbwoQuepS4q5qL9hStm9k3h7ds11aM5+uJJ6n9eShIpdItW4CM5K/4uSlRC1vTZwSxKq8hehvXlZ6tC8geQEMn7aq7LtRLexh+SYfgQeLohZv/C2I/VjWXI5FSOO8PUCWLf1aGLyglI8VBWHl7IS4Yw+VG2VzIC9OBIZFZ5A3+PgB9C9NDezPD5L8wsihrThHVWqwJy2lsQAXv1BOjDlEu4m9DvsjA8fVmG8bS9tHpaURifY3/IUvkdyEcWIJbQ4pvRq8BFPjmd94eYl6FTwjIG9tGofVx3FDqhbBSyEgLF2RiIN+iXDywP/hdUMkkwdztM1HvpIANc8ZkcjeuQWkt++xITnVPrXeu7F3E0V6zBk+Vrn9b65FXU0I9sw/bb3sBbzIpL2B2L97F30mBse32Kbeqe2SA/7Q12uH/1WU3GJ989Ubu3Fcr8NNwjR7QLoXDEI62fg4tg+KGuxZ0kpJrPHDmLWDhImEtg7AnkRj60YAQ==",
+    "thinking": "",
+    "type": "thinking"
+   },
+   {
+    "id": "toolu_01KatGv7B7Jsd4Uk2bCZ5nJQ",
+    "caller": {
+     "type": "direct"
+    },
+    "input": {
+     "seconds": 4
+    },
+    "name": "wait",
+    "type": "tool_use"
+   }
+  ]
+ },
+ {
+  "step": 3,
+  "stop_reason": "tool_use",
+  "content": [
+   {
+    "signature": "CAQSzAcKEAgSGAI4AUIIdGhpbmtpbmcSDJpF6H3zD9jrE+usaBoMEdHlcMxrcx8GpQz+IjB4vtkj1NX8tNDKjN2edZxivv3xTLPRiM8nzlfxnpq5u1zUADP4WAcO1WQQVP827koq6QY/ahmdsA3xMJgsreghmdFdM7wr/iM60WR2MgRpqaMfzISPWmPH1AmFLjiaZJHWiGXcBHdYHZANV3d7G3KL5Q2eVdg/xmWj9w4lb68llYP/PCaDvYczj+M7jqACV9OU9PLjlT1N6HcoxN1x1R+p34FHz8JtSs7O49zkDXiASRYRNhEolyJYzFj+bxmmmlqXykEBnWPVHMnrZJKglFdArqi75yVuIdcDS0gGobF2oOq3aCQfS8UoIOW0KPuZsS2VuOc0EZAucE0oYNVhkqbrUsg1tA6yQ5bweLdVTgfW3Wr4xrhYN6NO2GSxQbK/IjJwHiCmo1Cmye43VW1UQz8DyffAgktU1wHl9+x60Zmq+AyGhqrM5rJiIKp5fZOECTvWwxUMPB3YeR0UMyRdIHY0VXlk9lPp4h8vjSJV5d1V0j/BfuwwoKfJ1t7mUEPNLCJW+Vk3P1n0/zTeHT4vatNimaIE19Qz2Ks2ziy8rNi4+Yn95JZjoEmcXVwF7NYKwBIFcDs6oq4odtwavoORu5qiCJaggJbwLQzV/Vq2i3ZMyfid/5O6WGIfAoTqPf9ryaC2g5+xj07L9dNv6sLAdI1vXavhlfs6cv/Ie7BkLDVmmMif+O7dsDWaPOqupfBjx89Tzd3h5GpI56oxFlN0qQFpPimK/kNg7H0g+W0TrTJULsmb6BIV+3ceYZ+HqFnwPsh65pyFXbCe4qywzl3EsFXCjxU4t+1ISwiy1j4ENHDAPvABBWUg4/0fd15i2LQpQB8lPex54uXACBhuo7SWJg9dw4EtQ4hlcTn0gCeA7oeBtmoLgzWLcpPGJ46szJnxBXYfVlMUrn5+eCx3hqjlDCqG0Sn6aMM3qHkLSzCJNjnsSJPtS6pj6YhJMXdKtdsbYLUH265l5OR6Mn0Mlq0QRTOt90476ZWXBGLww2ottxlJtEBwlK+aCcMwtCiLvNHrXhF4KqrlDKNOyfIb2nHuB55NQHL+3B2e7omVcwqMD8v++r2FeRYtFUmSQtyOjMgQAjENkXcp/Ed4Q+LTxzAmSg1bs8VEULlUHnG/4p8VqroYi7+mGoOxLIgIcFcBAf/eqCIh5w7BsFlS9JWKFApOPnZsJq0/cvDOX5YDTacLw+fLtO2F/yO3D65rb4wivqQ65n1j4NQDgW+QBIKn7WkYAQ==",
+    "thinking": "",
+    "type": "thinking"
+   },
+   {
+    "id": "toolu_01FNdveBKmbi1h4SoNbVdZBC",
+    "caller": {
+     "type": "direct"
+    },
+    "input": {
+     "count": 2,
+     "sources": [
+      {
+       "azimuth_deg": -116,
+       "label": "loud machine ~290 Hz",
+       "mode": "stationary"
+      },
+      {
+       "azimuth_deg": -122,
+       "label": "quieter machine ~358 Hz",
+       "mode": "steady_rotation"
+      }
+     ],
+     "event": {
+      "kind": "stop",
+      "azimuth_deg": -116
+     },
+     "note": "The 290 Hz source at -116\u00b0 dropped in pitch (to about 240 Hz) and fell silent around t=12-14 s. Once it was gone, a steady, quieter 358 Hz machine showed up on almost the same bearing (-122\u00b0), where the louder one had been masking it."
+    },
+    "name": "report",
+    "type": "tool_use"
+   }
+  ]
+ }
+]

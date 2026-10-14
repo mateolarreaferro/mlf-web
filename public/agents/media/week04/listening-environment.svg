@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="t d">
+  <title id="t">Ludwig listening environment</title>
+  <desc id="d">An agent made of a DSP tracker and a language model listens to an analytic room through a four-channel Ambisonic observation stream and acts by waiting, turning, walking or reporting. The environment keeps the private state: machines, their rotor modes, the listener pose, the noise floor and one scheduled event. Observation and Action records are the only interface. A grader reads the sealed run and the private truth separately and scores count, bearings, event and cost.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0.8L7 4L0 7.2" fill="none" stroke="#8a9ba3" stroke-width="1.2"/>
+    </marker>
+  </defs>
+  <rect width="960" height="460" fill="#0a1015"/>
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif" text-anchor="middle">
+
+    <!-- agent -->
+    <rect x="40" y="60" width="250" height="190" rx="18" fill="rgb(122 183 212 / 0.10)"/>
+    <text x="165" y="92" fill="#7ab7d4" font-size="19">agent</text>
+    <rect x="62" y="110" width="206" height="54" rx="12" fill="rgb(219 230 234 / 0.06)"/>
+    <text x="165" y="133" fill="#dbe6ea" font-size="15">dsp bearing tracker</text>
+    <text x="165" y="151" fill="#8a9ba3" font-size="12">directions, pitch, level, once a second</text>
+    <path d="M165 168V182" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <rect x="62" y="186" width="206" height="54" rx="12" fill="rgb(219 230 234 / 0.06)"/>
+    <text x="165" y="209" fill="#dbe6ea" font-size="15">policy</text>
+    <text x="165" y="227" fill="#8a9ba3" font-size="12">claude with four tools, or a script</text>
+
+    <!-- interface -->
+    <rect x="330" y="60" width="200" height="190" rx="18" fill="none" stroke="#F8961E" stroke-opacity="0.7" stroke-dasharray="4 5"/>
+    <text x="430" y="92" fill="#dbe6ea" font-size="19">interface</text>
+    <text x="430" y="112" fill="#8a9ba3" font-size="12">four versioned json records</text>
+    <text x="430" y="146" fill="#dbe6ea" font-size="14">observation</text>
+    <text x="430" y="163" fill="#8a9ba3" font-size="11">100 ms of 4-channel audio, late pose,</text>
+    <text x="430" y="177" fill="#8a9ba3" font-size="11">action feedback · nothing else</text>
+    <text x="430" y="210" fill="#dbe6ea" font-size="14">action · belief</text>
+    <text x="430" y="227" fill="#8a9ba3" font-size="11">wait, rotate, translate · the report</text>
+
+    <!-- environment -->
+    <rect x="570" y="60" width="350" height="190" rx="18" fill="rgb(248 150 30 / 0.08)"/>
+    <text x="745" y="92" fill="#F8961E" font-size="19">environment</text>
+    <text x="745" y="112" fill="#8a9ba3" font-size="12">private state, step-driven</text>
+    <text x="745" y="142" fill="#dbe6ea" font-size="13">1 to 3 rotating machines · position, shaft rate,</text>
+    <text x="745" y="159" fill="#dbe6ea" font-size="13">mode (steady, accelerating, decelerating, stopped)</text>
+    <text x="745" y="182" fill="#dbe6ea" font-size="13">listener pose · noise floor · budgets</text>
+    <text x="745" y="205" fill="#dbe6ea" font-size="13">one seeded event: none, accelerate, decelerate,</text>
+    <text x="745" y="222" fill="#dbe6ea" font-size="13">stop, start, move</text>
+
+    <!-- arrows between the three -->
+    <path d="M294 130H326" stroke="#8a9ba3" stroke-width="1.2" marker-start="url(#a)"/>
+    <path d="M534 130H566" stroke="#8a9ba3" stroke-width="1.2" marker-start="url(#a)"/>
+    <path d="M294 210H326" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <path d="M534 210H566" stroke="#8a9ba3" stroke-width="1.2" marker-end="url(#a)"/>
+    <text x="310" y="122" fill="#8a9ba3" font-size="10">hears</text>
+    <text x="310" y="203" fill="#8a9ba3" font-size="10">acts</text>
+
+    <!-- the loop, one line -->
+    <text x="480" y="285" fill="#8a9ba3" font-size="13">reset(seed) → 1 s heard → step(action) → 100 ms chunks heard while it runs → … → report or budget out</text>
+
+    <!-- grader -->
+    <rect x="300" y="320" width="360" height="100" rx="18" fill="rgb(219 230 234 / 0.06)"/>
+    <text x="480" y="350" fill="#dbe6ea" font-size="19">grader</text>
+    <text x="480" y="372" fill="#8a9ba3" font-size="12">verifies the run's seal, then opens the private truth</text>
+    <text x="480" y="392" fill="#dbe6ea" font-size="13">count · bearings at 20° · event and where · cost</text>
+    <text x="480" y="409" fill="#8a9ba3" font-size="11">no reward inside the environment</text>
+
+    <path d="M165 254V370H296" stroke="#8a9ba3" stroke-width="1.2" fill="none" marker-end="url(#a)"/>
+    <text x="150" y="330" fill="#8a9ba3" font-size="11" text-anchor="start">sealed run:</text>
+    <text x="150" y="345" fill="#8a9ba3" font-size="11" text-anchor="start">beliefs, actions, report</text>
+    <path d="M745 254V370H664" stroke="#8a9ba3" stroke-width="1.2" fill="none" marker-end="url(#a)"/>
+    <text x="760" y="330" fill="#8a9ba3" font-size="11" text-anchor="start">private truth:</text>
+    <text x="760" y="345" fill="#8a9ba3" font-size="11" text-anchor="start">positions, modes, events</text>
+
+    <text x="480" y="446" fill="#8a9ba3" font-size="11">free-field analytic world, not a room: everything it renders is written down in ludwig/environment.py</text>
+  </g>
+</svg>
