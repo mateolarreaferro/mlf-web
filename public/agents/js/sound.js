@@ -289,7 +289,7 @@ export function createSound() {
         // while halving decoded memory on phones. Original hashes stay intact.
         try { ownedContext = new AudioContext({ sampleRate: 24000 }); }
         catch { ownedContext = new AudioContext(); }
-        prepared = new SatieScene({ engine: new SatieEngine({ audioContext: ownedContext }), seed: 7, levelAnchorDb: 60 });
+        prepared = new SatieScene({ engine: new SatieEngine({ audioContext: ownedContext }), seed: 7, levelAnchorDb: 48 });
       }
       const context = (audio || prepared).engine.audioContext;
       void context.resume().catch(error => logDiagnostic("unlock.error", { message: String(error) }));
@@ -333,6 +333,9 @@ export function createSound() {
         new URL("satie/scene.satie", document.baseURI).href,
         new URL("satie/samples.json", document.baseURI).href,
       ), new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error("Sound loading timed out. Please retry.")), 90000); })]);
+      // scene.load() takes the level_reference written into scene.satie. The mix
+      // file is the authority, so it is applied again after the scene has loaded.
+      scene.engine.setLevelAnchorDb(mix.levelAnchorDb);
       declared.events.clear(); declared.signals.clear();
       for (const e of contract.scene.events ?? []) declared.events.add(e.name);
       for (const g of contract.scene.signals ?? []) declared.signals.add(g.name);
