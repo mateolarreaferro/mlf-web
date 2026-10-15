@@ -399,10 +399,9 @@ html[data-splash="seen"] .splash {
 /*
   The capsule (/capsula) keeps the light mood at every hour: it is a white
   room friends come back to once a year, and attractor.world's paper is the
-  brief. LoveSims (/lovesims) too: its cards and portraits were drawn for
-  white. Same tokens as the light mood, held regardless of `data-mood`.
+  brief. Same tokens as the light mood, held regardless of `data-mood`.
 */
-:root:root:has([data-capsula], [data-lovesims]) {
+:root:root:has([data-capsula]) {
   color-scheme: light;
   --paper: #f4f3ee;
   --ink: #1b1d1b;
@@ -411,4 +410,193 @@ html[data-splash="seen"] .splash {
   --accent: #1a3a2a;
   --night: 0;
   --tempo: 1;
+}
+
+/*
+  LoveSims (/lovesims) is a terminal: a black screen at every hour with
+  white and grey text (never phosphor green, Mateo, 2026-10-14), VT323 for
+  the copy and Press Start 2P for the titles (both loaded in its layout),
+  scanlines and a vignette over the whole viewport (on html, which is never
+  transformed, so `fixed` holds), and no blobs. Colour is for meaning only:
+  the two people are rose and periwinkle (the site's blob colours), what
+  matters is amber, a wrong read is red. Everything here is presentation;
+  the engine never sees it.
+*/
+:root:root:has([data-lovesims]) {
+  color-scheme: dark;
+  --paper: #050505;
+  --ink: #d9d9d9;
+  --faint: #7d7d7d;
+  --soft: #161616;
+  --accent: #ffd166;
+  --night: 1;
+  --tempo: 1;
+}
+:root:has([data-lovesims]) body::before,
+:root:has([data-lovesims]) body::after {
+  display: none;
+}
+:root:has([data-lovesims])::before,
+:root:has([data-lovesims])::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+:root:has([data-lovesims])::before {
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.26) 0 1px, transparent 1px 3px);
+}
+:root:has([data-lovesims])::after {
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+[data-lovesims] {
+  --ls-ph: #d9d9d9;   /* the text */
+  --ls-dim: #7d7d7d;  /* labels, notes */
+  --ls-line: #333333; /* rules and boxes */
+  --ls-hi: #ffd166;   /* what matters: keys, labels, numbers */
+  --ls-err: #ff6b6b;  /* a wrong read */
+  font-family: var(--font-vt323), "VT323", ui-monospace, monospace;
+  font-size: 20px;
+  line-height: 1.3;
+  -webkit-font-smoothing: none;
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 30%, transparent);
+}
+[data-lovesims] ::selection {
+  background: var(--ls-ph);
+  color: var(--paper);
+  text-shadow: none;
+}
+[data-lovesims] .ls-title {
+  font-family: var(--font-press), "Press Start 2P", ui-monospace, monospace;
+  line-height: 1.7;
+}
+[data-lovesims] .ls-screen {
+  border: 2px solid var(--ls-line);
+  background: #000000;
+  box-shadow: 0 0 0 1px #000, 0 0 40px rgba(255, 255, 255, 0.06);
+}
+[data-lovesims] .ls-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 18px;
+  padding: 5px 12px 4px;
+  background: var(--ls-ph);
+  color: #000000;
+  font-size: 17px;
+  text-shadow: none;
+}
+[data-lovesims] .ls-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  padding: 8px 10px;
+  border-bottom: 2px dashed var(--ls-line);
+}
+[data-lovesims] .ls-box {
+  position: relative;
+  border: 2px solid var(--ls-line);
+  padding: 14px 16px;
+}
+[data-lovesims] .ls-box[data-title]::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -0.75em;
+  left: 10px;
+  padding: 0 6px;
+  background: #000000;
+  color: var(--ls-dim);
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+[data-lovesims] .ls-btn {
+  display: inline-block;
+  border: 0;
+  background: transparent;
+  color: var(--ls-ph);
+  font: inherit;
+  cursor: pointer;
+  padding: 1px 2px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+[data-lovesims] .ls-btn::before { content: "[ "; color: var(--ls-dim); }
+[data-lovesims] .ls-btn::after { content: " ]"; color: var(--ls-dim); }
+[data-lovesims] .ls-btn:hover,
+[data-lovesims] .ls-btn[data-on="true"] {
+  background: var(--ls-ph);
+  color: var(--paper);
+  text-shadow: none;
+}
+[data-lovesims] .ls-btn:hover::before,
+[data-lovesims] .ls-btn:hover::after,
+[data-lovesims] .ls-btn[data-on="true"]::before,
+[data-lovesims] .ls-btn[data-on="true"]::after { color: inherit; }
+[data-lovesims] .ls-btn:focus-visible,
+[data-lovesims] .ls-check:focus-visible,
+[data-lovesims] .ls-select:focus-visible {
+  outline: 2px dashed var(--ls-hi);
+  outline-offset: 2px;
+}
+[data-lovesims] .ls-btn:active { transform: translateY(1px); }
+[data-lovesims] .ls-btn:disabled { opacity: 0.4; cursor: default; }
+[data-lovesims] .ls-btn:disabled:hover { background: transparent; color: var(--ls-ph); }
+[data-lovesims] .ls-btn.ls-big { padding: 6px 8px; font-size: 24px; }
+[data-lovesims] .ls-check {
+  border: 0;
+  background: transparent;
+  color: var(--ls-ph);
+  font: inherit;
+  cursor: pointer;
+  padding: 1px 2px;
+}
+[data-lovesims] .ls-check:hover { color: var(--ls-hi); }
+[data-lovesims] .ls-select {
+  width: 100%;
+  border: 2px solid var(--ls-line);
+  border-radius: 0;
+  background: var(--soft);
+  color: var(--ls-ph);
+  font: inherit;
+  padding: 4px 8px;
+}
+[data-lovesims] input[type="range"] { accent-color: var(--ls-ph); }
+[data-lovesims] .ls-cursor::after {
+  content: "\2588";
+  margin-left: 1px;
+  animation: ls-blink 1s steps(2, start) infinite;
+}
+@keyframes ls-blink { to { visibility: hidden; } }
+[data-lovesims] .ls-dim { color: var(--ls-dim); }
+[data-lovesims] .ls-pixel {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+[data-lovesims] .ls-table { width: 100%; border-collapse: collapse; }
+[data-lovesims] .ls-table th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ls-dim);
+  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+  border-bottom: 2px solid var(--ls-line);
+}
+[data-lovesims] .ls-table td {
+  padding: 6px 10px;
+  border-bottom: 1px dotted var(--ls-line);
+  font-variant-numeric: tabular-nums;
+}
+[data-lovesims] details > summary { cursor: pointer; list-style: none; }
+[data-lovesims] details > summary::-webkit-details-marker { display: none; }
+[data-lovesims] details > summary::before { content: "[+] "; color: var(--ls-dim); }
+[data-lovesims] details[open] > summary::before { content: "[-] "; }
+[data-lovesims] .mlf-unlock input,
+[data-lovesims] .mlf-unlock button { border-radius: 0; }
+@media (prefers-reduced-motion: reduce) {
+  [data-lovesims] .ls-cursor::after { animation: none; }
 }

@@ -12,17 +12,26 @@
  * course of one evening. That keeps the research honesty intact (no compatibility
  * number is ever emitted) while making the responsiveness gap, the thing this
  * whole product exists to teach, into the thing you actually play against.
+ *
+ * It plays in the terminal (components/lovesims/terminal.tsx): every line types
+ * itself, the guesses are the keys 1, 2 and 3, Enter is the next line.
  */
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Portrait } from '@/components/lovesims/portrait';
+import { PixelPortrait } from '@/components/lovesims/portrait';
 import { Stage, type Side } from '@/components/lovesims/stage';
+import { Boot, Btn, Check, CHANNELS, Frame, Label, Typed, bar, useReducedMotion } from '@/components/lovesims/terminal';
 import { useDateRun, type Beat } from '@/components/lovesims/use-date-run';
 
-const CH = ['#a3324e', '#136c6a'] as const;
+const CH = CHANNELS;
 type Guess = 'colder' | 'same' | 'warmer';
+const GUESSES: { g: Guess; key: string; label: string }[] = [
+  { g: 'colder', key: '1', label: 'cooled off' },
+  { g: 'same', key: '2', label: 'about the same' },
+  { g: 'warmer', key: '3', label: 'warmed up' },
+];
 
 interface AgentSummary { id: string; name: string; age: number | null; blurb: string }
 interface SceneSummary { id: string; name: string; place: string; city: string; description: string; timeBudget: number }
@@ -46,13 +55,17 @@ function Play() {
   const [sceneId, setSceneId] = useState('jazz-bar');
   const [live, setLive] = useState(true);
   const [watchOnly, setWatchOnly] = useState(false);
+  const [booted, setBooted] = useState(false);
   // ?demo=1 runs the whole game on the deterministic mock provider with a short
   // date. Lets the experience be shown, or regression-checked, at zero cost.
   const demo = useSearchParams().get('demo') === '1';
+  const reduced = useReducedMotion();
 
   const run = useDateRun();
   const [answered, setAnswered] = useState<{ beat: Beat; guess: Guess; actual: Guess } | null>(null);
   const [scores, setScores] = useState<{ agentId: string; correct: boolean; delta: number; beat: Beat }[]>([]);
+  // The beat whose line has finished typing (or was skipped): the guesses wait for it.
+  const [typedFor, setTypedFor] = useState<number | null>(null);
 
   useEffect(() => {
     fetch('/api/lovesims/agents').then((r) => r.json()).then((c: Catalog) => {
@@ -96,7 +109,7 @@ function Play() {
     return delta > 0.04 ? 'warmer' : delta < -0.04 ? 'colder' : 'same';
   }, [run.beats]);
 
-  function guess(g: Guess) {
+  const guess = useCallback((g: Guess) => {
     const beat = run.pending;
     if (!beat?.record) return;
     const actual = actualFor(beat);
@@ -106,12 +119,12 @@ function Play() {
     setAnswered({ beat, guess: g, actual });
     setScores((s) => [...s, { agentId: beat.record!.agentId, correct: g === actual, delta, beat }]);
     run.advance();
-  }
+  }, [run, actualFor]);
 
-  function next() {
+  const next = useCallback(() => {
     setAnswered(null);
     if (watchOnly) run.advance();
-  }
+  }, [watchOnly, run]);
 
   // Watch mode: pace it like a conversation instead of asking anything.
   useEffect(() => {
@@ -123,6 +136,7 @@ function Play() {
   function begin() {
     setAnswered(null);
     setScores([]);
+    setTypedFor(null);
     run.start({
       agentAId: pair[0], agentBId: pair[1], sceneId,
       maxTurns: demo ? 8 : 22,
@@ -152,88 +166,127 @@ function Play() {
   }, [scores]);
 
   const done = run.phase === 'finished' && !run.canAdvance && !answered;
+  const beat = answered?.beat ?? run.pending;
+  const lineDone = !!beat && typedFor === beat.index;
+  const asking = !watchOnly && !answered && !!run.pending?.record && !!pendingListenerId && lineDone;
+
+  // The keys: 1, 2, 3 answer, Enter (or space) goes on, any key finishes a line that is still typing.
+  useEffect(() => {
+    if (run.phase === 'idle') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && ['INPUT', 'SELECT', 'TEXTAREA'].includes(t.tagName)) return;
+      if (beat && !lineDone && !answered) { setTypedFor(beat.index); return; }
+      if (asking) {
+        const hit = GUESSES.find((x) => x.key === e.key);
+        if (hit) { e.preventDefault(); guess(hit.g); }
+        return;
+      }
+      if (answered && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); next(); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [run.phase, beat, lineDone, answered, asking, guess, next]);
+
+  const status = demo
+    ? 'demo: stand-in provider, 8 turns'
+    : catalog && !catalog.liveAvailable
+      ? 'model offline: stand-in provider'
+      : catalog && catalog.remaining !== null
+        ? catalog.remaining === 0 ? 'free dates: 0 (password opens more)' : `free dates: ${catalog.remaining}`
+        : catalog ? 'unlocked' : 'connecting';
 
   // ------------------------------------------------------------------ setup --
   if (run.phase === 'idle') {
+    const bootLines = [
+      'lovesims v2, a date engine',
+      catalog ? `cast loaded: ${catalog.agents.length} people, ${pairs.length} pairs, ${catalog.scenes.length} rooms` : 'loading cast ...',
+      demo ? 'provider: stand-in (demo, no model call)' : catalog && !catalog.liveAvailable ? 'provider: stand-in (model not connected)' : 'provider: claude, live',
+      'ready.',
+    ];
     return (
-      <Shell>
-        <p className="mb-6 max-w-xl text-[15px] leading-relaxed text-neutral-600">
-          Two people meet. You read every line and guess how it landed, then watch their face
-          change and find out. You are not scoring them. You are scoring how well you read a person.
-          The twelve people here are invented for this demo; the engine is the real one.
-        </p>
+      <Frame status={status}>
+        <h1 className="ls-title mb-5 text-[13px] sm:text-[15px]">CAN YOU TELL HOW THAT LANDED?</h1>
+        {catalog && !booted && !reduced ? (
+          <Boot lines={bootLines} onDone={() => setBooted(true)} />
+        ) : catalog ? (
+          <>
+            <div className="ls-dim mb-5 space-y-0.5">
+              {bootLines.map((l) => <p key={l}>&gt; {l}</p>)}
+            </div>
+            <p className="mb-6 max-w-xl leading-snug">
+              Two people meet. You read every line and guess how it landed, then watch their face
+              change and find out. You are not scoring them. You are scoring how well you read a person.
+              The twelve people here are invented for this demo; the engine is the real one.
+            </p>
 
-        <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">Pick a pair</h2>
-        <div className="mb-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {pairs.map((p, i) => (
-            <button
-              key={p.join()}
-              onClick={() => setPairIndex(i)}
-              className={`flex flex-col items-center rounded-xl border-2 px-3 py-3 transition-all ${
-                i === pairIndex ? 'border-neutral-900 bg-white shadow-sm' : 'border-neutral-200 bg-white/60 hover:border-neutral-300'
-              }`}
-            >
-              <span className="flex items-center justify-center">
-                <Portrait agentId={p[0]} name={nameOf(p[0])} colour={CH[0]} valence={0.15} arousal={0.1} size={58} />
-                <span className="-ml-2 scale-x-[-1]">
-                  <Portrait agentId={p[1]} name={nameOf(p[1])} colour={CH[1]} valence={0.15} arousal={0.1} size={58} />
-                </span>
-              </span>
-              <span className="mt-1 text-sm">
-                <span className="font-semibold" style={{ color: CH[0] }}>{nameOf(p[0])}</span>
-                <span className="mx-1 text-neutral-400">&amp;</span>
-                <span className="font-semibold" style={{ color: CH[1] }}>{nameOf(p[1])}</span>
-              </span>
-            </button>
-          ))}
-        </div>
+            <Label className="mb-2">&gt; pick a pair</Label>
+            <div className="mb-7 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {pairs.map((p, i) => {
+                const on = i === pairIndex;
+                return (
+                  <button
+                    key={p.join()}
+                    type="button"
+                    onClick={() => setPairIndex(i)}
+                    aria-pressed={on}
+                    className="flex flex-col items-center border-2 px-2 py-3 transition-colors focus-visible:outline-2 focus-visible:outline-dashed"
+                    style={{ borderColor: on ? 'var(--ls-ph)' : 'var(--ls-line)', background: on ? 'var(--soft)' : 'transparent', outlineColor: 'var(--ls-hi)' }}
+                  >
+                    <span className="flex items-center justify-center gap-1">
+                      <span className="w-16"><PixelPortrait agentId={p[0]} name={nameOf(p[0])} colour={CH[0]} valence={0.15} arousal={0.1} size={80} /></span>
+                      <span className="w-16 -scale-x-100"><PixelPortrait agentId={p[1]} name={nameOf(p[1])} colour={CH[1]} valence={0.15} arousal={0.1} size={80} /></span>
+                    </span>
+                    <span className="mt-2 text-[18px] uppercase leading-none">
+                      <span style={{ color: CH[0] }}>{nameOf(p[0])}</span>
+                      <span className="ls-dim"> &amp; </span>
+                      <span style={{ color: CH[1] }}>{nameOf(p[1])}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
-        <h2 className="mb-3 font-mono text-[10px] uppercase tracking-[0.14em] text-neutral-400">Pick a room</h2>
-        <div className="mb-8 flex flex-wrap gap-2">
-          {catalog?.scenes.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setSceneId(s.id)}
-              className={`rounded-full border px-4 py-2 text-sm transition-colors ${
-                s.id === sceneId ? 'border-neutral-900 bg-neutral-900 text-white' : 'border-neutral-300 bg-white text-neutral-700 hover:border-neutral-400'
-              }`}
-            >
-              {s.name}
-            </button>
-          ))}
-        </div>
-        <p className="mb-8 max-w-xl text-sm text-neutral-500">
-          {catalog?.scenes.find((s) => s.id === sceneId)?.description}
-        </p>
+            <Label className="mb-2">&gt; pick a room</Label>
+            <div className="mb-2 flex flex-wrap gap-x-1 gap-y-1">
+              {catalog.scenes.map((s) => (
+                <Btn key={s.id} onClick={() => setSceneId(s.id)} on={s.id === sceneId}>{s.name}</Btn>
+              ))}
+            </div>
+            <p className="ls-dim mb-7 max-w-xl leading-snug">
+              {catalog.scenes.find((s) => s.id === sceneId)?.description}
+            </p>
 
-        <div className="flex flex-wrap items-center gap-5">
-          <button onClick={begin} className="rounded-full bg-neutral-900 px-8 py-3.5 text-[15px] font-medium text-white hover:bg-neutral-700">
-            Start the date
-          </button>
-          <label className="flex items-center gap-2 text-sm text-neutral-600">
-            <input type="checkbox" checked={watchOnly} onChange={(e) => setWatchOnly(e.target.checked)} className="accent-neutral-800" />
-            Just let me watch
-          </label>
-          {demo ? (
-            <span className="font-mono text-[11px] text-neutral-400">demo mode: the stand-in provider, 8 turns, no model call</span>
-          ) : catalog && !catalog.liveAvailable ? (
-            <span className="font-mono text-[11px] text-neutral-400">the model is not connected, so this runs on the stand-in provider</span>
-          ) : catalog && catalog.remaining !== null ? (
-            <span className="font-mono text-[11px] text-neutral-400">
-              {catalog.remaining === 0 ? 'the free dates are used up; the password opens more' : `${catalog.remaining} free ${catalog.remaining === 1 ? 'date' : 'dates'} left, each a few minutes of the model`}
-            </span>
-          ) : null}
-        </div>
-        {run.error && <p className="mt-4 font-mono text-[11px] text-[#a3324e]">{run.error}</p>}
-      </Shell>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Btn big onClick={begin}>start the date</Btn>
+              <Check checked={watchOnly} onChange={setWatchOnly}>just let me watch</Check>
+            </div>
+            <p className="ls-dim mt-3 text-[17px]">
+              {demo
+                ? 'demo mode: the stand-in provider, 8 turns, no model call'
+                : !catalog.liveAvailable
+                  ? 'the model is not connected, so this runs on the stand-in provider'
+                  : catalog.remaining === null
+                    ? 'live model, unlocked'
+                    : catalog.remaining === 0
+                      ? 'the free dates are used up; the password opens more'
+                      : `${catalog.remaining} free ${catalog.remaining === 1 ? 'date' : 'dates'} left, each a few minutes of the model`}
+            </p>
+            {run.error && <p className="mt-4" style={{ color: 'var(--ls-err)' }}>ERR {run.error}</p>}
+          </>
+        ) : (
+          <p className="ls-dim"><Typed text="loading cast ..." cap={600} /></p>
+        )}
+      </Frame>
     );
   }
 
   // ------------------------------------------------------------------- play --
   return (
-    <Shell>
+    <Frame status={status}>
       {sides && (
-        <div className="mb-6">
+        <div className="mb-7">
           <Stage
             left={sides[0]}
             right={sides[1]}
@@ -246,110 +299,97 @@ function Play() {
 
       {/* scoreboard */}
       {!watchOnly && scores.length > 0 && (
-        <div className="mb-5 flex flex-wrap items-center gap-x-8 gap-y-2 rounded-xl border border-neutral-200 bg-white px-5 py-3">
-          <Metric label="You read them right" value={`${correct}/${scores.length}`} />
-          <Metric label="Accuracy" value={`${(accuracy * 100).toFixed(0)}%`} />
-          <Metric label="Streak" value={String(streak)} accent={streak >= 3} />
-          {run.bufferedAhead > 0 && (
-            <span className="ml-auto font-mono text-[10px] text-neutral-400">{run.bufferedAhead} turns ready</span>
-          )}
-        </div>
+        <p className="mb-4 flex flex-wrap items-baseline gap-x-6 gap-y-1 text-[18px]">
+          <span><span className="ls-dim">read right </span>{correct}/{scores.length}</span>
+          <span><span className="ls-dim">accuracy </span>{(accuracy * 100).toFixed(0)}%</span>
+          <span><span className="ls-dim">streak </span><span style={{ color: streak >= 3 ? 'var(--ls-hi)' : undefined }}>{streak}</span></span>
+          {run.bufferedAhead > 0 && <span className="ls-dim ml-auto">{run.bufferedAhead} turns buffered</span>}
+        </p>
       )}
 
       {/* scene beat */}
-      {(answered?.beat ?? run.pending)?.sceneEvents.map((t, i) => (
-        <p key={i} className="mb-4 rounded-lg bg-neutral-100 px-4 py-2.5 text-center text-sm italic text-neutral-600">
-          {t}
+      {beat?.sceneEvents.map((t, i) => (
+        <p key={i} className="ls-dim mb-3">
+          <span style={{ color: 'var(--ls-hi)' }}>** </span>{t}
         </p>
       ))}
 
       {/* the line */}
       {(() => {
-        const beat = answered?.beat ?? run.pending;
         if (!beat) {
+          if (done) return null;
           return (
-            <p className="py-10 text-center font-mono text-sm text-neutral-400">
-              {done ? '' : run.phase === 'connecting' ? 'they are arriving…' : 'thinking…'}
+            <p className="ls-dim py-8 text-center">
+              <Typed text={run.phase === 'connecting' ? 'they are arriving ...' : 'thinking ...'} cap={700} />
             </p>
           );
         }
         const colour = colourOf(beat.turn.agentId);
         const speaker = run.participants.find((p) => p.id === beat.turn.agentId);
+        const text = beat.turn.kind === 'silence' ? '(says nothing)' : beat.turn.text;
         return (
-          <article className="mb-5 rounded-2xl border-2 bg-white px-6 py-5" style={{ borderColor: `${colour}33` }}>
-            <div className="mb-2 flex items-baseline gap-3">
-              <span className="text-base font-semibold" style={{ color: colour }}>{speaker?.name}</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-neutral-400">
-                {beat.turn.kind} · depth {beat.turn.depth}
-              </span>
-            </div>
-            <p className="text-[17px] leading-relaxed text-neutral-900">
-              {beat.turn.kind === 'silence' ? <span className="italic text-neutral-400">(says nothing)</span> : beat.turn.text}
+          <article className="mb-5 cursor-text" onClick={() => setTypedFor(beat.index)} title={lineDone ? undefined : 'press any key to finish the line'}>
+            <p className="flex flex-wrap items-baseline gap-x-3">
+              <span className="text-[22px] uppercase leading-none" style={{ color: colour }}>{speaker?.name}</span>
+              <span className="ls-dim text-[16px]">[{beat.turn.kind} D{beat.turn.depth} {beat.turn.minute}&prime;]</span>
             </p>
-            {beat.turn.gesture && <p className="mt-2 text-sm italic text-neutral-500">[{beat.turn.gesture}]</p>}
+            <p className="mt-1 text-[24px] leading-tight">
+              <span className="ls-dim">&gt; </span>
+              <Typed key={beat.index} text={text} skip={lineDone} onDone={() => setTypedFor(beat.index)} />
+            </p>
+            {beat.turn.gesture && lineDone && <p className="ls-dim mt-1 text-[18px]">[{beat.turn.gesture}]</p>}
           </article>
         );
       })()}
 
       {/* the ask */}
-      {!watchOnly && !answered && run.pending?.record && pendingListenerId && (
-        <div className="mb-8 rounded-2xl border border-neutral-900/10 bg-neutral-900 px-6 py-5 text-white">
-          <p className="mb-4 text-[15px]">
-            How did <strong style={{ color: colourOf(pendingListenerId) === CH[0] ? '#f0a0b4' : '#7fd6cf' }}>
-              {nameOf(pendingListenerId)}
-            </strong> take that?
+      {asking && pendingListenerId && (
+        <div className="ls-box mb-7" data-title="your read">
+          <p className="mb-3">
+            How did <span style={{ color: colourOf(pendingListenerId) }}>{nameOf(pendingListenerId)}</span> take that?
           </p>
-          <div className="flex flex-wrap gap-2.5">
-            {(['colder', 'same', 'warmer'] as Guess[]).map((g) => (
-              <button
-                key={g}
-                onClick={() => guess(g)}
-                className="rounded-full border border-white/25 px-6 py-2.5 text-sm transition-colors hover:bg-white hover:text-neutral-900"
-              >
-                {g === 'colder' ? 'Cooled off' : g === 'same' ? 'About the same' : 'Warmed up'}
-              </button>
+          <div className="flex flex-wrap gap-x-2 gap-y-1">
+            {GUESSES.map(({ g, key, label }) => (
+              <Btn key={g} hint={key} onClick={() => guess(g)}>{label}</Btn>
             ))}
           </div>
         </div>
       )}
 
       {/* the reveal */}
-      {answered && answered.beat.record && (
-        <div
-          className="mb-8 rounded-2xl border-2 px-6 py-5"
-          style={{
-            borderColor: answered.guess === answered.actual ? '#136c6a' : '#a3324e',
-            background: answered.guess === answered.actual ? '#136c6a0d' : '#a3324e0d',
-          }}
-        >
-          <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.14em]"
-            style={{ color: answered.guess === answered.actual ? '#136c6a' : '#a3324e' }}>
-            {answered.guess === answered.actual ? 'you read that right' : 'you misread that'}
-          </p>
-          <p className="text-[15px] leading-relaxed text-neutral-800">
-            {nameOf(answered.beat.record.agentId)} felt <strong>{answered.beat.record.label}</strong>
-            {answered.guess !== answered.actual && <>, they actually {answered.actual === 'same' ? 'held about steady' : answered.actual === 'warmer' ? 'warmed up' : 'cooled off'}.</>}
-          </p>
-          <p className="mt-2 text-sm italic leading-relaxed text-neutral-600">
-            {answered.beat.record.appraisal.note}
-          </p>
-          {Math.abs(answered.beat.record.responsivenessGap) > 0.05 && (
-            <p className="mt-3 border-t border-neutral-900/10 pt-3 font-mono text-[11px] leading-relaxed text-neutral-500">
-              And they misread it too: they took it{' '}
-              {answered.beat.record.responsivenessGap < 0 ? 'colder' : 'warmer'} than it was actually meant
-              ({answered.beat.record.responsivenessGap >= 0 ? '+' : ''}{answered.beat.record.responsivenessGap.toFixed(2)}).
+      {answered && answered.beat.record && (() => {
+        const right = answered.guess === answered.actual;
+        const tone = right ? 'var(--ls-ph)' : 'var(--ls-err)';
+        return (
+          <div className="ls-box mb-7" data-title={right ? 'OK' : 'ERR'} style={{ borderColor: tone, borderStyle: right ? 'solid' : 'dashed' }}>
+            <p style={{ color: tone }}>{right ? 'you read that right' : 'you misread that'}</p>
+            <p className="mt-1 leading-snug">
+              {nameOf(answered.beat.record.agentId)} felt <span style={{ color: 'var(--ls-hi)' }}>{answered.beat.record.label}</span>
+              {!right && <>, they actually {answered.actual === 'same' ? 'held about steady' : answered.actual === 'warmer' ? 'warmed up' : 'cooled off'}.</>}
             </p>
-          )}
-          <button onClick={next} className="mt-4 rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-neutral-700">
-            {/* `done` is false while this reveal is still on screen, so the
-                end-of-date case has to be detected from the run, not from it. */}
-            {run.canAdvance ? 'Next line' : run.phase === 'finished' ? 'See how you did' : 'Waiting for them…'}
-          </button>
-        </div>
-      )}
+            <p className="ls-dim mt-2 leading-snug">
+              {answered.beat.record.appraisal.note}
+            </p>
+            {Math.abs(answered.beat.record.responsivenessGap) > 0.05 && (
+              <p className="ls-dim mt-2 text-[17px] leading-snug">
+                and they misread it too: they took it{' '}
+                {answered.beat.record.responsivenessGap < 0 ? 'colder' : 'warmer'} than it was meant
+                ({answered.beat.record.responsivenessGap >= 0 ? '+' : ''}{answered.beat.record.responsivenessGap.toFixed(2)}).
+              </p>
+            )}
+            <div className="mt-4">
+              <Btn hint="enter" onClick={next}>
+                {/* `done` is false while this reveal is still on screen, so the
+                    end-of-date case has to be detected from the run, not from it. */}
+                {run.canAdvance ? 'next line' : run.phase === 'finished' ? 'see how you did' : 'waiting for them ...'}
+              </Btn>
+            </div>
+          </div>
+        );
+      })()}
 
-      {watchOnly && run.canAdvance && (
-        <p className="mb-8 font-mono text-[11px] text-neutral-400">watching…</p>
+      {watchOnly && run.canAdvance && !answered && lineDone && (
+        <p className="ls-dim mb-7"><Typed text="watching ..." cap={500} /></p>
       )}
 
       {/* the reel */}
@@ -358,29 +398,30 @@ function Play() {
         nameOf={nameOf}
         colourOf={colourOf}
         run={run}
-        onAgain={() => { run.reset(); setScores([]); setAnswered(null); }}
+        onAgain={() => { run.reset(); setScores([]); setAnswered(null); setTypedFor(null); }}
       />}
 
       {/* history */}
       {run.visible.length > 1 && (
-        <details className="mt-10 rounded-xl border border-neutral-200 bg-white">
-          <summary className="cursor-pointer px-5 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-neutral-500">
-            everything they said ({run.visible.length})
+        <details className="mt-8">
+          <summary className="ls-dim uppercase tracking-[0.08em] text-[16px]">
+            scrollback ({run.visible.length} lines)
           </summary>
-          <ol className="divide-y divide-neutral-100 border-t border-neutral-100">
+          <ol className="mt-2 space-y-2 border-l-2 pl-3" style={{ borderColor: 'var(--ls-line)' }}>
             {run.visible.map((b) => (
-              <li key={b.index} className="px-5 py-3">
-                <span className="font-mono text-[10px] text-neutral-400">{b.turn.minute}′ </span>
-                <span className="text-sm font-semibold" style={{ color: colourOf(b.turn.agentId) }}>
+              <li key={b.index} className="text-[18px] leading-snug">
+                <span className="ls-dim">{String(b.turn.minute).padStart(3, ' ')}&prime; </span>
+                <span className="uppercase" style={{ color: colourOf(b.turn.agentId) }}>
                   {run.participants.find((p) => p.id === b.turn.agentId)?.name}
                 </span>
-                <p className="mt-0.5 text-sm leading-relaxed text-neutral-700">{b.turn.text}</p>
+                <span className="ls-dim"> &gt; </span>
+                {b.turn.text}
               </li>
             ))}
           </ol>
         </details>
       )}
-    </Shell>
+    </Frame>
   );
 }
 
@@ -404,35 +445,35 @@ function Reel({ scores, nameOf, colourOf, run, onAgain }: {
   const pct = scores.length ? Math.round((correct / scores.length) * 100) : 0;
 
   return (
-    <section className="mb-4 rounded-2xl border border-neutral-200 bg-white px-6 py-7">
-      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-neutral-400">the evening ended</p>
-      <p className="mt-1 text-sm text-neutral-600">
+    <section className="ls-box mb-4" data-title="the evening ended">
+      <p className="ls-dim">
         {run.ending?.reason} · {run.ending?.minutes} minutes · {run.ending?.turns} turns
       </p>
 
       {scores.length > 0 && (
         <>
-          <p className="mt-6 font-serif text-5xl tabular-nums">{pct}%</p>
-          <p className="mt-1 text-[15px] text-neutral-600">
+          <p className="ls-title mt-5 text-[28px] sm:text-[36px]" style={{ color: 'var(--ls-hi)' }}>{pct}%</p>
+          <p className="whitespace-pre text-[24px] leading-none" aria-hidden="true" style={{ color: 'var(--ls-hi)' }}>{bar(pct / 100, 20)}</p>
+          <p className="mt-2">
             You read them right {correct} times out of {scores.length}.
           </p>
 
-          <div className="mt-5 flex flex-wrap gap-6">
+          <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2">
             {[...byAgent.entries()].map(([id, e]) => (
-              <div key={id}>
-                <p className="font-mono text-[10px] uppercase tracking-[0.12em]" style={{ color: colourOf(id) }}>{nameOf(id)}</p>
-                <p className="text-lg tabular-nums text-neutral-800">{e.correct}/{e.total}</p>
-              </div>
+              <p key={id}>
+                <span className="uppercase" style={{ color: colourOf(id) }}>{nameOf(id)}</span>
+                <span className="ls-dim"> </span>
+                <span className="whitespace-pre" style={{ color: colourOf(id) }}>{bar(e.total ? e.correct / e.total : 0, 8)}</span>
+                <span> {e.correct}/{e.total}</span>
+              </p>
             ))}
           </div>
 
           {worst && (
-            <div className="mt-6 rounded-xl border-l-2 border-[#a3324e] bg-[#a3324e]/5 px-5 py-4">
-              <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#a3324e]">
-                where you misread them worst, minute {worst.beat.turn.minute}
-              </p>
-              <p className="text-sm italic leading-relaxed text-neutral-700">&ldquo;{worst.beat.turn.text}&rdquo;</p>
-              <p className="mt-2 text-sm text-neutral-600">
+            <div className="mt-6 border-l-2 border-dashed pl-4" style={{ borderColor: 'var(--ls-err)' }}>
+              <Label className="mb-1" >where you misread them worst, minute {worst.beat.turn.minute}</Label>
+              <p className="leading-snug">&gt; {worst.beat.turn.text}</p>
+              <p className="ls-dim mt-1 leading-snug">
                 {nameOf(worst.agentId)} moved {worst.delta >= 0 ? 'up' : 'down'} {Math.abs(worst.delta).toFixed(2)} on that line.
                 What did you miss?
               </p>
@@ -442,64 +483,29 @@ function Reel({ scores, nameOf, colourOf, run, onAgain }: {
       )}
 
       {run.debrief && (
-        <div className="mt-7 border-t border-neutral-100 pt-6">
-          <h3 className="mb-3 font-serif text-xl">What happened between them</h3>
+        <div className="mt-7 border-t-2 border-dashed pt-5" style={{ borderColor: 'var(--ls-line)' }}>
+          <h3 className="ls-title mb-3 text-[11px]">WHAT HAPPENED BETWEEN THEM</h3>
           <ol className="space-y-2">
             {run.debrief.moments.map((m) => (
-              <li key={`${m.kind}-${m.turn}`} className="rounded-lg bg-neutral-50 px-4 py-3">
-                <p className="text-sm font-semibold text-neutral-900">{m.minute}′, {m.label}</p>
-                <p className="mt-0.5 text-sm italic text-neutral-600">&ldquo;{m.excerpt.slice(0, 130)}{m.excerpt.length > 130 ? '…' : ''}&rdquo;</p>
+              <li key={`${m.kind}-${m.turn}`} className="leading-snug">
+                <p><span className="ls-dim">{m.minute}&prime; </span><span style={{ color: 'var(--ls-hi)' }}>{m.label}</span></p>
+                <p className="ls-dim">&gt; {m.excerpt.slice(0, 130)}{m.excerpt.length > 130 ? ' ...' : ''}</p>
               </li>
             ))}
           </ol>
           {run.debrief.sharedInterests.length > 0 && (
-            <p className="mt-4 text-sm text-neutral-600">
+            <p className="mt-4">
               They both kept coming back to{' '}
-              <strong>{run.debrief.sharedInterests.map((s) => s.topic).slice(0, 3).join(', ')}</strong>.
+              <span style={{ color: 'var(--ls-hi)' }}>{run.debrief.sharedInterests.map((s) => s.topic).slice(0, 3).join(', ')}</span>.
             </p>
           )}
         </div>
       )}
 
-      <div className="mt-7 flex flex-wrap gap-3">
-        <button onClick={onAgain} className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-neutral-700">
-          Another date
-        </button>
-        <Link href="/lovesims/date" className="rounded-full border border-neutral-300 px-6 py-2.5 text-sm text-neutral-700 hover:border-neutral-400">
-          Open the analyst view
-        </Link>
+      <div className="mt-7 flex flex-wrap gap-x-3 gap-y-1">
+        <Btn big onClick={onAgain}>another date</Btn>
+        <Link href="/lovesims/date" className="ls-btn ls-big">analyst view</Link>
       </div>
     </section>
-  );
-}
-
-function Metric({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div>
-      <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-neutral-400">{label}</p>
-      <p className={`text-lg tabular-nums ${accent ? 'text-[#a3324e]' : 'text-neutral-900'}`}>{value}</p>
-    </div>
-  );
-}
-
-function Shell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto max-w-3xl py-6 sm:py-10">
-      <header className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
-        <Link href="/lovesims" className="font-mono text-[11px] uppercase tracking-[0.16em] text-neutral-400 hover:text-neutral-700">
-          LoveSims <span className="text-[#a3324e]">v2</span>
-        </Link>
-        <span className="flex items-baseline gap-5">
-          <Link href="/lovesims/date" className="font-mono text-[11px] text-neutral-400 underline underline-offset-2 hover:text-neutral-700">
-            analyst view
-          </Link>
-          <Link href="/?project=love-simulations" className="font-mono text-[11px] text-neutral-400 underline underline-offset-2 hover:text-neutral-700">
-            mateolarreaferro.com
-          </Link>
-        </span>
-      </header>
-      <h1 className="mb-4 font-serif text-4xl leading-tight">Can you tell how that landed?</h1>
-      {children}
-    </div>
   );
 }

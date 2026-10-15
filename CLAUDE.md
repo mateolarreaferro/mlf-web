@@ -721,8 +721,29 @@ about seven seconds. The models are the research build's measured pair,
 took a minute) and `claude-haiku-4-5` as the appraisal coder;
 `LOVESIMS_VOICE_MODEL` / `LOVESIMS_ANALYST_MODEL` override them, and an
 override gets no `thinking` field (newer models reject disabling it) and low
-effort instead. The page is always the light mood (`[data-lovesims]` in
-`globals.css`) and has no portfolio header (`SiteChrome`).
+effort instead. The page has no portfolio header (`SiteChrome`).
+
+**It looks like a terminal** (Mateo, 2026-10-14: "make it look like if
+everything was happening in the terminal - 8bit vibes"; a first pass in
+phosphor green got "don't use that horrible hacker green", so never that).
+`[data-lovesims]` in `globals.css` is the whole look: a black screen at
+every hour, text in white and greys, colour only where it means something
+(the two people rose and periwinkle, highlights amber, a wrong read red),
+VT323 for the copy and Press Start 2P for titles
+(both from `next/font/google` in `src/app/lovesims/layout.tsx`), scanlines
+and a vignette as `html::before/after` (fixed on `html`, which the route
+template never transforms), no blobs. `src/components/lovesims/terminal.tsx`
+is the kit: `Frame` (title strip, menu line), `Typed` (text that arrives
+behind a block cursor, instant under reduced motion), `Boot` (a boot log),
+`Btn` (`[ bracketed ]`, with a key hint), `Check`, `bar()` and `masked()`
+(block-character bars and the sealed secret). The two people's colours are
+`CHANNELS`, as hex, because `PixelPortrait` in
+`portrait.tsx` rasterises the procedural face into a 40 by 40 sprite
+(serialised SVG drawn small, snapped to 216 colours, scaled up without
+smoothing), and a CSS variable does not resolve inside that image. The
+game is played on the keys: 1, 2, 3 answer, Enter goes on, any key finishes
+a line still typing; the door's menu is 1, 2, 3 too. `/lovesims/date?demo=1`
+runs the analyst view on the mock provider like the game's `?demo=1`.
 
 `npm run lovesims:date -- --mock` is the engine's self-check (fifteen
 assertions that every layer is load-bearing, ported from the research

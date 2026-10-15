@@ -9,9 +9,10 @@
  * pre-meeting data, so a number here would be a claim the research does not support.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AffectTrack, CHANNEL_COLOURS } from '@/components/lovesims/affect-track';
+import { Btn, Frame, Label, Typed } from '@/components/lovesims/terminal';
 import type { AffectRecord, DateEvent, Debrief, PrivateGoals, Turn } from '@/lib/lovesims/types';
 
 interface AgentSummary {
@@ -26,7 +27,18 @@ interface Catalog {
 
 type Phase = 'setup' | 'running' | 'done';
 
+/* useSearchParams needs a Suspense boundary above it when the page is prerendered. */
 export default function DatePage() {
+  return (
+    <Suspense fallback={null}>
+      <Analyst />
+    </Suspense>
+  );
+}
+
+function Analyst() {
+  // ?demo=1 runs on the deterministic mock provider with a short date, like the game's: no model call, nothing spent.
+  const demo = useSearchParams().get('demo') === '1';
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [phase, setPhase] = useState<Phase>('setup');
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +101,7 @@ export default function DatePage() {
       res = await fetch('/api/lovesims/date', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ agentAId: agentA, agentBId: agentB, sceneId, maxTurns, live }),
+        body: JSON.stringify({ agentAId: agentA, agentBId: agentB, sceneId, maxTurns: demo ? Math.min(maxTurns, 8) : maxTurns, live: demo ? false : live }),
         signal: controller.signal,
       });
     } catch {
@@ -146,16 +158,21 @@ export default function DatePage() {
   }
 
   if (!catalog) {
-    return <Shell><p className="font-mono text-sm text-neutral-500">{error ?? 'loading agent bank…'}</p></Shell>;
+    return <Shell><p className="ls-dim">{error ? <>ERR {error}</> : <Typed text="loading cast ..." cap={600} />}</p></Shell>;
   }
 
   const sceneMeta = catalog.scenes.find((s) => s.id === sceneId);
+  const status = demo
+    ? 'demo: stand-in provider, 8 turns'
+    : !live
+    ? 'model offline: stand-in provider'
+    : catalog.remaining === null ? 'unlocked' : `free dates: ${catalog.remaining}`;
 
   return (
-    <Shell>
+    <Shell status={status}>
       {/* ---------- setup ---------- */}
-      <section className="mb-10 rounded-lg border border-neutral-200 bg-white p-5">
-        <div className="grid gap-5 md:grid-cols-[1fr_1fr_1.4fr]">
+      <section className="ls-box mb-10" data-title="setup">
+        <div className="grid gap-4 md:grid-cols-[1fr_1fr_1.4fr]">
           <Field label="First agent">
             <Select value={agentA} onChange={setAgentA} options={catalog.agents.map((a) => ({ value: a.id, label: `${a.name}${a.age ? `, ${a.age}` : ''}` }))} accent={CHANNEL_COLOURS[0]} />
           </Field>
@@ -168,21 +185,23 @@ export default function DatePage() {
         </div>
 
         {sceneMeta && (
-          <p className="mt-3 max-w-3xl text-sm leading-relaxed text-neutral-600">
+          <p className="ls-dim mt-3 max-w-3xl text-[17px] leading-snug">
             {sceneMeta.description}{' '}
-            <span className="font-mono text-[11px] text-neutral-400">
-              {sceneMeta.timeBudget} min budget · noise {sceneMeta.noise.toFixed(2)}
+            <span>
+              [{sceneMeta.timeBudget} min budget · noise {sceneMeta.noise.toFixed(2)}]
             </span>
           </p>
         )}
 
-        <div className="mt-5 flex flex-wrap items-end gap-6 border-t border-neutral-100 pt-4">
-          <Field label={`Turn ceiling, ${maxTurns}`}>
-            <input type="range" min={6} max={22} value={maxTurns} onChange={(e) => setMaxTurns(Number(e.target.value))} className="w-44 accent-neutral-800" />
+        <div className="mt-5 flex flex-wrap items-end gap-6 border-t-2 border-dashed pt-4" style={{ borderColor: 'var(--ls-line)' }}>
+          <Field label={`turn ceiling: ${maxTurns}`}>
+            <input type="range" min={6} max={22} value={maxTurns} onChange={(e) => setMaxTurns(Number(e.target.value))} className="w-44" />
           </Field>
 
-          <span className="font-mono text-[11px] text-neutral-400">
-            {!live
+          <span className="ls-dim text-[17px]">
+            {demo
+              ? 'demo mode: the stand-in provider, 8 turns, no model call'
+              : !live
               ? 'the model is not connected, so this runs on the stand-in provider'
               : catalog.remaining === null
                 ? 'live models'
@@ -191,23 +210,17 @@ export default function DatePage() {
                   : `live models, ${catalog.remaining} free ${catalog.remaining === 1 ? 'date' : 'dates'} left`}
           </span>
 
-          <div className="ml-auto flex items-center gap-3">
-            {phase === 'running' ? (
-              <button onClick={stop} className="rounded border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50">Stop</button>
-            ) : null}
-            <button
-              onClick={run}
-              disabled={phase === 'running' || agentA === agentB}
-              className="rounded bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
-            >
-              {phase === 'running' ? 'Running…' : phase === 'done' ? 'Run again' : 'Run the date'}
-            </button>
+          <div className="ml-auto flex items-center gap-2">
+            {phase === 'running' ? <Btn onClick={stop}>stop</Btn> : null}
+            <Btn big onClick={run} disabled={phase === 'running' || agentA === agentB}>
+              {phase === 'running' ? 'running ...' : phase === 'done' ? 'run again' : 'run the date'}
+            </Btn>
           </div>
         </div>
 
-        {agentA === agentB && <p className="mt-3 font-mono text-[11px] text-[#a3324e]">Pick two different agents.</p>}
-        {error && <p className="mt-3 font-mono text-[11px] text-[#a3324e]">{error}</p>}
-        <p className="mt-3 font-mono text-[11px] text-neutral-400">
+        {agentA === agentB && <p className="mt-3" style={{ color: 'var(--ls-err)' }}>ERR pick two different people.</p>}
+        {error && <p className="mt-3" style={{ color: 'var(--ls-err)' }}>ERR {error}</p>}
+        <p className="ls-dim mt-3 text-[17px]">
           {catalog.agents.length} people in the cast, all invented for this demo
         </p>
       </section>
@@ -215,24 +228,21 @@ export default function DatePage() {
       {/* ---------- live ---------- */}
       {participants.length > 0 && (
         <>
-          <div className="mb-4 flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <h2 className="font-serif text-2xl">{scene?.name}</h2>
-            <span className="font-mono text-[11px] text-neutral-500">{scene?.place}, {scene?.city}</span>
-            <button onClick={() => setRevealGoals((v) => !v)} className="ml-auto font-mono text-[11px] text-neutral-500 underline underline-offset-2 hover:text-neutral-900">
-              {revealGoals ? 'hide private goals' : 'reveal private goals'}
-            </button>
+          <div className="mb-5 flex flex-wrap items-baseline gap-x-5 gap-y-2">
+            <h2 className="ls-title text-[12px]">{scene?.name.toUpperCase()}</h2>
+            <span className="ls-dim">{scene?.place}, {scene?.city}</span>
+            <span className="ml-auto"><Btn onClick={() => setRevealGoals((v) => !v)} on={revealGoals}>{revealGoals ? 'hide private goals' : 'reveal private goals'}</Btn></span>
           </div>
 
           {revealGoals && (
-            <div className="mb-6 grid gap-px overflow-hidden rounded-lg border border-neutral-200 bg-neutral-200 md:grid-cols-2">
+            <div className="mb-6 grid gap-4 md:grid-cols-2">
               {participants.map((p) => (
-                <div key={p.id} className="bg-white p-4">
-                  <h3 className="mb-2 font-mono text-[11px] uppercase tracking-[0.13em]" style={{ color: colourOf(p.id) }}>{p.name}</h3>
-                  <dl className="space-y-1.5 text-sm text-neutral-600">
-                    <div><dt className="inline font-medium text-neutral-900">Wants: </dt><dd className="inline">{p.goals.overt}</dd></div>
-                    <div><dt className="inline font-medium text-neutral-900">Carrying: </dt><dd className="inline">{p.goals.covert}</dd></div>
-                    <div><dt className="inline font-medium text-neutral-900">Secret (D4 only): </dt><dd className="inline">{p.goals.secret}</dd></div>
-                    <div><dt className="inline font-medium text-neutral-900">Constraint: </dt><dd className="inline">{p.goals.constraint}</dd></div>
+                <div key={p.id} className="ls-box" data-title={p.name} style={{ borderColor: colourOf(p.id) }}>
+                  <dl className="space-y-1 text-[18px] leading-snug">
+                    <div><dt className="ls-dim inline">wants: </dt><dd className="inline">{p.goals.overt}</dd></div>
+                    <div><dt className="ls-dim inline">carrying: </dt><dd className="inline">{p.goals.covert}</dd></div>
+                    <div><dt className="ls-dim inline">secret (D4 only): </dt><dd className="inline">{p.goals.secret}</dd></div>
+                    <div><dt className="ls-dim inline">constraint: </dt><dd className="inline">{p.goals.constraint}</dd></div>
                   </dl>
                 </div>
               ))}
@@ -245,16 +255,16 @@ export default function DatePage() {
             </div>
           )}
 
-          <section className="mb-8 rounded-lg border border-neutral-200 bg-white">
-            <div className="divide-y divide-neutral-100">
+          <section className="ls-box mb-8" data-title="transcript">
+            <div className="space-y-4">
               {turns.map((t, i) => {
                 const rec = records.find((r) => r.turn === t.index);
                 const evs = sceneEvents.filter((s) => s.afterTurn === i);
                 return (
                   <div key={t.index}>
                     {evs.map((e, j) => (
-                      <p key={j} className="bg-neutral-50 px-4 py-2 text-center font-mono text-[11px] text-neutral-500">
-                        [{e.minute}m] {e.text}
+                      <p key={j} className="ls-dim mb-3">
+                        <span style={{ color: 'var(--ls-hi)' }}>** </span>[{e.minute}m] {e.text}
                       </p>
                     ))}
                     <TurnRow turn={t} record={rec} name={names[t.agentId]} colour={colourOf(t.agentId)} partnerName={names[agentIds.find((x) => x !== t.agentId) ?? '']} />
@@ -262,8 +272,8 @@ export default function DatePage() {
                 );
               })}
               {phase === 'running' && (
-                <p className="px-4 py-3 font-mono text-[11px] text-neutral-400">
-                  {turns.length === 0 ? 'setting the scene…' : 'thinking…'}
+                <p className="ls-dim">
+                  <Typed key={turns.length} text={turns.length === 0 ? 'setting the scene ...' : 'thinking ...'} cap={700} />
                 </p>
               )}
             </div>
@@ -271,8 +281,8 @@ export default function DatePage() {
           </section>
 
           {ending && (
-            <p className="mb-8 font-mono text-[11px] text-neutral-500">
-             , end, {ending.reason} · {ending.minutes} minutes · {ending.turns} turns
+            <p className="ls-dim mb-8">
+              &gt; end: {ending.reason} · {ending.minutes} minutes · {ending.turns} turns
             </p>
           )}
         </>
@@ -289,28 +299,29 @@ function TurnRow({ turn, record, name, colour, partnerName }: {
   turn: Turn; record?: AffectRecord; name: string; colour: string; partnerName: string;
 }) {
   return (
-    <article className="px-4 py-3">
+    <article>
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-mono text-[11px] text-neutral-400 tabular-nums">{String(turn.minute).padStart(3)}m</span>
-        <span className="text-sm font-semibold" style={{ color: colour }}>{name}</span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-neutral-400">
-          {turn.kind} · D{turn.depth}{turn.initiatedTopic ? ' · new topic' : ''} · {turn.topic}
+        <span className="ls-dim tabular-nums">{String(turn.minute).padStart(3, '\u00a0')}m</span>
+        <span className="uppercase" style={{ color: colour }}>{name}</span>
+        <span className="ls-dim text-[16px]">
+          [{turn.kind} D{turn.depth}{turn.initiatedTopic ? ' new-topic' : ''} {turn.topic}]
         </span>
       </div>
 
-      <p className="mt-1.5 text-[15px] leading-relaxed text-neutral-800">
-        {turn.kind === 'silence' ? <span className="italic text-neutral-400">(says nothing)</span> : turn.text}
+      <p className="mt-0.5 text-[21px] leading-snug">
+        <span className="ls-dim">&gt; </span>
+        {turn.kind === 'silence' ? <span className="ls-dim">(says nothing)</span> : turn.text}
       </p>
-      {turn.gesture && <p className="mt-1 text-sm italic text-neutral-500">[{turn.gesture}]</p>}
+      {turn.gesture && <p className="ls-dim mt-0.5 text-[17px]">[{turn.gesture}]</p>}
 
       {record && (
-        <p className="mt-2 font-mono text-[10px] leading-relaxed text-neutral-400">
-          → {partnerName} felt <span className="text-neutral-600">{record.label}</span>
+        <p className="ls-dim mt-1 text-[16px] leading-snug">
+          -&gt; {partnerName} felt <span style={{ color: 'var(--ls-hi)' }}>{record.label}</span>
           {' · '}mood {record.mood.valence >= 0 ? '+' : ''}{record.mood.valence.toFixed(2)}
           {' · '}intimacy {record.intimacy.toFixed(2)}
           {' · '}read it {record.responsivenessGap < -0.02 ? 'colder' : record.responsivenessGap > 0.02 ? 'warmer' : 'as it was'}
           {Math.abs(record.responsivenessGap) > 0.02 && ` (${record.responsivenessGap >= 0 ? '+' : ''}${record.responsivenessGap.toFixed(2)})`}
-          {', '}<span className="italic">{record.appraisal.note}</span>
+          {', '}<span>{record.appraisal.note}</span>
         </p>
       )}
     </article>
@@ -324,14 +335,14 @@ function DebriefView({ debrief, colourOf }: {
   const gapper = [...d.perAgent].sort((a, b) => Math.abs(b.responsivenessGap) - Math.abs(a.responsivenessGap))[0];
 
   return (
-    <section className="mb-16">
-      <h2 className="mb-1 font-serif text-3xl">Debrief</h2>
-      <p className="mb-6 max-w-2xl text-sm leading-relaxed text-neutral-600">
+    <section className="mb-10">
+      <h2 className="ls-title mb-3 text-[13px]">DEBRIEF</h2>
+      <p className="ls-dim mb-6 max-w-2xl text-[17px] leading-snug">
         Everything below is computed from the turn log and the per-turn affect records. There is no
         compatibility score here on purpose, that is the one claim this kind of simulation cannot support.
       </p>
 
-      <div className="mb-8 grid gap-px overflow-hidden rounded-lg border border-neutral-200 bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label="Language style matching" value={d.lsm.toFixed(3)} note="function-word synchrony; validated speed-dating predictor" />
         <Stat label="Disclosure reciprocity" value={d.reciprocityIndex.toFixed(3)} note="1.0 = perfectly balanced" />
         <Stat label="Dead air" value={String(d.deadAirEvents)} note="turns neither of them wanted" />
@@ -343,43 +354,43 @@ function DebriefView({ debrief, colourOf }: {
       </div>
 
       {gapper && Math.abs(gapper.responsivenessGap) > 0.03 && (
-        <div className="mb-8 rounded border-l-2 border-[#a3324e] bg-[#a3324e]/5 px-5 py-4">
-          <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[#a3324e]">The responsiveness gap</p>
-          <p className="text-sm leading-relaxed text-neutral-700">
+        <div className="mb-8 border-l-2 border-dashed pl-4" style={{ borderColor: 'var(--ls-err)' }}>
+          <Label className="mb-1">the responsiveness gap</Label>
+          <p className="leading-snug">
             {gapper.name} consistently read the other person as{' '}
-            <strong>{gapper.responsivenessGap < 0 ? 'less' : 'more'} responsive than they were being</strong>
+            <span style={{ color: 'var(--ls-hi)' }}>{gapper.responsivenessGap < 0 ? 'less' : 'more'} responsive than they were being</span>
             {' '}(mean {gapper.responsivenessGap.toFixed(2)} across the date). What would have to be true for
             the other reading to be the right one?
           </p>
         </div>
       )}
 
-      <div className="mb-8 overflow-x-auto rounded-lg border border-neutral-200 bg-white">
-        <table className="w-full min-w-[720px] text-sm">
+      <div className="mb-8 overflow-x-auto">
+        <table className="ls-table min-w-[720px] text-[18px]">
           <thead>
-            <tr className="border-b border-neutral-200 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-neutral-400">
+            <tr>
               {['', 'turns', 'words', 'asked', 'drove', 'built on', 'deepest', 'gave', 'got', 'repairs', 'gap', 'ended at', 'move variety', 'safe moves'].map((h) => (
-                <th key={h} className="px-3 py-2.5 font-medium">{h}</th>
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {d.perAgent.map((m) => (
-              <tr key={m.agentId} className="border-b border-neutral-100 last:border-0">
-                <td className="px-3 py-2.5 font-semibold" style={{ color: colourOf(m.agentId) }}>{m.name}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.turns}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.meanTurnWords}</td>
-                <td className="px-3 py-2.5 tabular-nums">{(m.questionRatio * 100).toFixed(0)}%</td>
-                <td className="px-3 py-2.5 tabular-nums">{(m.topicInitiative * 100).toFixed(0)}%</td>
-                <td className="px-3 py-2.5 tabular-nums">{(m.uptakeRate * 100).toFixed(0)}%</td>
-                <td className="px-3 py-2.5 tabular-nums">D{m.deepestDepth}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.disclosureGiven}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.disclosureReceived}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.repairAttempts}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.responsivenessGap >= 0 ? '+' : ''}{m.responsivenessGap.toFixed(2)}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.finalMoodValence >= 0 ? '+' : ''}{m.finalMoodValence.toFixed(2)}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.kindEntropy.toFixed(2)}</td>
-                <td className="px-3 py-2.5 tabular-nums" style={m.safeMoveRatio > 0.8 ? { color: '#a3324e' } : undefined}>
+              <tr key={m.agentId}>
+                <td className="uppercase" style={{ color: colourOf(m.agentId) }}>{m.name}</td>
+                <td className="">{m.turns}</td>
+                <td className="">{m.meanTurnWords}</td>
+                <td className="">{(m.questionRatio * 100).toFixed(0)}%</td>
+                <td className="">{(m.topicInitiative * 100).toFixed(0)}%</td>
+                <td className="">{(m.uptakeRate * 100).toFixed(0)}%</td>
+                <td className="">D{m.deepestDepth}</td>
+                <td className="">{m.disclosureGiven}</td>
+                <td className="">{m.disclosureReceived}</td>
+                <td className="">{m.repairAttempts}</td>
+                <td className="">{m.responsivenessGap >= 0 ? '+' : ''}{m.responsivenessGap.toFixed(2)}</td>
+                <td className="">{m.finalMoodValence >= 0 ? '+' : ''}{m.finalMoodValence.toFixed(2)}</td>
+                <td className="">{m.kindEntropy.toFixed(2)}</td>
+                <td className="" style={m.safeMoveRatio > 0.8 ? { color: 'var(--ls-err)' } : undefined}>
                   {(m.safeMoveRatio * 100).toFixed(0)}%
                 </td>
               </tr>
@@ -388,35 +399,35 @@ function DebriefView({ debrief, colourOf }: {
         </table>
       </div>
 
-      <h3 className="mb-1 font-serif text-xl">Reading each other</h3>
-      <p className="mb-3 max-w-2xl text-sm leading-relaxed text-neutral-600">
+      <h3 className="ls-title mb-2 text-[11px]">READING EACH OTHER</h3>
+      <p className="ls-dim mb-3 max-w-2xl text-[17px] leading-snug">
         Before each turn, each of them privately predicted what the other would do next, the move,
         how much they would put on the table, whether they would ask something back. Accuracy on its
         own mostly measures how predictable the other person was, so what is worth reading is{' '}
-        <em>skill</em>: how much better they did than a naive forecaster who just guesses whatever
+<span style={{ color: 'var(--ls-hi)' }}>skill</span>: how much better they did than a naive forecaster who just guesses whatever
         that partner has done most often so far. Zero means the read added nothing.
       </p>
-      <div className="mb-8 overflow-x-auto rounded-lg border border-neutral-200 bg-white">
-        <table className="w-full min-w-[560px] text-sm">
+      <div className="mb-8 overflow-x-auto">
+        <table className="ls-table min-w-[560px] text-[18px]">
           <thead>
-            <tr className="border-b border-neutral-200 text-left font-mono text-[10px] uppercase tracking-[0.12em] text-neutral-400">
+            <tr>
               {['', 'called', 'called the move', 'depth error', 'accuracy', 'naive guess', 'skill'].map((h) => (
-                <th key={h} className="px-3 py-2.5 font-medium">{h}</th>
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {d.perAgent.map((m) => (
-              <tr key={m.agentId} className="border-b border-neutral-100 last:border-0">
-                <td className="px-3 py-2.5 font-semibold" style={{ color: colourOf(m.agentId) }}>{m.name}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.anticipation.forecasts}</td>
-                <td className="px-3 py-2.5 tabular-nums">{(m.anticipation.kindAccuracy * 100).toFixed(0)}%</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.anticipation.depthMae.toFixed(2)}</td>
-                <td className="px-3 py-2.5 tabular-nums">{m.anticipation.composite.toFixed(3)}</td>
-                <td className="px-3 py-2.5 tabular-nums text-neutral-500">{m.anticipation.causalBaseline.toFixed(3)}</td>
+              <tr key={m.agentId}>
+                <td className="uppercase" style={{ color: colourOf(m.agentId) }}>{m.name}</td>
+                <td className="">{m.anticipation.forecasts}</td>
+                <td className="">{(m.anticipation.kindAccuracy * 100).toFixed(0)}%</td>
+                <td className="">{m.anticipation.depthMae.toFixed(2)}</td>
+                <td className="">{m.anticipation.composite.toFixed(3)}</td>
+                <td className="ls-dim">{m.anticipation.causalBaseline.toFixed(3)}</td>
                 <td
-                  className="px-3 py-2.5 font-semibold tabular-nums"
-                  style={{ color: m.anticipation.causalSkill >= 0 ? colourOf(m.agentId) : '#8a8a8a' }}
+                  className=""
+                  style={{ color: m.anticipation.causalSkill >= 0 ? colourOf(m.agentId) : 'var(--ls-dim)' }}
                 >
                   {m.anticipation.causalSkill >= 0 ? '+' : ''}{m.anticipation.causalSkill.toFixed(3)}
                 </td>
@@ -426,36 +437,33 @@ function DebriefView({ debrief, colourOf }: {
         </table>
       </div>
 
-      <h3 className="mb-3 font-serif text-xl">The moments that mattered</h3>
-      <ol className="mb-8 space-y-px overflow-hidden rounded-lg border border-neutral-200 bg-neutral-200">
+      <h3 className="ls-title mb-3 text-[11px]">THE MOMENTS THAT MATTERED</h3>
+      <ol className="mb-8 space-y-3 border-l-2 pl-4" style={{ borderColor: 'var(--ls-line)' }}>
         {d.moments.map((m) => (
-          <li key={`${m.kind}-${m.turn}`} className="bg-white px-4 py-3">
-            <div className="flex flex-wrap items-baseline gap-x-3">
-              <span className="font-mono text-[11px] text-neutral-400 tabular-nums">{m.minute}m</span>
-              <span className="text-sm font-semibold text-neutral-900">{m.label}</span>
-            </div>
-            <p className="mt-1 text-sm italic leading-relaxed text-neutral-700">&ldquo;{m.excerpt}&rdquo;</p>
-            <p className="mt-1 font-mono text-[10px] text-neutral-400">{m.evidence}</p>
+          <li key={`${m.kind}-${m.turn}`}>
+            <p><span className="ls-dim tabular-nums">{m.minute}m </span><span style={{ color: 'var(--ls-hi)' }}>{m.label}</span></p>
+            <p className="leading-snug">&gt; {m.excerpt}</p>
+            <p className="ls-dim text-[16px] leading-snug">{m.evidence}</p>
           </li>
         ))}
-        {d.moments.length === 0 && <li className="bg-white px-4 py-3 text-sm text-neutral-500">Nothing crossed the threshold, a flat date.</li>}
+        {d.moments.length === 0 && <li className="ls-dim">Nothing crossed the threshold, a flat date.</li>}
       </ol>
 
-      <h3 className="mb-1 font-serif text-xl">Shared ground</h3>
-      <p className="mb-3 max-w-2xl text-sm text-neutral-600">
+      <h3 className="ls-title mb-2 text-[11px]">SHARED GROUND</h3>
+      <p className="ls-dim mb-3 max-w-2xl text-[17px] leading-snug">
         Topics both of them engaged with, with the turns cited. This is the input to a real-world
         suggestion, the recommendation has to point at evidence, not at a vibe.
       </p>
-      <ul className="space-y-px overflow-hidden rounded-lg border border-neutral-200 bg-neutral-200">
+      <ul className="space-y-1">
         {d.sharedInterests.map((s) => (
-          <li key={s.topic} className="flex flex-wrap items-baseline gap-x-3 bg-white px-4 py-2.5">
-            <span className="text-sm font-medium text-neutral-900">{s.topic}</span>
-            <span className="font-mono text-[11px] text-neutral-400">
+          <li key={s.topic} className="flex flex-wrap items-baseline gap-x-3">
+            <span style={{ color: 'var(--ls-hi)' }}>{s.topic}</span>
+            <span className="ls-dim text-[16px]">
               {s.turns.length} turns · longest unbroken run {s.sustainedTurns} · turns {s.turns.join(', ')}
             </span>
           </li>
         ))}
-        {d.sharedInterests.length === 0 && <li className="bg-white px-4 py-2.5 text-sm text-neutral-500">They never sustained a topic together.</li>}
+        {d.sharedInterests.length === 0 && <li className="ls-dim">They never sustained a topic together.</li>}
       </ul>
     </section>
   );
@@ -463,30 +471,25 @@ function DebriefView({ debrief, colourOf }: {
 
 // ---------------------------------------------------------------------------
 
-function Shell({ children }: { children: React.ReactNode }) {
+function Shell({ children, status }: { children: React.ReactNode; status?: string }) {
   return (
-    <div className="mx-auto max-w-4xl py-6 sm:py-10">
-      <header className="mb-8 border-b border-neutral-200 pb-6">
-        <p className="mb-3 flex flex-wrap items-baseline gap-x-5 font-mono text-[11px] uppercase tracking-[0.16em] text-neutral-400">
-          <Link href="/lovesims" className="hover:text-neutral-700">LoveSims <span className="text-[#a3324e]">v2</span> · simulated date</Link>
-          <Link href="/lovesims/play" className="normal-case tracking-normal underline underline-offset-2 hover:text-neutral-700">play</Link>
-          <Link href="/?project=love-simulations" className="normal-case tracking-normal underline underline-offset-2 hover:text-neutral-700">mateolarreaferro.com</Link>
-        </p>
-        <h1 className="font-serif text-4xl leading-tight">Watch two people fail to say what they mean</h1>
-        <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-neutral-600">
+    <Frame wide status={status}>
+      <header className="mb-8">
+        <h1 className="ls-title text-[13px] leading-[1.8] sm:text-[15px]">WATCH TWO PEOPLE FAIL TO SAY WHAT THEY MEAN</h1>
+        <p className="ls-dim mt-3 max-w-2xl leading-snug">
           Two invented people, each with a mood, a disclosure ladder, private goals, and a secret.
           The affect track under the transcript is state the engine wrote while it ran, not a summary written afterwards.
         </p>
       </header>
       {children}
-    </div>
+    </Frame>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.13em] text-neutral-500">{label}</span>
+      <span className="ls-dim mb-1 block text-[16px] uppercase tracking-[0.08em]">&gt; {label}</span>
       {children}
     </label>
   );
@@ -499,8 +502,8 @@ function Select({ value, onChange, options, accent }: {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded border border-neutral-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-300"
-      style={accent ? { borderLeftWidth: 3, borderLeftColor: accent } : undefined}
+      className="ls-select"
+      style={accent ? { borderLeftWidth: 6, borderLeftColor: accent } : undefined}
     >
       {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
@@ -509,10 +512,10 @@ function Select({ value, onChange, options, accent }: {
 
 function Stat({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <div className="bg-white p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-neutral-400">{label}</p>
-      <p className="mt-1 font-serif text-2xl tabular-nums">{value}</p>
-      <p className="mt-1 text-[11px] leading-snug text-neutral-500">{note}</p>
+    <div className="ls-box">
+      <p className="ls-dim text-[16px] uppercase tracking-[0.08em]">{label}</p>
+      <p className="ls-title mt-2 text-[16px]" style={{ color: 'var(--ls-hi)' }}>{value}</p>
+      <p className="ls-dim mt-2 text-[16px] leading-snug">{note}</p>
     </div>
   );
 }

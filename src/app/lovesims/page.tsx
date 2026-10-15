@@ -1,65 +1,105 @@
-import Link from 'next/link';
+'use client';
 
 /*
-  The door to LoveSims on this site. The game (/lovesims/play) and the analyst
-  view (/lovesims/date) run the same engine the research prototype did; the
-  people are invented for the demo (src/lib/lovesims/cast.ts).
+  The door to LoveSims on this site: a boot screen and a menu. The game
+  (/lovesims/play) and the analyst view (/lovesims/date) run the same engine
+  the research prototype did; the people are invented for the demo
+  (src/lib/lovesims/cast.ts). The keys 1, 2 and 3 pick from the menu.
 */
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Boot, Frame, Label, useReducedMotion } from '@/components/lovesims/terminal';
+
+const MENU = [
+  { key: '1', href: '/lovesims/play', label: 'play a date', note: 'read each line, guess how it landed' },
+  { key: '2', href: '/lovesims/date', label: 'analyst view', note: 'the affect track, the metrics, the moments' },
+  { key: '3', href: '/?project=love-simulations', label: 'exit', note: 'back to mateolarreaferro.com' },
+];
+
+const BOOT = [
+  'lovesims v2 (c) 2026 attractor labs',
+  'a date engine, not a transcript generator',
+  'cast: 12 invented people, 6 pairs, 4 rooms',
+  'ready.',
+];
+
+const HELP: [string, string][] = [
+  ['affect', 'Appraisal to PAD to mood gates. Attachment style modulates the appraisal, not the wording, so an avoidant agent gets terser exactly when the date is going well.'],
+  ['self-disclosure', 'A D0 to D4 ladder with a ceiling set by perceived responsiveness. Under-reciprocation and too-much-too-soon are both reachable states.'],
+  ['scene', 'Real venues, a time budget, and budgeted interruptions: the check arriving, the room getting loud. Friction is where the diagnostic behaviour comes from.'],
+  ['measurement', 'Language style matching, reciprocity, uptake, initiative, repair, and the responsiveness gap. All computed from the logs. No compatibility score.'],
+];
+
 export default function LoveSimsHome() {
+  const router = useRouter();
+  const reduced = useReducedMotion();
+  const [booted, setBooted] = useState(false);
+  const ready = booted || reduced;
+
+  useEffect(() => {
+    if (!ready) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const hit = MENU.find((m) => m.key === e.key);
+      if (hit) router.push(hit.href);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [ready, router]);
+
   return (
-    <div className="mx-auto max-w-3xl py-10 sm:py-20">
-      <p className="mb-4 flex flex-wrap items-baseline gap-x-5 font-mono text-[11px] uppercase tracking-[0.16em] text-neutral-400">
-        <span>LoveSims <span className="text-[#a3324e]">v2</span></span>
-        <Link href="/?project=love-simulations" className="normal-case tracking-normal underline underline-offset-2 hover:text-neutral-700">
-          mateolarreaferro.com
-        </Link>
-      </p>
-      <h1 className="font-serif text-5xl leading-[1.05]">
-        A date engine, not a transcript generator
+    <Frame status="12 people · 6 pairs · 4 rooms">
+      <h1 className="ls-title mb-5 text-[13px] leading-[1.8] sm:text-[16px]">
+        CAN YOU TELL HOW THAT LANDED?
       </h1>
-      <p className="mt-5 max-w-2xl text-[17px] leading-relaxed text-neutral-600">
-        Two people meet in a real place. Each carries a mood that biases what they say, a disclosure
-        ladder they can only climb when the other person earns it, a private goal, and a secret. The
-        engine records what each of them felt on every turn and, separately, what they misread.
-      </p>
 
-      <div className="mt-8 flex flex-wrap items-center gap-4">
-        <Link
-          href="/lovesims/play"
-          className="rounded-full bg-neutral-900 px-7 py-3.5 text-[15px] font-medium text-white hover:bg-neutral-700"
-        >
-          Play a date
-        </Link>
-        <Link
-          href="/lovesims/date"
-          className="rounded-full border border-neutral-300 px-7 py-3.5 text-[15px] text-neutral-700 hover:border-neutral-400"
-        >
-          Analyst view
-        </Link>
-      </div>
-      <p className="mt-3 max-w-xl text-sm text-neutral-500">
-        In the game you read each line and guess how it landed. You are not scoring the couple.
-        You are scoring how well you read a person.
-      </p>
-      <p className="mt-3 max-w-xl text-sm text-neutral-500">
-        The twelve people here are invented for this demo. The research version was grounded in
-        interviews with real students, which stay private. A date is a few minutes of a language
-        model talking to itself; every visitor gets three for free.
-      </p>
+      {ready ? (
+        <div className="ls-dim mb-5 space-y-0.5">{BOOT.map((l) => <p key={l}>&gt; {l}</p>)}</div>
+      ) : (
+        <div className="mb-5"><Boot lines={BOOT} onDone={() => setBooted(true)} /></div>
+      )}
 
-      <dl className="mt-14 grid gap-x-10 gap-y-6 border-t border-neutral-200 pt-8 sm:grid-cols-2">
-        {[
-          ['Affect', 'Appraisal to PAD to mood gates. Attachment style modulates the appraisal, not the wording, so an avoidant agent gets terser exactly when the date is going well.'],
-          ['Self-disclosure', 'A D0 to D4 ladder with a ceiling set by perceived responsiveness. Under-reciprocation and too-much-too-soon are both reachable states.'],
-          ['Scene', 'Real venues, a time budget, and budgeted interruptions: the check arriving, the room getting loud. Friction is where the diagnostic behaviour comes from.'],
-          ['Measurement', 'Language style matching, reciprocity, uptake, initiative, repair, and the responsiveness gap. All computed from the logs. No compatibility score.'],
-        ].map(([term, def]) => (
-          <div key={term}>
-            <dt className="font-mono text-[10px] uppercase tracking-[0.13em] text-[#a3324e]">{term}</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-neutral-600">{def}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+      {ready && (
+        <>
+          <p className="mb-6 max-w-2xl leading-snug">
+            Two people meet in a real place. Each carries a mood that biases what they say, a disclosure
+            ladder they can only climb when the other person earns it, a private goal, and a secret. The
+            engine records what each of them felt on every turn and, separately, what they misread.
+          </p>
+
+          <Label className="mb-2">&gt; select</Label>
+          <ul className="mb-7 space-y-1">
+            {MENU.map((m) => (
+              <li key={m.key} className="flex flex-wrap items-baseline gap-x-3">
+                <Link href={m.href} className="ls-btn">
+                  <span style={{ color: 'var(--ls-hi)' }}>{m.key}</span> {m.label}
+                </Link>
+                <span className="ls-dim text-[17px]">{m.note}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="ls-dim mb-8 max-w-xl text-[17px] leading-snug">
+            In the game you read each line and guess how it landed. You are not scoring the couple,
+            you are scoring how well you read a person. The twelve people here are invented for this
+            demo; the research version was grounded in interviews with real students, which stay
+            private. A date is a few minutes of a language model talking to itself; every visitor gets
+            three for free.
+          </p>
+
+          <Label className="mb-2">&gt; lovesims --help</Label>
+          <dl className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {HELP.map(([term, def]) => (
+              <div key={term}>
+                <dt style={{ color: 'var(--ls-hi)' }}>--{term}</dt>
+                <dd className="ls-dim text-[17px] leading-snug">{def}</dd>
+              </div>
+            ))}
+          </dl>
+        </>
+      )}
+    </Frame>
   );
 }
