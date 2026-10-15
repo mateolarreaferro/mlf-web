@@ -4,6 +4,7 @@ category: "human-in-the-loop generative agent"
 group: "projects"
 order: 3
 repo: "https://github.com/mateolarreaferro/Dr.C"
+link: "https://drc-web-pi.vercel.app/studio"
 media:
   - "/projects/dr-c.png"
 ---

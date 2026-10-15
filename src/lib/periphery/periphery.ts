@@ -66,8 +66,6 @@ export type Reading = {
   phase: "inhale" | "exhale";
   breaths: number;
   seconds: number; // how long one full breath takes at this depth and pace
-  fill: number; // 0..1, where the breath is between empty and full
-  history: number[]; // the breath's size, ten samples a second, the last 20 s
 };
 
 /*
@@ -77,7 +75,14 @@ export type Reading = {
 */
 const CALM_DEPTH = TEXT_R + 2 * ((10 * 0.25) / (2 * Math.PI));
 export const controls = store<Controls>({ depth: CALM_DEPTH, ambience: -1, breathSounds: [false, false], pace: 1, volume: 0.8 });
-export const reading = store<Reading>({ playing: false, phase: "inhale", breaths: 0, seconds: 0, fill: 0, history: [] });
+export const reading = store<Reading>({ playing: false, phase: "inhale", breaths: 0, seconds: 0 });
+/*
+  The breath's size, ten samples a second, the last 20 s. Its own store, read
+  by the panel's trace without React: `reading` changes a few times a minute
+  and re-renders the panel, this changes ten times a second and must not.
+*/
+export const trace = store<number[]>([]);
+export const TRACE_LENGTH = 200;
 
 export function setControl<K extends keyof Controls>(key: K, value: Controls[K]) {
   controls.set({ ...controls.get(), [key]: value });

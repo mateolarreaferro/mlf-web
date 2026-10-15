@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LuFilePlus, LuKeyRound, LuPencil, LuRefreshCw, LuTrash2 } from "react-icons/lu";
+import { ago, onDate } from "@/lib/capsula/when";
 import { Act, Button, IconAct, call, field } from "./ui";
 
 /*
@@ -13,7 +14,7 @@ import { Act, Button, IconAct, call, field } from "./ui";
   pasted text) as an entry on a given date.
 */
 
-export type Row = { username: string; name: string; rounds: number[]; draft: boolean };
+export type Row = { username: string; name: string; rounds: number[]; draft: boolean; lastSeenAt: number | null };
 
 const slug = (name: string) =>
   name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9\s]/g, "").trim().split(/\s+/).slice(0, 2).join(".");
@@ -184,6 +185,10 @@ function Person({ row, root }: { row: Row; root: string }) {
           <p className="label">
             {row.username} · {row.rounds.length ? row.rounds.join(", ") : "sin entradas"}
             {row.draft ? " · entrevista a medias" : ""}
+            {" · "}
+            {row.lastSeenAt ? (
+              <time dateTime={new Date(row.lastSeenAt).toISOString()} title={onDate(row.lastSeenAt)}>entró {ago(row.lastSeenAt)}</time>
+            ) : "sin visita registrada"}
           </p>
         </div>
         <div className="-mr-2 flex items-center gap-0.5">

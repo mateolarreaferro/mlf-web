@@ -11,6 +11,8 @@ import {
   PeripherySound,
   reading,
   setControl,
+  trace,
+  TRACE_LENGTH,
   VIEW_R,
   AMBIENCES,
 } from "@/lib/periphery/periphery";
@@ -49,6 +51,10 @@ export default function Periphery() {
   const begin = useRef<() => void>(() => {});
   const popOut = useRef<() => void>(() => {});
   const [begun, setBegun] = useState(false);
+  // the instructions leave the tree once they have faded: an invisible
+  // backdrop-filter kept over a canvas that redraws every frame makes some
+  // browsers repaint the rest of the page with it
+  const [instructed, setInstructed] = useState(true);
   const [popped, setPopped] = useState(false);
   const broken = useSyncExternalStore(still, noWebGL2, no);
   const canPip = useSyncExternalStore(still, () => Boolean(pipApi()), no);
@@ -102,6 +108,7 @@ export default function Periphery() {
       sound.setVolume(controls.get().volume);
       sound.ambience(controls.get().ambience);
       setBegun(true);
+      window.setTimeout(() => setInstructed(false), 800);
     };
 
     // the pads and the wheel, as in the original
@@ -137,7 +144,9 @@ export default function Periphery() {
     el.addEventListener("pointerdown", down);
     el.addEventListener("wheel", wheel, { passive: false });
 
-    // what the panel shows: ten breath samples a second
+    // what the panel shows: ten breath samples a second for the trace, and
+    // the reading only when a shown value changes (each turn of the breath,
+    // or a slider), so the panel is not re-rendered ten times a second
     const history: number[] = [];
     let lastPublish = 0;
     const publish = (now: number) => {
@@ -145,15 +154,18 @@ export default function Periphery() {
       lastPublish = now;
       const c = controls.get();
       history.push(piece.r);
-      if (history.length > 200) history.shift();
-      reading.set({
+      if (history.length > TRACE_LENGTH) history.shift();
+      trace.set([...history]);
+      const next = {
         playing: Boolean(sound),
         phase: piece.phase,
         breaths: piece.breaths,
-        seconds: breathSeconds(c.depth, c.pace),
-        fill: Math.max(0, Math.min(1, (piece.r - MIN_R * 0.6) / (piece.depth - MIN_R * 0.6))),
-        history: [...history],
-      });
+        seconds: Math.round(breathSeconds(c.depth, c.pace) * 10) / 10,
+      };
+      const r = reading.get();
+      if (r.playing !== next.playing || r.phase !== next.phase || r.breaths !== next.breaths || r.seconds !== next.seconds) {
+        reading.set(next);
+      }
     };
 
     // one clock: this tab's frames, or the corner window's while it is open
@@ -224,7 +236,8 @@ export default function Periphery() {
       el.removeEventListener("wheel", wheel);
       sound?.close();
       stage.dispose();
-      reading.set({ playing: false, phase: "inhale", breaths: 0, seconds: 0, fill: 0, history: [] });
+      reading.set({ playing: false, phase: "inhale", breaths: 0, seconds: 0 });
+      trace.set([]);
     };
   }, [broken]);
 
@@ -245,7 +258,7 @@ export default function Periphery() {
         </p>
       ) : null}
 
-      {!broken ? (
+      {!broken && instructed ? (
         <div
           className={`absolute inset-0 flex items-center justify-center bg-black/55 p-6 backdrop-blur-[3px] transition-opacity duration-700 ${
             begun ? "pointer-events-none opacity-0" : "opacity-100"

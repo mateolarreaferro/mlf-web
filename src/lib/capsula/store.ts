@@ -31,6 +31,10 @@ export type Person = {
   passwordHash: string;
   /** The password itself, sealed, so the admin can hand it out again. */
   passwordSealed: string;
+  /** When they were last on the site (touchSeen); absent until the first login. */
+  lastSeenAt?: number;
+  /** The visit before the current one, what their own page shows as "last time". */
+  seenBeforeAt?: number;
 };
 
 export type Answer = { questionId: string | null; question: string; answer: string };
@@ -236,6 +240,26 @@ export async function resetPassword(person: Person): Promise<string> {
 }
 
 export const revealPassword = (person: Person) => unseal<string>(person.passwordSealed);
+
+/*
+  Last seen. Every signed-in request touches the person (auth.ts, after the
+  response), but a write only happens every five minutes, and a return after
+  half an hour away counts as a new visit: the previous one moves to
+  seenBeforeAt, which is what the person sees on their own page ("you were
+  last here on..."); the admin sees lastSeenAt for everyone.
+*/
+const TOUCH_EVERY = 5 * 60 * 1000;
+const VISIT_GAP = 30 * 60 * 1000;
+
+export async function touchSeen(username: string, now = Date.now()) {
+  // read fresh, not from the caller's copy: a password reset in between must not be overwritten
+  const person = await getPerson(username);
+  if (!person) return;
+  const last = person.lastSeenAt ?? 0;
+  if (now - last < TOUCH_EVERY) return;
+  const seenBeforeAt = now - last > VISIT_GAP ? last || undefined : person.seenBeforeAt;
+  await savePerson({ ...person, lastSeenAt: now, seenBeforeAt });
+}
 
 /** Removes the profile, its entries, draft, reading and requests. Its files stay in Blob until deleted there. */
 export async function removePerson(username: string) {

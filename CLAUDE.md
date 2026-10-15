@@ -501,7 +501,15 @@ is the breathing pacer: the edge moves at 0.25 units a second, so depth
 (scroll over it, or the slider) sets the length of a breath; turns are read
 from the cycle (sin of its angle), never from the radius, or a change of
 depth counts false breaths. The four ambience volumes are the original's
-second set (0.6, 0.2, 0.3, 1.0) every time. "Keep it in a corner" opens a
+second set (0.6, 0.2, 0.3, 1.0) every time. The panel is fed by two stores: `reading`
+(phase, breaths, seconds) is set only when one of those changes, and the
+trace (`trace`, ten samples a second) is drawn by setting the polyline's
+attribute from a subscription, never through React: a 10 Hz re-render of
+the panel (2026-10-14) put about a hundred DOM mutations a second into the
+page and made the rest of the UI stutter, and the stat line is a grid so
+"exhale" being wider than "inhale" cannot wrap it and move the column. The
+instruction overlay (a `backdrop-blur` over the canvas) is unmounted once it
+has faded, not left at opacity 0. "Keep it in a corner" opens a
 Document Picture-in-Picture window (Chrome and Edge on a computer) that
 floats over every app and keeps the clock while it is open, drawn in plain
 2D. **The browser extension** is `extensions/periphery` (Manifest V3, a
@@ -632,6 +640,18 @@ Playwright at 1280x720 against `next dev`: the map with two points open,
 "todos" across the years, then the interview room with the voice and the
 microphone. Sped up 1.3x, 1024x576, CRF 26, about 31 seconds and 1.3 MB.
 Never record a real friend's capsule.
+
+**Last seen** (2026-10-14). `Person` carries `lastSeenAt` and `seenBeforeAt`:
+`touchSeen()` in `store.ts` runs at login and, through `after()` in `me()`,
+after every signed-in request, writing at most every five minutes, and a
+return after thirty minutes away is a new visit (the old `lastSeenAt` moves
+to `seenBeforeAt`). A friend's own page says when they were last here
+("la última vez que entraste fue hace 9 días", from `seenBeforeAt`, since
+the current visit is always "now"); the admin list shows `lastSeenAt` for
+everyone ("entró hace 2 horas", or "sin visita registrada": the stamp only
+exists from the first login after 2026-10-14, so an older friend reads as
+unrecorded, not as absent). Words in
+`when.ts` (`ago`, `onDate`).
 
 Answers are stored against question ids in `questions.ts` (the old
 `Template.xlsx`), which is what lines years up: never reuse or rename an id,

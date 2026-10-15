@@ -18,7 +18,10 @@ export default async function Admin() {
   const people = await listPeople();
   const rows = await Promise.all(people.map(async (p) => {
     const [entries, draft] = await Promise.all([listEntries(p.username), getDraft(p.username)]);
-    return { username: p.username, name: p.name, rounds: [...new Set(entries.map((e) => e.round))], draft: Boolean(draft) };
+    return {
+      username: p.username, name: p.name, rounds: [...new Set(entries.map((e) => e.round))], draft: Boolean(draft),
+      lastSeenAt: p.lastSeenAt ?? null,
+    };
   }));
   return (
     <>

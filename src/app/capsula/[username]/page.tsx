@@ -10,6 +10,7 @@ import { access, canWrite, isAdmin, me } from "@/lib/capsula/auth";
 import { currentInsight } from "@/lib/capsula/insight";
 import { SECTIONS, questionById } from "@/lib/capsula/questions";
 import { getAsk, getDraft, getPerson, listAsks, listEntries, listPeople, type Entry } from "@/lib/capsula/store";
+import { ago, onDate } from "@/lib/capsula/when";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +88,13 @@ export default async function Capsule({ params, searchParams }: PageProps<"/caps
           {how === "owner" && !invited.length ? " · solo tú puedes leerla" : ""}
           {how === "invited" ? ` · ${first} te dejó leerla` : ""}
         </p>
+        {how === "owner" ? (
+          <p className="label mt-1">
+            {person.seenBeforeAt ? (
+              <>la última vez que entraste fue <time dateTime={new Date(person.seenBeforeAt).toISOString()} title={onDate(person.seenBeforeAt)}>{ago(person.seenBeforeAt)}</time></>
+            ) : "es tu primera visita"}
+          </p>
+        ) : null}
       </Reveal>
 
       {how === "owner" && asks.length ? (

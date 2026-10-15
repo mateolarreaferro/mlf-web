@@ -1,7 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { AMBIENCES, controls, MAX_R, MIN_R, reading, setControl } from "@/lib/periphery/periphery";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { AMBIENCES, controls, MAX_R, MIN_R, reading, setControl, trace, TRACE_LENGTH } from "@/lib/periphery/periphery";
 
 /*
   The left column's view into Periphery while its card is open (on a phone,
@@ -43,14 +43,30 @@ function Slider(props: { label: string; value: number; min: number; max: number;
   );
 }
 
-function Trace({ values }: { values: number[] }) {
-  if (values.length < 2) return <div className="h-8" />;
-  const lo = Math.min(...values);
-  const hi = Math.max(lo + 0.01, ...values);
-  const pts = values.map((v, i) => `${(i / 199) * 100},${30 - ((v - lo) / (hi - lo)) * 28}`).join(" ");
+/*
+  The last twenty seconds of the breath. It follows the `trace` store by
+  hand, ten times a second, setting one attribute on the polyline: the ten
+  React renders a second it used to cost reached the whole panel, and with
+  them the page around it.
+*/
+function Trace() {
+  const line = useRef<SVGPolylineElement>(null);
+  useEffect(() => {
+    const draw = () => {
+      const values = trace.get();
+      if (!line.current) return;
+      if (values.length < 2) return line.current.setAttribute("points", "");
+      const lo = Math.min(...values);
+      const hi = Math.max(lo + 0.01, ...values);
+      const pts = values.map((v, i) => `${(i / (TRACE_LENGTH - 1)) * 100},${30 - ((v - lo) / (hi - lo)) * 28}`).join(" ");
+      line.current.setAttribute("points", pts);
+    };
+    draw();
+    return trace.subscribe(draw);
+  }, []);
   return (
     <svg viewBox="0 0 100 32" preserveAspectRatio="none" className="h-8 w-full" aria-hidden>
-      <polyline points={pts} fill="none" stroke="var(--ink)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
+      <polyline ref={line} fill="none" stroke="var(--ink)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
@@ -66,14 +82,17 @@ export default function PeripheryPanel() {
         <p className="label mb-2">the breath</p>
         {r.playing ? (
           <>
-            <p className="flex items-baseline gap-2">
+            {/* a grid, not a wrapping flex row: "exhale" is wider than "inhale",
+                and a line that wraps on one word and not the other moves the
+                whole column every turn of the breath */}
+            <p className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-3">
               <span className="text-2xl font-medium tracking-tight">{r.phase}</span>
-              <span className="label ml-auto tabular-nums">
+              <span className="label whitespace-nowrap text-right tabular-nums">
                 {r.breaths} breaths · {r.seconds.toFixed(1)} s each · {perMinute.toFixed(1)} a minute
               </span>
             </p>
             <div className="mt-3">
-              <Trace values={r.history} />
+              <Trace />
             </div>
           </>
         ) : (

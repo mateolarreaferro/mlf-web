@@ -7,7 +7,7 @@ import {
 } from "@/lib/capsula/auth";
 import {
   acceptAsk, addEntry, ask, blobPrefix, dropAsk, checkPassword, getInsight, saveInsight, createPerson, dropDraft, getDraft, getPerson, listEntries, removeEntry,
-  listPeople, removePerson, renamePerson, saveEntry, resetPassword, revealPassword, saveDraft, within, USERNAME, usernameFor,
+  listPeople, removePerson, renamePerson, saveEntry, resetPassword, revealPassword, saveDraft, touchSeen, within, USERNAME, usernameFor,
   type Answer, type Mode, type Person, type Source,
 } from "@/lib/capsula/store";
 import { AUDIO_LIMIT, Said, extract, fromCsv, fromDocx, fromXlsx, tidy, transcribe } from "@/lib/capsula/ingest";
@@ -53,6 +53,7 @@ const ops: Record<string, (request: Request, body: Record<string, unknown>) => P
     }
     const person = await getPerson(username);
     if (!person || !checkPassword(password, person.passwordHash)) return no("Usuario o contraseña incorrectos.", 401);
+    await touchSeen(person.username);
     await startSession(person);
     return json({ username: person.username });
   },

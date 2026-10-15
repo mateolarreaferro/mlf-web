@@ -1,6 +1,7 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
-import { getAsk, getPerson, secret, type Ask, type Person } from "./store";
+import { after } from "next/server";
+import { getAsk, getPerson, secret, touchSeen, type Ask, type Person } from "./store";
 
 /*
   Who may see what in the capsule. Three kinds of visitor:
@@ -58,7 +59,10 @@ export async function me(): Promise<Person | null> {
   const session = unpack<{ u: string; v: number; exp: number }>(SESSION, (await cookies()).get(SESSION)?.value);
   if (!session || session.exp < Date.now()) return null;
   const person = await getPerson(session.u);
-  return person && person.version === session.v ? person : null;
+  if (!person || person.version !== session.v) return null;
+  // last seen, written after the response so no page waits for it
+  after(() => touchSeen(person.username));
+  return person;
 }
 
 export async function startSession(person: Person) {
