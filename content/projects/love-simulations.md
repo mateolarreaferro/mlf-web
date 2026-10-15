@@ -7,6 +7,8 @@ order: 4
 year: "2024–"
 role: "created with Xuyang Zhu, Xingyi Zhang, and Andrew Park"
 image: "/projects/love-simulations.png"
+media:
+  - { clip: "/projects/lovesims-demo.mp4" }
 video: "https://vimeo.com/1035385847"
 paper: "https://dl.acm.org/doi/full/10.1145/3706599.3720011"
 demo: "/lovesims"
