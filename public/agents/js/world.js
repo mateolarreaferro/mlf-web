@@ -814,7 +814,7 @@ export function buildWorld({ density = 1 } = {}) {
     const rnd = seeded(`pod.${room.id}`);
     if (room.final) buildBell(built, rnd);
     else buildPod(built, rnd, new THREE.Color(room.color));
-    board(built, room.final ? 4.2 : built.open ? 3.0 : 1.9, room.final ? 2.2 : built.open ? 1.6 : 1.0);
+    board(built, room.final ? 4.2 : room.between ? 2.2 : built.open ? 3.0 : 1.9, room.final ? 2.2 : room.between ? 1.2 : built.open ? 1.6 : 1.0);
     return built;
   });
 
@@ -838,7 +838,7 @@ export function buildWorld({ density = 1 } = {}) {
     membrane(rnd, c, r, 6500, { tint: teal, amt: 0.7, alpha: 0.24, loose: 0.08, size: 0.02 }, mouth);
     membrane(rnd, c, r * 1.12, 2400, { alpha: 0.13, loose: 0.45, size: 0.021 }, mouth);
     ribs(rnd, c, r, { count: 16, alpha: 0.82 });
-    attractor(room.id, room.index, c, 0.95, color);
+    attractor(room.id, room.shape ?? room.index, c, room.between ? 0.6 : 0.95, color);
     // tendrils trail beneath it
     for (let k = 0; k < 11; k++) {
       const a = (k / 11) * 6.28 + rnd();

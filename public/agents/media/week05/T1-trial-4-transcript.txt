@@ -1,0 +1,82 @@
+--- the agent reads (step 0) ---
+You just arrived and listened for one second.
+t= 0.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +127° (±5°, episode frame), pitch ~278 Hz, level 8 dB
+
+Budget left: 29.0 s listening, 720° rotation, 4.0 m walking.
+--- the agent calls wait (step 0) ---
+{"seconds": 5}
+--- the agent reads (step 1) ---
+t= 1.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +127° (±4°, episode frame), pitch ~278 Hz, level 8 dB
+t= 2.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +127° (±4°, episode frame), pitch ~278 Hz, level 8 dB
+t= 3.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +128° (±4°, episode frame), pitch ~278 Hz, level 8 dB | C: az +106° (±7°, episode frame), pitch ~560 Hz, level -4 dB  [identity uncertain]
+t= 4.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +129° (±4°, episode frame), pitch ~278 Hz, level 8 dB  [identity uncertain]
+t= 5.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB  [identity uncertain]
+
+Budget left: 24.0 s listening, 720° rotation, 4.0 m walking.
+--- the agent calls wait (step 1) ---
+{"seconds": 4}
+--- the agent reads (step 2) ---
+t= 6.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +127° (±4°, episode frame), pitch ~278 Hz, level 8 dB  [identity uncertain]
+t= 7.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +127° (±4°, episode frame), pitch ~278 Hz, level 8 dB  [identity uncertain]
+t= 8.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level -0 dB | B: az +128° (±4°, episode frame), pitch ~278 Hz, level 8 dB  [identity uncertain]
+t= 9.0s | A: az +30° (±5°, episode frame), noise-like (no harmonic pitch), level 0 dB | B: az +128° (±4°, episode frame), pitch ~278 Hz, level 8 dB  [identity uncertain]
+
+Budget left: 20.0 s listening, 720° rotation, 4.0 m walking.
+--- the agent calls rotate (step 2) ---
+{"yaw_deg": 127, "seconds": 2.3}
+--- the agent calls translate (step 2) ---
+{"forward_m": 0, "left_m": 1.5, "seconds": 3}
+--- the agent reads (step 3) ---
+t=10.0s | A: az +31° (±5°, episode frame), noise-like (no harmonic pitch), level -1 dB | B: az +130° (±4°, episode frame), pitch ~278 Hz, level 9 dB  [identity uncertain]
+t=11.0s | A: az +32° (±5°, episode frame), noise-like (no harmonic pitch), level -4 dB | B: az +129° (±4°, episode frame), pitch ~278 Hz, level 12 dB  [identity uncertain]
+t=12.0s | A: az +33° (±5°, episode frame), pitch ~434 Hz, level -8 dB | B: az +129° (±4°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+
+Budget left: 17.7 s listening, 593° rotation, 4.0 m walking.
+t=12.0s | B: az +126° (±4°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=13.0s | B: az +123° (±4°, episode frame), pitch ~278 Hz, level 14 dB | D: az +100° (±7°, episode frame), two pitches ~488 and ~558 Hz, level -5 dB  [identity uncertain]
+t=14.0s | B: az +113° (±5°, episode frame), pitch ~278 Hz, level 13 dB | D: az +93° (±5°, episode frame), pitch ~489 Hz, level -3 dB  [identity uncertain]
+t=15.0s | B: az +108° (±5°, episode frame), pitch ~278 Hz, level 12 dB | D: az +89° (±4°, episode frame), pitch ~556 Hz, level -2 dB  [identity uncertain]
+
+Budget left: 14.7 s listening, 593° rotation, 2.5 m walking.
+--- the agent calls wait (step 3) ---
+{"seconds": 4}
+--- the agent reads (step 4) ---
+t=15.0s | B: az +108° (±4°, episode frame), pitch ~278 Hz, level 11 dB | D: az +87° (±5°, episode frame), pitch ~560 Hz, level -3 dB  [identity uncertain]
+t=16.0s | B: az +108° (±4°, episode frame), pitch ~278 Hz, level 11 dB | D: az +87° (±5°, episode frame), two pitches ~560 and ~466 Hz, level -4 dB  [identity uncertain]
+t=17.0s | B: az +108° (±4°, episode frame), pitch ~278 Hz, level 11 dB | D: az +88° (±5°, episode frame), pitch ~556 Hz, level -3 dB  [identity uncertain]
+t=18.0s | B: az +108° (±4°, episode frame), pitch ~278 Hz, level 11 dB | D: az +87° (±6°, episode frame), two pitches ~514 and ~514 Hz, level -4 dB  [identity uncertain]
+t=19.0s | B: az +107° (±4°, episode frame), pitch ~278 Hz, level 11 dB  [identity uncertain]
+
+Budget left: 10.7 s listening, 593° rotation, 2.5 m walking.
+--- the agent calls translate (step 4) ---
+{"forward_m": 1.5, "left_m": 0, "seconds": 3}
+--- the agent reads (step 5) ---
+t=19.0s | B: az +107° (±4°, episode frame), pitch ~278 Hz, level 12 dB | D: az +82° (±6°, episode frame), two pitches ~464 and ~558 Hz, level -5 dB  [identity uncertain]
+t=20.0s | B: az +104° (±4°, episode frame), pitch ~278 Hz, level 12 dB | D: az +83° (±5°, episode frame), two pitches ~558 and ~466 Hz, level -5 dB  [identity uncertain]
+t=21.0s | B: az +98° (±5°, episode frame), pitch ~278 Hz, level 13 dB | D: az +78° (±5°, episode frame), pitch ~558 Hz, level -3 dB  [identity uncertain]
+t=22.0s | B: az +96° (±5°, episode frame), pitch ~278 Hz, level 13 dB | D: az +74° (±6°, episode frame), pitch ~558 Hz, level -2 dB  [identity uncertain]
+
+Budget left: 7.7 s listening, 593° rotation, 1.0 m walking.
+--- the agent calls wait (step 5) ---
+{"seconds": 5}
+--- the agent reads (step 6) ---
+t=22.0s | B: az +94° (±5°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=23.0s | B: az +94° (±5°, episode frame), pitch ~278 Hz, level 13 dB | D: az +75° (±5°, episode frame), pitch ~419 Hz, level 2 dB  [identity uncertain]
+t=24.0s | B: az +95° (±6°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=25.0s | nothing located
+t=26.0s | B: az +95° (±7°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=27.0s | B: az +94° (±6°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+
+Budget left: 2.7 s listening, 593° rotation, 1.0 m walking.
+--- the agent calls wait (step 6) ---
+{"seconds": 2.7}
+--- the agent reads (step 7) ---
+t=27.0s | B: az +94° (±5°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=28.0s | B: az +94° (±5°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+t=29.0s | B: az +94° (±5°, episode frame), pitch ~278 Hz, level 13 dB  [identity uncertain]
+
+Budget left: 0.0 s listening, 593° rotation, 1.0 m walking.
+The episode is over; report now.
+The budget is spent. Call report now with your best answer.
+--- the agent calls report (step 7) ---
+{"count": 3, "sources": [{"azimuth_deg": 94, "label": "B 278 Hz", "mode": "steady_rotation"}, {"azimuth_deg": 75, "label": "D1 ~558 Hz (stopped)", "mode": "stationary"}, {"azimuth_deg": 78, "label": "D2 ~466 Hz", "mode": "steady_rotation"}], "event": {"kind": "stop", "azimuth_deg": 75}, "note": "B held steady at 278 Hz throughout. The D bearing repeatedly showed two pitches (~466 and ~558 Hz); at t=23 it read ~419 Hz and then went silent, so I'm calling it a stop of the 558 Hz machine. A was a broadband vent near +30\u00b0."}

@@ -1,0 +1,93 @@
+<p class="label">week 5 · evaluation</p>
+<h1>Ludwig: grading the listener</h1>
+<p class="lede">Last week I built a room for an agent to listen in. This week I graded the agents in it: eight set tasks, five tries each, two kinds of score, and every episode traced.</p>
+
+<p>Before grading anything I made the room harder, because last week's validation said it was too easy: a free field where standing still was right nine times out of twelve. The room now has a wall that echoes every machine once, a vent that hisses across most of the spectrum, and the listener's own body, which dims sound from behind. The tracker got better ears to match: a second pitch per direction, a measure of how tonal a direction is (a vent is not), a lower pitch floor, and tracks that survive a walk. With all of that switched off, the new code renders last week's episodes bit for bit, so the change is the room, not a drift.</p>
+
+<h2>Two measures</h2>
+<p><strong>1. Task success (deterministic).</strong></p>
+<ul>
+<li><strong>What is evaluated.</strong> The agent's final report against the environment's private truth: how many machines, where each one is (within 20 degrees, matched one to one), and which event happened (accelerate, decelerate, stop, start, move or none, and for a machine event, which machine). Success is all three right at once. The grader also keeps each part, phantom machines, whether a phantom points at the vent, and the cost: seconds heard, metres walked, model calls and tokens.</li>
+<li><strong>How it is scored.</strong> By code. The run is sealed with hashes before the grader opens the truth, so the agent can neither see nor touch it, and the same report always gets the same score. A machine that stopped is scored from where the agent last heard it, not from a place it walked to afterwards.</li>
+<li><strong>Does it show the objective was achieved?</strong> Yes, for the objective I set: a report a person could act on is right about the world. What it cannot say is why the agent was right. A lucky guess and a careful inference score the same.</li>
+</ul>
+<p><strong>2. Quality of reasoning (a model as judge).</strong></p>
+<ul>
+<li><strong>What is evaluated.</strong> Whether the report and the actions follow from what the agent actually saw. Four criteria, 0 to 2 each: grounded (every claim is in the tracker lines), confounders (echoes, the vent, two pitches on one bearing, directions that flicker), actions (each wait, turn and walk had a purpose) and calibration (the note is as sure as the evidence, no more). The total is the sum over 8.</li>
+<li><strong>How it is scored.</strong> Claude Opus 5.5 with a fixed rubric and structured output, a score and a reason per criterion. It reads exactly what the agent read and did, and never the truth. That is on purpose: it answers a different question from the grader.</li>
+<li><strong>Does it show the objective was achieved?</strong> No, and it should not. It shows whether the agent earned its answer, and it is most useful where it disagrees with the grader. It has not yet been checked against my own grades.</li>
+</ul>
+
+<h2>The task suite</h2>
+<p>Eight tasks, each a seeded scene built around one difficulty I already knew about. I chose the seeds by scanning for the property each task names, before any agent ran on them. Every task has a 30 second budget and a noise floor at -60 dBFS.</p>
+<table><thead><tr><th>task</th><th>what happens</th><th>why it is hard</th></tr></thead><tbody>
+<tr><td>T1 one steady machine</td><td>nothing</td><td>the control: the right answer is "one, nothing happened"</td></tr>
+<tr><td>T2 a low machine stops</td><td>a 183 Hz machine runs down and stops</td><td>last week the tracker doubled such a pitch and read the stop as a speed-up</td></tr>
+<tr><td>T3 the near one of a pair stops</td><td>two machines on one bearing, the near one stops</td><td>the far one is hidden until the near one is gone</td></tr>
+<tr><td>T4 the far one of a pair speeds up</td><td>two on one bearing, the quiet far one speeds up</td><td>visible only as its own pitch rising under the loud one</td></tr>
+<tr><td>T5 one of a pair walks away</td><td>three machines, two within 3 degrees; one of the pair drifts off</td><td>last week's worst failure</td></tr>
+<tr><td>T6 a machine starts</td><td>a silent machine starts at 14 s</td><td>a start has to be told from a direction appearing by chance</td></tr>
+<tr><td>T7 a machine starts near the vent</td><td>a start 34 degrees from the vent</td><td>noise and a start share a neighbourhood</td></tr>
+<tr><td>T8 one of three slows down</td><td>three machines, one slows to 70%</td><td>three machines and the vent fill the tracker's four slots</td></tr>
+</tbody></table>
+<p><strong>Langfuse.</strong> The suite is a Langfuse dataset, one item per task with its expected outcome. Each listener and trial is one experiment run over all eight items, so trials line up task by task. Each episode is a trace: every model call is a generation (in: the tracker lines it read; out: what it answered), every wait, turn, walk and report is a tool observation, the judge is an evaluator observation, and the grader's outcomes and the judge's grades are scores on the trace. In all: 11 runs, 88 traces, 227 model calls.</p>
+<figure>
+  <img src="media/week05/langfuse-trace-T1-report.jpg" alt="A Langfuse trace: on the left the tree of listener turns, each with its tool call (wait, rotate, translate, report); on the right the last turn, whose report says three machines and a stop at 75 degrees">
+  <figcaption>One episode in Langfuse: the agent's turns and tool calls, with the final report open. This is the trace explained below. The turns are listed out of order (0, 1, 3, 2, 7...) because I uploaded the run after it finished and the rebuilt steps share a start time; the number in each name is the real order.</figcaption>
+</figure>
+
+<h2>Experiments</h2>
+<p>Claude Opus 5.5 ran five trials of every task. The three scripted listeners from last week (stand still, turn a full circle, step one metre left) ran two each, and both trials came out identical every time, as they should: the scenes are seeded, so only the agent can vary. The whole run took 12 minutes and about $6.50, of which $1.96 was the judge.</p>
+<table><thead><tr><th>listener</th><th>fully right</th><th>tasks solved at least once</th><th>tasks solved every time</th></tr></thead><tbody>
+<tr><td>Claude Opus 5.5</td><td>70%</td><td>7 of 8</td><td>4 of 8</td></tr>
+<tr><td>step one metre left</td><td>62.5%</td><td>5 of 8</td><td>5 of 8</td></tr>
+<tr><td>stand still</td><td>50%</td><td>4 of 8</td><td>4 of 8</td></tr>
+<tr><td>turn a full circle</td><td>37.5%</td><td>3 of 8</td><td>3 of 8</td></tr>
+</tbody></table>
+<figure>
+  <img src="media/week05/success-per-task.png" alt="Horizontal bars per task for four listeners. Claude solves T2, T3, T6 and T8 five times out of five, T7 four, T4 three, T1 once and T5 never. The scripted listeners solve T1, T2 and T7 every time and never solve T3, T4 or T5.">
+  <figcaption>Success per task. Each label is successes over trials.</figcaption>
+</figure>
+<p>pass@k is the chance that at least one of k tries succeeds; pass^k is the chance that all k do. Both are estimated from the five trials and averaged over the eight tasks:</p>
+<table><thead><tr><th>k</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead><tbody>
+<tr><td>pass@k</td><td>0.70</td><td>0.79</td><td>0.83</td><td>0.85</td><td>0.88</td></tr>
+<tr><td>pass^k</td><td>0.70</td><td>0.61</td><td>0.56</td><td>0.53</td><td>0.50</td></tr>
+</tbody></table>
+<p>The space between the two rows is the model's inconsistency. Given five tries it solves seven tasks; trusted to get it right every time, four. The scripts have no space between the rows at all, because they never vary.</p>
+<p>Three things stand out. Claude is the only listener that solves the hidden pair (T3 five times out of five, T4 three): both need it to notice a second pitch under a louder one, which no fixed rule does. Nobody solves T5: Claude counts right every time and every time says nothing happened, because it walks, every bearing changes, and it puts the moving machine's change down to its own walk. And Claude is the worst listener on the easiest task, T1: once in five, where every script is perfect.</p>
+
+<h3>The two measures side by side</h3>
+<figure>
+  <img src="media/week05/judge-vs-grader.png" alt="Dots for the 40 Claude episodes on a judge-score axis from 0 to 1, in two rows. Right answers average 0.69, wrong ones 0.55, and the two rows overlap almost completely.">
+  <figcaption>Every Claude episode, by the judge's total, split by the grader's verdict.</figcaption>
+</figure>
+<p>Right answers get better reasoning grades on average (0.69 against 0.55), and every criterion is higher. But the two rows overlap almost completely: nine of the 28 right answers scored 0.5 or less, and one wrong answer scored 0.75. The judge is not a cheap stand-in for the grader; it measures something else. Calibration is the weakest criterion everywhere: the agent rarely says what it is unsure of.</p>
+
+<h2>One trace: one machine, reported as three and a stop</h2>
+<p>T1, trial 4. The truth: one machine at 127 degrees humming at 278 Hz for 30 seconds, the vent at 30 degrees, and the wall's echo of the machine at about 146 degrees.</p>
+<ol>
+<li><strong>0 to 9 s, waiting.</strong> The tracker shows A, noise-like at +30 (the vent; the agent names it correctly) and B at +127, 278 Hz (the machine). For one second a faint C appears at +106 with about 560 Hz.</li>
+<li><strong>10 to 15 s, it turns toward B and walks 1.5 m left.</strong> A new direction, D, appears at about +100, 14 to 19 dB below B, with one or two pitches between 466 and 558 Hz.</li>
+<li><strong>15 to 22 s, it waits, then walks 1.5 m forward.</strong> D keeps showing two pitches and follows B as the listener moves. B stays at 278 Hz throughout.</li>
+<li><strong>23 s.</strong> D reads 419 Hz once and is not seen again.</li>
+<li><strong>The report:</strong> three machines (B, "D1 558 Hz" and "D2 466 Hz") and the event <em>stop</em> at 75 degrees. In its words: "The D bearing repeatedly showed two pitches; at t=23 it read ~419 Hz and then went silent, so I'm calling it a stop of the 558 Hz machine."</li>
+</ol>
+<figure>
+  <img src="media/week05/langfuse-trace-T1-scores.jpg" alt="The scores on the same trace in Langfuse: task_success 0, count_correct 0, event_correct 0, bearing_recall 1, matched mean error 0.09 degrees, phantoms_reported 2, judge_total 0.5, and the four judge criteria at 1 with their reasons">
+  <figcaption>The same trace's scores: the grader's outcomes and the judge's four grades with their reasons.</figcaption>
+</figure>
+<p><strong>The grader:</strong> count wrong (3 for 1), event wrong (stop for none), the real machine's bearing right to a tenth of a degree, two phantoms. <strong>The judge</strong> (0.5) gave the count partial credit because the two-pitch lines are really there, but caught the stop: D had been dropping in and out all episode, so its silence after 23 s is not evidence of a stop, and the note admits no doubt.</p>
+<p><strong>What D really was.</strong> Not the echo: the echo sat at 146 degrees at the start and 134 at the end, while D was at 106, then 100, then 75 to 88. At every moment D sat between the machine and the vent. Its pitches were the machine's, read wrongly: 558 Hz is twice 278, and 466 is five thirds of it. My best explanation is how the tracker finds a direction: where the machine's upper harmonics and the vent's hiss share frequencies, it averages the two and reports a third direction in between. I have not yet tested that on its own.</p>
+<p><strong>Why it matters.</strong> The agent followed its instructions. Its prompt says an echo carries exactly its machine's pitch; D did not, so by the agent's rules it could not be an echo. The scripts pass T1 because they ignore weak, short-lived directions. The more the agent reasons over faint evidence, the more it is exposed to the ears' mistakes, which is how Claude is both the best listener overall and the worst on the control. Two of my tasks were really measuring the tracker.</p>
+<p><strong>Its mirror image</strong> is in T7. The vent's direction picks up a 506 Hz pitch, again five thirds of a real machine's 304 Hz. In trial 3 Claude counted it as a machine ("No other source has that pitch, so it is a separate quiet machine") and failed; the judge gave 0.5. In trial 5 it dismissed it as the vent and got everything right; the judge gave 0.25, its lowest grade of the run, for discarding a pitched direction without a reason. Knowing only what the agent knew, the judge punished the right call more than the wrong one. Its doubt was fair given the evidence. That is the honest limit of a judge without the truth, and the reason the deterministic grader stays the measure of success.</p>
+
+<h2>Reflection</h2>
+<p>Last week I said the ears carry the difficulty. This week the evaluation found a new mistake in the ears, not in the agent: pitched phantoms between a machine and the vent. It found it because the control task failed, which is what a control is for, and because each episode was a trace I could read line by line, not just a number. Next I will reproduce the phantom with one machine and the vent alone, fix it in the tracker, and run T1 and T7 again.</p>
+<p>T5 at zero for every listener says something different: no agent here can subtract its own walk from what it hears. The tracker knows where the listener walked, so it could give bearings in the room's frame instead of the head's. That is a change to the interface, and the evaluation is what made the case for it.</p>
+<p>The judge I would keep, but not trust yet. It caught a right answer reached by weak reasoning and an unsupported stop, and it marked down a correct call it had no way to check. Before it counts for anything I will grade ten episodes by hand and compare.</p>
+
+<p><a href="https://github.com/mitmedialab/agents2026-mateo/tree/main/weekly_builds/week05">Code, evidence and every episode's grades</a> · <a href="media/week05/T1-trial-4-transcript.txt">The T1 trace as text</a></p>
+
+<h2>AI disclosure</h2>
+<p>I used Claude Code to make the room harder, to build the task suite, the grader changes, the judge and its rubric, the Langfuse instrumentation and the charts, to run the experiments, to work out where the phantom came from, and to draft this page from the run evidence for me to edit. The listening agent and the judge both run on Claude Opus 5.5 through the API.</p>
+<p class="label">Implementation assistance: Claude Code.</p>

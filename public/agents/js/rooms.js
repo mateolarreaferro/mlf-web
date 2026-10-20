@@ -8,8 +8,13 @@
     status "open"  a full pod in its colour, with its attractor, and a page to read
     status "soon"  a small cool bud that has not formed, with nothing to read
 
-  Weeks 5 and 8 have no build (no folder in weekly_builds/), so they have no
-  room either.
+    between: true  a smaller pod halfway to the next week, on the same spiral,
+                   for a week that grew out of the one before it. It takes no
+                   step of its own, so no other pod, the bell or any sound host
+                   moves when it is added. shape picks its attractor.
+
+  Week 5 evaluated week 4's environment, so it buds off week 4. Week 8 has no
+  build (no folder in weekly_builds/), so it has no room.
 */
 
 export const ROOMS = [
@@ -17,6 +22,7 @@ export const ROOMS = [
   { id: "week02", label: "week 2", title: "larry · connecting my class notes", status: "open" },
   { id: "week03", label: "week 3", title: "melody · arranging with drc", status: "open" },
   { id: "week04", label: "week 4", title: "ludwig · a room to listen in", status: "open" },
+  { id: "week05", label: "week 5", title: "ludwig · grading the listener", status: "open", between: true, shape: 4 },
   { id: "week06", label: "week 6", title: "", status: "soon" },
   { id: "week07", label: "week 7", title: "", status: "soon" },
   { id: "week09", label: "week 9", title: "", status: "soon" },
@@ -71,6 +77,7 @@ export const DIM = {
   climb: 1.25, // and how much higher each week is than the last
   pod: 2.7, // radius of a pod that has opened
   bud: 1.5, // radius of one that has not
+  satellite: 1.55, // radius of a pod between two weeks: it just clears an open pod half a step away
   bell: 5.6, // radius of the bell
   world: 34, // how far you can swim from the column
 };
@@ -92,7 +99,7 @@ export function ground(x, z) {
 }
 
 export function layout() {
-  const weeks = ROOMS.filter((r) => !r.final);
+  const weeks = ROOMS.filter((r) => !r.final && !r.between);
   const top = DIM.base + (weeks.length - 1) * DIM.climb;
   const rooms = ROOMS.map((room) => {
     if (room.final) {
@@ -104,17 +111,20 @@ export function layout() {
         board: { x: 0, y: center.y + 2.7, z: -1.6 }, // over the three attractors, under the crown
       };
     }
-    const i = weeks.indexOf(room);
+    // a pod between two weeks sits half a step past the week before it
+    const i = room.between ? weeks.indexOf(ROOMS[ROOMS.indexOf(room) - 1]) + 0.5 : weeks.indexOf(room);
     const a = DIM.first + i * DIM.turn;
     const open = room.status === "open";
-    const r = open ? DIM.pod : DIM.bud;
+    const r = room.between ? DIM.satellite : open ? DIM.pod : DIM.bud;
     const center = { x: Math.cos(a) * DIM.helix, y: DIM.base + i * DIM.climb, z: Math.sin(a) * DIM.helix };
     const out = { x: Math.cos(a), z: Math.sin(a) }; // from the column, outward through the pod
+    const back = room.between ? DIM.pod : r;
     return {
       ...room, index: i, color: rampAt(i / (weeks.length - 1), WARM), r, center, out,
       // you come in on the column's side and read the words hung at the back
       // far enough back that the attractor and the words over it both fit in view
-      stand: { x: center.x - out.x * r * 0.95, y: center.y + 0.35, z: center.z - out.z * r * 0.95 },
+      // (from a full pod's distance even in a smaller one, so its words still fit)
+      stand: { x: center.x - out.x * back * 0.95, y: center.y + 0.35, z: center.z - out.z * back * 0.95 },
       // the words hang over the attractor, not behind it
       board: { x: center.x + out.x * r * 0.35, y: center.y + (open ? 1.25 : 0.1), z: center.z + out.z * r * 0.35 },
     };
